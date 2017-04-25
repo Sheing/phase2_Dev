@@ -1,0 +1,7 @@
+Hello,
+
+{!Licensing_Transaction__c.RecordType} Licensing Transaction associated to Provider {!Licensing_Transaction__c.Provider__c} has been recalled by {!User.Name} and does not need your review anymore. 
+
+If you still want to review the transaction, please use this link: {!Licensing_Transaction__c.Link}
+
+LEAD System

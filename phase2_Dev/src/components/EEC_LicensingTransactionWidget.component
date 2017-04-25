@@ -1,0 +1,135 @@
+<apex:component >
+    <style>
+        .panel-header{
+        	background-color: #7d7d7d;
+            margin-bottom: 10px;
+            color: #fff;
+            padding: 5px 5px 5px 10px;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        .tab-label-panel .slds-tabs--scoped__link{
+        	background-color: inherit;
+    		padding-left: 0px;
+        }
+        .slds .slds-tabs--scoped__item:first-child .slds-tabs--scoped__link{
+        	background-color: inherit;
+    		padding-left: 0px;
+        }
+        .tab-icon{
+            float: left;
+            border-radius: 15px;
+            color: #fff;
+            background-color: #21a8de;
+            font-size: 20px;
+            width: 30px;
+            padding-left: 7px;
+        	margin: 5px 5px 0px 0px;
+        }
+        .tab-label{
+        	display : block;
+        }
+        .tab-label-desc{
+        }
+        .tab-cont{
+        	float : right;
+        }
+        a{
+        	height: 56px;
+        }
+        .tab-content{
+        	margin-top : 10px;
+        }
+        .tab-content{
+        	padding : 20px;
+        }
+        
+        
+    </style>
+    
+    <apex:attribute type="Licensing_Transaction__c[]" name="draftLT" description="Draft Licensing Transactions." />
+    <apex:attribute type="Licensing_Transaction__c[]" name="inProgressLT" description="In progress Licensing Transactions." />
+    <apex:attribute type="Licensing_Transaction__c[]" name="processedLT" description="Processed Licensing Transactions." />
+    <apex:attribute type="string" name="providerRecordType" description="Provider Record Type." />
+    
+    <div class="panel-header">
+        <i class="fa fa-exchange" aria-hidden="true"></i>
+        <span><label>MY LICENSING TRANSACTIONS</label></span>
+    </div>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#draft">
+                	<div class="tab-icon">
+                    	<i class="fa fa-pencil" aria-hidden="true"></i>
+                    </div>
+                    <div class="tab-cont">
+                    	<span class="tab-label">Draft</span>
+                    	<label class="tab-label-desc"><span>{!draftLT.Size}</span> TO SUBMIT</label>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#inProgress">
+                	<div class="tab-icon" style="background-color:#fba957;padding-left: 5px;">
+                    	<i class="fa fa-spinner" aria-hidden="true"></i>
+                    </div>
+                    <div class="tab-cont">
+                    	<span class="tab-label">In Progress</span>
+                    	<label class="tab-label-desc"><span>{!inProgressLT.Size}</span> UNDER REVIEW</label>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#processed">
+                	<div class="tab-icon" style="background-color:#55d1c2;padding-left: 5px;">
+                    	<i class="fa fa-check" aria-hidden="true"></i>
+                    </div>
+                    <div class="tab-cont">
+                    	<span class="tab-label">Processed</span>
+                    	<label class="tab-label-desc"><span>{!processedLT.Size}</span> PROCESSED</label>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="tab-content">
+            <div id="draft" class="tab-pane fade in active">
+              <apex:repeat value="{!draftLT}" var="draft">
+                  <c:EEC_LicensingTransactionRow transactionID="{!draft.Name}"
+                  								 recordID="{!draft.Id}"
+                                                 type="{!draft.RecordType.Name}"
+                                                 licensor="{!draft.Assigned_To__r.Name}"
+                                                 lastStep="{!draft.Last_Reached_Step__c}"                                                 
+                                                 progressStyleColor="background-color: #21a8de;"
+                                                 providerRecordType="{!providerRecordType}">
+                  </c:EEC_LicensingTransactionRow>
+              </apex:repeat> 
+            </div>
+            <div id="inProgress" class="tab-pane fade">
+              <apex:repeat value="{!inProgressLT}" var="progress">
+                   <c:EEC_LicensingTransactionRow transactionID="{!progress.Name}"
+                   								 recordID="{!progress.Id}"
+                                                 type="{!progress.RecordType.Name}"
+                                                 licensor="{!progress.Assigned_To__r.Name}"                                                 
+                                                 progressStyleColor="background-color:#fba957;"
+                                                 providerRecordType="{!providerRecordType}">
+                  </c:EEC_LicensingTransactionRow>
+              </apex:repeat>
+            </div>
+            <div id="processed" class="tab-pane fade">
+              <apex:repeat value="{!processedLT}" var="processed">
+                   <c:EEC_LicensingTransactionRow transactionID="{!processed.Name}"
+                                      			 recordID="{!processed.Id}"
+                                                 type="{!processed.RecordType.Name}"
+                                                 licensor="{!processed.Assigned_To__r.Name}"
+                                                 lastStep="{!processed.Last_Reached_Step__c}"
+                                                 progressStyleColor="background-color:#55d1c2;"
+                                                 providerRecordType="{!providerRecordType}">
+                  </c:EEC_LicensingTransactionRow>
+              </apex:repeat>
+            </div>
+        </div>
+        
+    </div>
+</apex:component>

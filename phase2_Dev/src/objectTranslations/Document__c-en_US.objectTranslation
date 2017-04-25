@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Document</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Documents</value>
+    </caseValues>
+    <fields>
+        <label><!-- Approved for Future Usage --></label>
+        <name>Approved_for_Future_Usage__c</name>
+    </fields>
+    <fields>
+        <label><!-- Attachment Status --></label>
+        <name>Attachment_Status__c</name>
+        <picklistValues>
+            <masterLabel>Attachment(s) Available</masterLabel>
+            <translation><!-- Attachment(s) Available --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Attachment</masterLabel>
+            <translation><!-- No Attachment --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Contact Role --></label>
+        <name>Contact_Role__c</name>
+        <relationshipLabel><!-- Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Content Type --></label>
+        <name>Content_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Current --></label>
+        <name>Current__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Name --></label>
+        <name>Document_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Type --></label>
+        <name>Document_Type__c</name>
+        <relationshipLabel><!-- Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- DocumenttypeNAme --></label>
+        <name>DocumenttypeNAme__c</name>
+    </fields>
+    <fields>
+        <label><!-- EEC Note For Revision --></label>
+        <name>EEC_Note_For_Revision__c</name>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Original File Name --></label>
+        <name>Original_File_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Out of Date --></label>
+        <name>Out_of_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider --></label>
+        <name>Provider__c</name>
+        <relationshipLabel><!-- Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Valid From --></label>
+        <name>Valid_From__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid To --></label>
+        <name>Valid_To__c</name>
+    </fields>
+    <layouts>
+        <layout>Document Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Preview --></label>
+            <section>Preview</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Document Type is required if document is approved for future usage. --></errorMessage>
+        <name>Doc_Type_required_if_future_usage_set</name>
+    </validationRules>
+</CustomObjectTranslation>

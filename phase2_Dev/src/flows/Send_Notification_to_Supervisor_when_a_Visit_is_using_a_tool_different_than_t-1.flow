@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <processMetadataValues>
+            <name>emailAlertSelection</name>
+            <value>
+                <stringValue>X86_Notification_to_supervisor_that_visit_tool_has_been_switched</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>myRule_1_A1</name>
+        <label>Send Email to Supervisor</label>
+        <locationX>100</locationX>
+        <locationY>200</locationY>
+        <actionName>Inspection__c.X86_Notification_to_supervisor_that_visit_tool_has_been_switched</actionName>
+        <actionType>emailAlert</actionType>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <assignments>
+        <name>myVariable_waitStartTimeAssignment</name>
+        <label>myVariable_waitStartTimeAssignment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>myVariable_waitStartTimeVariable</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>myDecision</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision</name>
+        <label>myDecision</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1_pmetdec</targetReference>
+            </connector>
+            <label>Criteria</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_1_pmetdec</name>
+        <label>Previously Met Decision</label>
+        <locationX>100</locationX>
+        <locationY>100</locationY>
+        <defaultConnector>
+            <targetReference>myRule_1_A1</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Previously Met</defaultConnectorLabel>
+        <rules>
+            <name>myRule_1_pmetnullrule</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>myVariable_old</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1_A1</targetReference>
+            </connector>
+            <label>Previously Met - Null</label>
+        </rules>
+        <rules>
+            <name>myRule_1_pmetrule</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_1_pmetrule</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Previously Met - Prev</label>
+        </rules>
+    </decisions>
+    <description>Will send an email to a Supervisor when the tool used for a visit is not the recommended one</description>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>OR(
+( ISBLANK( PRIORVALUE( [Inspection__c].Switch_Tool_Justification_1__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Switch_Tool_Justification_1__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Inspector_del__c ) ) &amp;&amp;
+NOT(ISBLANK ( [Inspection__c].Assigned_To_Manager__c))  ), 
+
+( ISBLANK( PRIORVALUE( [Inspection__c].Switch_Tool_Justification_2__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Switch_Tool_Justification_2__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Inspector_del__c ) ) &amp;&amp;
+NOT(ISBLANK ( [Inspection__c].Assigned_To_Manager__c)) ) 
+)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_1</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+( ISBLANK( PRIORVALUE( {!myVariable_current.Switch_Tool_Justification_1__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_current.Switch_Tool_Justification_1__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_current.Inspector_del__c} ) ) &amp;&amp;
+NOT(ISBLANK ( {!myVariable_current.Assigned_To_Manager__c}))  ), 
+
+( ISBLANK( PRIORVALUE( {!myVariable_current.Switch_Tool_Justification_2__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_current.Switch_Tool_Justification_2__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_current.Inspector_del__c} ) ) &amp;&amp;
+NOT(ISBLANK ( {!myVariable_current.Assigned_To_Manager__c})) ) 
+)</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>OR(
+( ISBLANK( PRIORVALUE( [Inspection__c].Switch_Tool_Justification_1__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Switch_Tool_Justification_1__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Inspector_del__c ) ) &amp;&amp;
+NOT(ISBLANK ( [Inspection__c].Assigned_To_Manager__c))  ), 
+
+( ISBLANK( PRIORVALUE( [Inspection__c].Switch_Tool_Justification_2__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Switch_Tool_Justification_2__c ) ) &amp;&amp; 
+NOT( ISBLANK( [Inspection__c].Inspector_del__c ) ) &amp;&amp;
+NOT(ISBLANK ( [Inspection__c].Assigned_To_Manager__c)) ) 
+)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_1_pmetrule</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+( ISBLANK( PRIORVALUE( {!myVariable_old.Switch_Tool_Justification_1__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_old.Switch_Tool_Justification_1__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_old.Inspector_del__c} ) ) &amp;&amp;
+NOT(ISBLANK ( {!myVariable_old.Assigned_To_Manager__c}))  ), 
+
+( ISBLANK( PRIORVALUE( {!myVariable_old.Switch_Tool_Justification_2__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_old.Switch_Tool_Justification_2__c} ) ) &amp;&amp; 
+NOT( ISBLANK( {!myVariable_old.Inspector_del__c} ) ) &amp;&amp;
+NOT(ISBLANK ( {!myVariable_old.Assigned_To_Manager__c})) ) 
+)</expression>
+    </formulas>
+    <interviewLabel>Send_Notification_to_Supervisor_when_a_Visit_is_using_a_tool_different_than_t-2_Inspection__c</interviewLabel>
+    <label>Send Notification to Supervisor when a Visit is using a tool different than the recommended one</label>
+    <processMetadataValues>
+        <name>ObjectType</name>
+        <value>
+            <stringValue>Inspection__c</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>ObjectVariable</name>
+        <value>
+            <elementReference>myVariable_current</elementReference>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OldObjectVariable</name>
+        <value>
+            <elementReference>myVariable_old</elementReference>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>TriggerType</name>
+        <value>
+            <stringValue>onAllChanges</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Workflow</processType>
+    <startElementReference>myVariable_waitStartTimeAssignment</startElementReference>
+    <variables>
+        <name>myVariable_current</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Inspection__c</objectType>
+    </variables>
+    <variables>
+        <name>myVariable_old</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Inspection__c</objectType>
+    </variables>
+    <variables>
+        <name>myVariable_waitStartTimeVariable</name>
+        <dataType>DateTime</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <elementReference>$Flow.CurrentDateTime</elementReference>
+        </value>
+    </variables>
+</Flow>

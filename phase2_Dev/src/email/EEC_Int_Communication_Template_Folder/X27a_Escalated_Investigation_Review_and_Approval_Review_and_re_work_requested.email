@@ -1,0 +1,9 @@
+Hello, 
+
+Investigation {!Investigation__c.Name} associated to Provider {!Investigation__c.Provider_No__c} has been reviewed and the Associate Commissioner of Investigations has requested the assignee to review the content of the investigation. 
+
+A task has been created in LEAD. Please review the investigation in LEAD for all details.
+
+This investigation can be directly accessed using the following link: {!Investigation__c.Link}. 
+
+LEAD System

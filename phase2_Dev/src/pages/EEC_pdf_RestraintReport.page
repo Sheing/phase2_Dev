@@ -1,0 +1,38 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" renderAs="pdf" controller="EEC_RestraintReport" >
+<!--style type="text/css">
+table {
+        -fs-table-paginate: paginate !important;
+      }
+.table-header {
+        height: 30px !important;
+      }
+      
+        .form-label{
+          font-weight: bold;
+          font-size:14px;
+        }
+        
+ </style>
+ <style>
+table, th, td {
+    
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+</style>
+<apex:form >
+<apex:pageblock >
+ 
+                <br />
+               <apex:outputPanel -->
+                  <center><h2> 
+                      Restraint Report
+                  </h2></center>
+                  <br/>
+<!--/apex:outputPanel>
+</apex:pageblock>
+</apex:form-->
+</apex:page>

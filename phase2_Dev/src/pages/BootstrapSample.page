@@ -1,0 +1,43 @@
+<apex:page showHeader="false"
+      sidebar="false"
+      standardStylesheets="false"
+      applyHtmlTag="false"
+      applyBodyTag="false">
+    
+    <head>
+        <title>EEC</title>
+        <apex:stylesheet value="{!URLFOR($Resource.EEC_Bootstrap, 'EEC_Bootstrap/css/bootstrap.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+  		<apex:stylesheet value="{!URLFOR($Resource.SLDS100, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        <style>
+        	.card{
+            	margin-top : 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <c:EEC_Nav_Bar id="navBar" />
+        <div class="slds">
+            <article class="slds-card">
+              <header class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                  <div class="slds-media__figure">
+                  </div> 
+                  <div class="slds-media__body slds-truncate">
+                    <h2>
+                      <a href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small">Card Header</span>
+                      </a>
+                    </h2>
+                  </div>
+                </div>
+                <div class="slds-no-flex">
+                  <button class="slds-button slds-button--neutral slds-col--bump-left">New</button>
+                </div>
+              </header>
+              <div class="slds-card__body slds-text-align--center">Card Body (custom goes in here)</div>
+              <div class="slds-card__footer">Card Footer</div>
+            </article>
+        </div>
+    </body>
+</apex:page>

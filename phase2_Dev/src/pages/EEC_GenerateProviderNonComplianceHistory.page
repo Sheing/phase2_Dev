@@ -1,0 +1,255 @@
+<apex:page Controller="EEC_PortalNonCompliancePageController" applyBodyTag="false" action="{!generatePDF}">
+<head>
+    <style type="text/css">
+        .removeLastPage:last-child {
+             position: absolute;
+             bottom: 0;
+        }
+        .removeLastPage { 
+            font-family: "Times New Roman";
+            font-size: 10pt;
+            display:table;
+            table-layout:fixed;
+            width: 100%;
+        }
+        @page {
+            size:landscape;
+        }
+        table {
+        }
+        table tr {
+        } 
+              
+        div.row {
+            margin-left: 25px;
+        }
+        div.row .title {
+            width: 110px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        div.section {
+            width: 49%;
+            display:  table-cell;
+        }
+        div.section .header {
+            height: 40px;
+        }
+        .container {
+            display: table;
+            width: 100%;
+        }
+        .container{
+            	border: 2px solid black;
+    			padding: 20px;
+            	font-family: Tahoma, Verdana, Segoe, sans-serif;
+        }
+        .col {    
+            display: table-cell;
+            width: 50%;
+        }
+        .logo{
+            	float: left;
+        }
+        .header{
+            	margin-top : 15px;
+            	font-size: 16px;
+            	text-align : center;
+        }
+        .grey-banner{
+            	background-color : #D2D2D2;
+            	padding-top : 5px;
+            	padding-bottom : 5px;
+            	margin-left : 70px;
+            	margin-right : 60px;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        
+        .header-group{
+        	padding-bottom : 10px;
+        }
+        table {
+    	}
+    	table tr {
+    	}
+    </style>
+</head>
+<body>
+    <div class="container removeLastPage">
+        <div class="logo">
+        	<img src="{!URLFOR($Resource.EEC_Bootstrap,'EEC_Bootstrap/img/eecLogo.png')}" alt="eec"/>
+        </div>
+        <div class="header">
+                <div>
+                    THE COMMONWEALTH OF MASSACHUSETTS<br/>
+                	DEPARTMENT OF EARLY EDUCATION AND CARE
+                </div>
+                <br/>
+                <div class="grey-banner pull-left">
+                	<strong>Provider Transaction History Report</strong>
+                </div>
+            	<div>
+                	<span style="font-size: 11px;">This report contains information on Visits and Investigations that have been released to the Provider. Please see the Provider's record for any open activity.</span>  
+            	</div>
+        </div><br/>
+        <div class="li-numbers">
+            <div style="float: right;">
+                <strong>Report Printed Date:&nbsp;<c:EEC_DateFormat date="{! TODAY() }"/></strong>
+            </div>
+        	<div class="left-number" style="margin-right: 150px;">
+        		<strong>Provider Number:&nbsp;{!provider.Provider_Number__c}</strong>
+            </div>
+            <div class="right-number">
+            	<strong>Provider Name:&nbsp;{!provider.Name}</strong>
+            </div>
+            <div class="right-number">
+            	<strong>Address:&nbsp;{!provider.Provider_Full_Address__c}</strong>
+            </div>
+            <div class="right-number">
+                <strong>First Issue Date:&nbsp;<c:EEC_DateFormat date="{!provider.Last_Issue_Date__c}"/></strong>
+            </div>
+            <div class="right-number">
+                <strong>Expiration Date:&nbsp;<c:EEC_DateFormat date="{!provider.Renewal_date__c}"/></strong>
+            </div>
+            <div class="right-number">
+            	<strong>Licensor:&nbsp;{!provider.Licensor_Full_Name__c}</strong>
+            </div>
+        </div><br/><br/>
+        <apex:outputPanel rendered="{!iiWrapperList.size > 0}">
+            <div class="visit-non-compliance-container">
+                <caption style="margin-bottom: 10px;font-size:130%">
+                	<strong>Noncompliance associated with Visits</strong>
+                </caption>
+                <div>
+					<table class="table table-hover" style="width: 100%;">
+                        <apex:repeat value="{!iiVisitWrapperList}" var="nonCompVisits"> 
+                           <apex:outputPanel rendered="{!nonCompVisits.inspStatus == 'Closed' || nonCompVisits.inspStatus == 'Report Sent to Provider, Awaiting feedback' || nonCompVisits.inspStatus == 'Feedback received, to review'}"> 
+                            <tr>
+                              <td>
+                                <table border="2" style="table-layout: fixed; border-style: solid; width: 100%;background-color : #D2D2D2;">
+                                    <tr>
+                                        <td style="width: 33%; padding-top: 10px; padding-left: 5px;">
+                                            Visit Number: {!nonCompVisits.visitname}<br/>
+                                            Visit Date: {!nonCompVisits.dateofvisit}
+                                        </td> 
+                                        <td style="width: 33%; padding-top: 10px; padding-left: 5px;">
+                                            Visit Type : {!nonCompVisits.inspType}<br/>
+                                            Visit Tool : {!nonCompVisits.inspToolUser}
+                                        </td>
+                                        <td style="width: 33%; padding-top: 10px; padding-left: 5px;">
+                                            Visit Status : {!nonCompVisits.inspStatus}
+                                        </td>
+                                    </tr>	        
+                                </table>
+                                <table border="2" style="table-layout: fixed; border-style: solid; width: 100%">
+                                       <tr>     
+                                            <th style="width: 33%;">Noncompliant Item Description</th>                                     
+                                            <th style="width: 33%;">Statement of Non-Compliance</th>
+                                            <th style="width: 33%;">Correction Plan</th>
+                                       </tr>
+                                       <apex:repeat value="{!allVisitNonComplianceItems[nonCompVisits.visitname]}" var="visit" >  
+                                              <tr>  
+                                                <td>
+                                                  <apex:outputPanel rendered="{!visit.inspDescription != null}">
+                                                      <strong>Description: </strong>
+                                                      <apex:outputLabel value="{!visit.inspDescription}"></apex:outputLabel><br/>
+                                                  </apex:outputPanel>   
+                                                  <apex:outputPanel rendered="{!visit.regulationMap != null}">  
+                                                      <strong>Associated Regulation: </strong>
+                                                      <apex:repeat value="{!visit.regulationMap}" var="iiName">
+                                                         <apex:outputLabel value="{!iiName}" />
+                                                      </apex:repeat>
+                                                  </apex:outputPanel>
+                                                </td>
+                                                <td>{!visit.observations}{!visit.Name}</td> 
+                                                <td>
+                                                    <apex:outputLabel value="{!visit.correctionPlan}"/><br/>
+                                                    <apex:outputPanel rendered="{!visit.implementdate != null}">
+                                                        Date Implemented: <apex:outputLabel value="{!visit.implementdate}" /> 
+                                                    </apex:outputPanel> 
+                                                </td>                                
+                                                <!--<td>{!visit.viFeedback}</td>-->  
+                                              </tr>
+                                        </apex:repeat>
+                               </table>
+                               </td>
+                            </tr>
+                            </apex:outputPanel>
+                      	</apex:repeat>
+                  </table>  
+				  <apex:outputPanel rendered="{!iiVisitWrapperList.size == 0}">
+                  	  <div>
+                          <span style="font-size:12px;">There are no noncompliances associated with visits.</span>
+                      </div>
+                  </apex:outputPanel>                    
+                </div>
+            </div><br/><br/><br/>
+            <div>
+                <caption style="margin-bottom: 10px;font-size:130%">
+                    <strong>Noncompliance associated with Investigations</strong>
+                </caption>    
+                <div>
+                    <table class="table table-hover" style="width: 100%">
+                        <apex:repeat value="{!iiInvWrapperList}" var="nonCompInv" >
+                            <apex:outputPanel rendered="{!nonCompInv.invStatus == 'Closed' || nonCompInv.invStatus == 'Report Sent to Provider, Awaiting feedback' || nonCompInv.invStatus == 'Feedback received, to review' || nonCompInv.invStatus == 'Closed (Legacy Investigation)'}">
+                            	<tr>
+                                	<td>
+                                		<table border="2" style="table-layout: fixed; border-style: solid; width: 100%; background-color : #D2D2D2;">
+                                    		<tr>
+                                                <td class="header-group" style="width: 65%; padding-top: 10px; padding-left: 5px;">
+                                                    Investigation Number: {!nonCompInv.name}
+                                                </td> 
+                                                <td class="header-group" style="width: 65%; padding-top: 10px; padding-left: 5px;">
+                                                    Investigation Date: {!nonCompInv.closedDate}
+                                                </td> 
+                                            </tr>    
+                                        </table>     
+                                		<table border="2" style="table-layout: fixed; border-style: solid; width: 100%">
+                                          <tr>    
+                                            <th style="width: 33%;">Noncompliant Item Description</th>                                     
+                                            <th style="width: 28.5%;">Statement of Non-Compliance</th>
+                                            <th style="width: 33%;">Correction Plan</th>  
+                                          </tr>
+                                          <apex:repeat value="{!allInvNonComplianceItems[nonCompInv.name]}" var="invNonComp" >  
+                                              <tr>  
+                                                <td>
+                                                  <apex:outputPanel rendered="{!invNonComp.inspDescription != null}">
+                                                      <strong>Description: </strong>
+                                                      <apex:outputLabel value="{!invNonComp.inspDescription}"></apex:outputLabel><br/>
+                                                  </apex:outputPanel>
+                                                  <apex:outputPanel rendered="{!invNonComp.regulationMap != null}">  
+                                                      <strong>Associated Regulation: </strong>  
+                                                      <apex:repeat value="{!invNonComp.regulationMap}" var="iiName">
+                                                         <apex:outputLabel value="{!iiName}" />
+                                                      </apex:repeat>
+                                                  </apex:outputPanel>
+                                                </td>
+                                                <td>{!invNonComp.observations}</td> 
+                                                <td>
+                                                    <apex:outputLabel value="{!invNonComp.correctionPlan}" /><br/>
+                                                    <apex:outputPanel rendered="{!invNonComp.implementdate != null}">
+                                                    	Date Implemented: <apex:outputLabel value="{!invNonComp.implementdate}" />
+                                                    </apex:outputPanel>
+                                                </td>                                
+                                                <!--<td>{!IF(invNonComp.ncFeedback != null , invNonComp.ncFeedback, invNonComp.viFeedback)}</td>-->   
+                                              </tr>
+                                          </apex:repeat>
+                                 		</table>
+                                	</td>
+                            	</tr>
+                            </apex:outputPanel>
+                      	</apex:repeat>
+                    </table>
+                    <apex:outputPanel rendered="{!iiInvWrapperList.size == 0}">
+                  	  <div>
+                          <span style="font-size:12px;">There are no noncompliances associated with Investigations.</span>
+                      </div>
+                  	</apex:outputPanel>
+                </div>
+            </div>
+        </apex:outputPanel>    
+    </div>
+    </body>
+</apex:page>

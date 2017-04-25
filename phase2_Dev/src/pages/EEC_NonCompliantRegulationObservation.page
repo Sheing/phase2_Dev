@@ -1,0 +1,4 @@
+<apex:page standardController="Non_Compliant_Item_Regulation__c">
+    
+    <apex:outputLabel value="{!Non_Compliant_Item_Regulation__c.Non_Compliant_Item__r.Observations__c}"></apex:outputLabel>
+</apex:page>

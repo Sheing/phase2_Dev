@@ -1,0 +1,26 @@
+<apex:component controller="EEC_DocumentListCtrl">
+     <script>
+        function openDocument(){
+         
+          }
+  
+  </script>  
+     <apex:attribute type="EEC_TransactionWizardController" name="documentInf" assignTo="{!docInf}" description="Interface reference for controller." />
+    <div >
+        <button id="add-new-document" onClick="openDocument();return false;" type="button" style="text-transform: uppercase;" class="md-button md-eec md-raised">Add Attachments From Library</button>
+        <br/>
+        <apex:pageBlock id="libAttch" >
+          <apex:pageBlockSection >
+          <!--<apex:outputPanel rendered="{!renderAttachLib}">-->
+           <div>
+           <!--<b>&nbsp;&nbsp;<apex:outputText value="{!transDoc.Name}" title="Attachment"/></b>-->
+           </div>
+         <!-- </apex:outputPanel>-->
+          </apex:pageBlockSection>
+        </apex:pageBlock>
+        <br/>
+        <!--<apex:commandButton action="{!clearAttachLib}" value="clear" reRender="libAttch"  styleclass="clear-button md-button md-eec md-raised"/>-->
+        <br/>
+        <br/>
+     </div>
+</apex:component>

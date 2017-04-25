@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email sent to the Provider 120 days prior to the expiration date of the license to inform him that he&apos;ll need to submit a renewal application soon</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>EEC_Letterhead</letterhead>
+    <name>117 - Notification to Provider 120 days prior to license Renewal GSA/R&amp;P</name>
+    <style>freeForm</style>
+    <subject>Notification to Provider 120 days prior to license Renewal GSA/R&amp;P</subject>
+    <textOnly>Dear {!Account.Name},
+
+Your family child care license expires on {!Account.Renewal_date__c}. You may sign into the EEC provider portal to complete and submit your renewal application. The portal has a &quot;save for later&quot; feature, so you can begin the process at any time, even if you are not ready to submit everything now.
+
+Follow this link to start your application on the portal: Link to portal login page
+
+You may contact your licensor {!Account.Licensor_Full_Name__c} by phone at {!Account.OwnerPhone} or by email at {!Account.OwnerEmail} with any questions or concerns related to this matter.  
+
+Sincerely,
+
+The Department of Early Education and Care.
+
+
+
+{!Account.Region_Address__c}
+Phone: {!Account.Region_Phone__c} - Fax: {!Account.Region_Fax__c}
+Email: {!Account.Region_Email__c}
+www.mass.gov/eec</textOnly>
+    <type>html</type>
+</EmailTemplate>

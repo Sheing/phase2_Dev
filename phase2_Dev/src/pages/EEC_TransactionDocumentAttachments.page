@@ -1,0 +1,197 @@
+<apex:page standardController="Transaction_Document__c" extensions="EEC_TransactionDocumentAttachController" >
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />  
+  <apex:stylesheet value="{!URLFOR($Resource.AngularAssets, 'AngularAssets/css/lib/angular-material.min.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.AngularAssets, 'AngularAssets/css/app.css')}" />
+    
+  <style>
+    .s3-attachments-inline {
+      font-family: Arial,Helvetica,sans-serif;
+      color: #222;
+    }
+      
+    .s3-attachments-inline form {
+      /*display: flex;
+      flex-direction: column; */
+      overflow-y: scroll;
+      max-height: 180px
+    }
+      
+    .s3-attachments-inline h3 {
+      font-size: 1.1em; 
+      border-top-color: rgb(153, 89, 5);
+      border-top-style: solid;
+      border-top-width: 2px;
+    }
+      
+    .fileListContainer h4 {
+      font-size: 13px; 
+    }
+      
+    .attachment-item {
+      width: 100%; 
+      display: flex;
+      flex-direction: row; 
+    }
+      
+    .attachment-item p {
+      float: left; 
+      margin: 5px;
+      align-self: center;
+    }
+      
+    .attachment-item p:first-child {
+      flex: 2; 
+    }
+      
+    label {
+      font-size: 14px; 
+    }
+      
+    s3-file-upload, hr {
+      float: left; 
+    }
+      
+    hr {
+      width: 95%; 
+    }
+      
+    .attachment-item p {
+      font-size: 13px;
+    }
+
+    .clear-button {
+      font-size: 12px;
+      /*position: relative;
+      top: -2px;*/
+      position: absolute;
+      top: 3px;
+      left: 221px;
+      height: 22px;
+      line-height: 1px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .upload-button-top-level {
+      left: 165px;
+    }
+
+    .s3-input-container-input .upload-button {
+      font-size: 15px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+      .s3-input-container-input .upload-button .md-button {
+        width: 98%;
+        padding: 0;
+        margin: 0;
+        height: 22px;
+        box-shadow: none;
+        color: #333;
+        margin: 1px;
+        padding: 1px 3px;
+        border: 1px solid #b5b5b5;
+        border-bottom-color: #7f7f7f;
+        background: #e8e8e9 url('/img/alohaSkin/btn_sprite.png') repeat-x right top;
+        font-weight: bold;
+        font-size: 12px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        min-height: initial !important;
+        line-height: 18px;
+        text-transform: capitalize;
+        margin-left: 6px;
+      }
+      
+    .s3-input-container-input .upload-button .md-button:hover {
+      color: #333;
+      background-position: right -30px; 
+    }
+      
+    .loading-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.3);
+      color: #fff; 
+      z-index: 9000;
+      display: none;
+    }
+      
+    .loading-container md-progress-circular {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+    }
+
+    .s3-input-container-input .upload-button {
+      position: absolute;
+      top: 3px;
+      left: 0;
+    }
+
+    .s3-input-container-labels {
+      margin-top: 30px;
+      margin-left: 0;
+    }
+
+    .s3-input-container-labels label, .attachment-item p {
+      color: #000;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+    }
+
+    .s3-input-container-labels label p {
+      margin: 0 !important;
+    }
+
+    .s3-input-container-labels label:first-child {
+      color: #4a4a56;
+      font-weight: bold;  
+    }
+
+    .fileListContainer {
+      margin-top: 0px; 
+    }
+
+    .absolute-background {
+      position: absolute;
+      background: #f8f8f8;
+      width: 98%;
+      height: 30px;
+      border-radius: 0 0 5px 5px;
+      border: 1px #e0e3e5 solid;
+    }
+  </style>
+  <apex:form html-ng-app="eecApp">
+    <div class="loading-container" layout="row" layout-align="center center" layout-fill="true">
+      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+    <apex:outputpanel id="fileAttachmentContainer" styleclass="fileAttachmentContainer" style="width: 100%;" html-ng-controller="ReadOnlyController as ctrl">
+          <h4 style="color: #4a4a56; font-family: Arial, Helvetica, sans-serif;font-size: 13px; ">Current Attachment(s)</h4>            
+          <apex:outputpanel rendered="{!attachments!= NULL && attachments.size > 0}">
+            <apex:repeat value="{!attachments}" var="attachment">
+              <div class="attachment-item">
+                <p> 
+                  <apex:commandlink value="{!attachment.Filename__c}" action="{!genetateS3Link}" target="_blank">
+                    <apex:param name="generateFileId" value="{!attachment.Id}" assignto="{!generateFileId}" />
+                  </apex:commandlink>
+                </p>
+                <p><c:EEC_DateTimeFormat datetime="{!attachment.CreatedDate}" /></p>               
+              </div>
+            </apex:repeat>
+      	  </apex:outputpanel>
+          <!-- No Attachments -->
+          <apex:outputpanel rendered="{!attachments== NULL || attachments.size == 0}">
+            <p style="font-size: 12px; margin-left: 10px;">No attachments currently available.</p>
+          </apex:outputpanel>      
+    </apex:outputpanel>
+  </apex:form>
+    
+  <c:EEC_Site_Scripts />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/2.0.7/parsley.js" type="text/javascript"></script>
+  <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"/>
+</apex:page>

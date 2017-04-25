@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Lookup Query Definitions</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Lookup Query Definitions</value>
+    </caseValues>
+    <fields>
+        <help><!-- This can only be OR or AND. --></help>
+        <label><!-- Like Conditional Operator --></label>
+        <name>Like_Conditional_Operator__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a comma separated list of strings. Please ensure no spaces are present. --></help>
+        <label><!-- Like Conditions --></label>
+        <name>Like_Conditions__c</name>
+    </fields>
+    <fields>
+        <label><!-- Order Conditions --></label>
+        <name>Order_Conditions__c</name>
+    </fields>
+    <fields>
+        <help><!-- If you wish to use custom labels enter them here. If this field is blank then field names will be used. --></help>
+        <label><!-- Query Field Labels --></label>
+        <name>Query_Field_Labels__c</name>
+    </fields>
+    <fields>
+        <help><!-- This can be any field on the object in question. Please ensure there are no spaces in this definition. --></help>
+        <label><!-- Query Fields --></label>
+        <name>Query_Fields__c</name>
+    </fields>
+    <fields>
+        <label><!-- Where Conditions --></label>
+        <name>Where_Conditions__c</name>
+    </fields>
+    <fields>
+        <label><!-- isSOQL --></label>
+        <name>isSOQL__c</name>
+    </fields>
+    <fields>
+        <label><!-- isSOSL --></label>
+        <name>isSOSL__c</name>
+    </fields>
+    <fields>
+        <label><!-- sObject Name --></label>
+        <name>sObject_Name__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

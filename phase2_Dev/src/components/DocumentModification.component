@@ -1,0 +1,240 @@
+<apex:component controller="DocumentLibraryCtrl" allowDML="true">
+  <apex:stylesheet value="{!URLFOR($Resource.AngularAssets, 'AngularAssets/css/lib/angular-material.min.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.AngularAssets, 'AngularAssets/css/app.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.SLDS_202, '/assets/styles/salesforce-lightning-design-system.min.css')}"/>
+  <apex:includescript value="{!URLFOR($Resource.AngularAssets, 'AngularAssets/js/lib/moment.min.js')}" />
+  
+  <style>
+    .s3-input-container-input .upload-button .md-eec {
+      /* .slds-button */
+      position: relative;
+      display: inline-block;
+      padding: 0;
+      background: 0 0;
+      background-clip: border-box;      
+      border-radius: .25rem;
+      font-size: .75rem;
+      line-height: 1.875rem;
+      text-decoration: none;
+      -webkit-appearance: none;
+      white-space: nowrap;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      transition: color 50ms linear,background-color 50ms linear;
+      
+      /* .slds-button--brand */
+      padding-left: 1rem;
+      padding-right: 1rem;
+      text-align: center;
+      vertical-align: middle;
+      background-color: #853F3F;
+      border: 1px solid #853F3F;
+      color: #fff;
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif;
+      box-shadow: none;
+      margin: auto;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: normal;
+      min-height: initial;
+    }
+      
+    .slds-eec {
+      background-color: #853F3F;
+      border: 1px solid #853F3F;  
+    }
+      
+    .slds-eec:hover, .slds-eec:active, .slds-eec:focus {
+      background-color: #703E3E;  
+    }
+      
+    
+        
+    @media (min-width: 0px) and (max-width: 960px) {
+      .s3-input-container-input .upload-button {
+        width: 100%;
+        margin-top: 10px;
+        padding: 0px;
+      }
+        
+      .s3-input-container-input .upload-button .md-button {
+        width: 100%;
+      }
+    }
+  </style>
+   
+  <div id="content" ng-app="eecApp">
+    <div class="dl-container slds" ng-controller="DocModCtrl as ctrl">  
+     
+      <apex:form id="dl-form">
+        <apex:actionFunction action="{!save}" name="Save" reRender="none">
+          <apex:param name="json" value="" assignTo="{!s3FileJson}" /> 
+          <apex:param name="docJson" value="" assignTo="{!documentJson}" /> 
+        </apex:actionFunction>   
+         
+        <div class="slds-form--stacked">
+          <div class="slds-form-element is-required">
+     	    <label class="slds-form-element__label" for="dl-name-input">
+                <abbr class="slds-required" title="required">*</abbr>Document Name</label>
+        	<div class="slds-form-element__control">
+        	  <apex:inputField id="dl-name-input" html-ng-required="true" html-ng-model="doc.Name" styleClass="slds-input" html-placeholder="Name of Document..." value="{!activeDocument.Name}"/>
+            </div>
+          </div>
+          
+          <div class="slds-form-element">
+       	    <label class="slds-form-element__label" for="dl-notes-input">Document Notes</label>
+      	    <div class="slds-form-element__control">
+        	    <apex:inputField id="dl-notes-input" html-ng-model="doc.Notes__c" styleClass="slds-textarea" html-placeholder="Any notes pertaining to the document..." value="{!activeDocument.Notes__c}"/>
+            </div>
+          </div>
+            
+            
+          <apex:outputPanel rendered="{!activeDocument.Id == null}">
+            <!-- File Input here -->  
+            <s3-file-upload button-text="Add Attachments"
+              endpoint_url="{!$Setup.AWS_Config__c.S3_Endpoint_Url__c}"
+              bucket-name="{!$Setup.AWS_Config__c.S3_Bucket_Name__c}"
+              acl="{!$Setup.AWS_Config__c.S3_Access_Control_Level__c}"
+              prefix="{!$User.Id}/"
+              key="{!accessKey}"
+              remote-func-params="{!$RemoteAction.DocumentLibraryCtrl.generateMultiplePolicySignature}"
+              multiple-enabled="false"
+              timestamp-enabled="true"
+              keep-files-enabled="true">
+            </s3-file-upload> 
+            <button type="button" class="slds-button slds-button--neutral" ng-click="ctrl.clear()">Clear</button>
+          </apex:outputPanel>
+          
+          <apex:outputPanel rendered="{!activeDocument.Id != null}">  
+            <div class="slds-form-element">
+     	      <label class="slds-form-element__label" for="dl-ofn">Original File Name</label>
+    	      <div class="slds-form-element__control">
+                <div class="slds-truncate" title="Original File Name">{!activeDocument.Name}</div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </div>
+          
+        <hr style="margin: 20px 0;"/>  
+           
+        <div class="dl-form-button-container" style="margin-top: 10px;">
+          <apex:commandButton styleClass="slds-button slds-button--brand slds-eec" value="Upload Attachment and Use this Document" onclick="uploadAttachments(); return false;" rendered="{!activeDocument.Id == null}"/>
+          <apex:commandButton styleClass="slds-button slds-button--brand slds-eec" value="Save" action="{!Save}" rendered="{!activeDocument.Id != null}"/>
+          <a class="slds-button slds-button--brand slds-eec" href="/PortalDocumentLibrary">Cancel</a>
+        </div>
+      </apex:form>
+    </div>  
+  </div>
+    
+  <script>  
+    app.controller('DocModCtrl', ['$scope', '$rootScope', '$location', 'Util', function($scope, $rootScope, $location, Util) {
+      $scope.doc = {"Name": "{!IF(activeDocument != null, activeDocument.Name, '')}", "Notes__c": "{!IF(activeDocument != null, activeDocument.Notes__c, '')}"};
+      $scope.numUploadComponents = 0;
+      $scope.timesUploadComplete = 0;
+      $scope.bucketName = '{!$Setup.AWS_Config__c.S3_Bucket_Name__c}';
+        
+      var ctrl = this;
+      // Call this function to broadcast to the directive to process the upload.  
+      this.upload = function() {
+        // Set the callback function ID for later.
+        $scope.numUploadComponents = jQuery('s3-file-upload').length;
+        // Call all upload directives to process files.  
+        $rootScope.$broadcast('upload', {});
+      };
+        
+      this.clear = function(clearIndex) {
+        if (!angular.isUndefined(clearIndex)) {
+          $rootScope.$broadcast('clearFiles_' + clearIndex, {});   
+        } else {
+          $rootScope.$broadcast('clearFiles',{});   
+        }
+      }
+          
+      // Capture Emit event from Directive for result data.  
+      $scope.$on('uploadComplete', function(event, data) {
+        $scope.timesUploadComplete++;  
+          
+        if (angular.isArray(data)) {
+          var json = [];
+          var file = {};
+            
+          for (var i = 0; i < data.length; i++) {
+            if (!data[i].status) {
+              console.log("----> Error: File not successfully uploaded.");
+              toggleProcessingOverlay();
+              break;
+            }
+            var attachment = data[i].data;
+            // Split the filename to get the prefix.  
+            var splitFilename = attachment.key.split('/');
+            // Create the JSON needed for the S3_File__c objects.  
+            file = {
+              "Filename__c": splitFilename[1],
+              "Prefix__c": splitFilename[0],
+              "Content_Type__c": attachment['Content-Type'],
+              "Acl__c": attachment.acl,
+              "Bucket__c": $scope.bucketName,
+              "Description__c": attachment.description
+            };
+          }
+          console.log("Files Uploaded Successfully!");
+          // Call the action function to create the S3 Object entries in Sforce.
+          Save(JSON.stringify(file), JSON.stringify($scope.doc));
+        } else if ($scope.timesUploadComplete == $scope.numUploadComponents) {
+          toggleProcessingOverlay();  
+          if (data.error.indexOf('No files') > -1) {
+            console.log("No files to upload. Continue to next page.");
+            Save(null, JSON.stringify($scope.doc));
+          } else if (data.error.indexOf('Invalid') > -1) {
+            $scope.timesUploadComplete = 0; 
+            $scope.numUploadComponents = 0;
+            toggleProcessingOverlay();
+          }
+        }
+      });
+    }]);
+  </script>
+    
+  <script>
+    var inProgress = false;
+    
+    var toggleProcessingOverlay = function toggleProcessingOverlay() {
+      jQuery('.slds-eec').prop('disabled', true);
+      jQuery('.slds-eec').css('background-color', 'rgb(128,128,128)');
+      jQuery('.slds-eec').unbind('mouseenter mouseleave');
+      jQuery('.slds-eec').val('Uploading Image...');  
+    }
+    
+
+    var uploadAttachments = function() {
+        
+      	console.log('Check Doc Name');
+        console.log($("input[id*='dl-name-input']").val());
+        if($("input[id*='dl-name-input']").val())
+        else {
+            alert('Document name can not be blank');
+            return false;
+        }
+        
+        toggleProcessingOverlay();
+        // Call the Angular process method from JS.
+        return angular.element(jQuery('.dl-container'))
+        .scope()
+        .ctrl.upload();
+    }
+
+    var saveAttachmentsFromJsonComplete = function() {
+      refreshAttachmentsJson();
+      var timesComplete = angular.element(jQuery('.dl-container')).scope().timesUploadComplete;
+      var numUploadComponents = angular.element(jQuery('.dl-container')).scope().numUploadComponents;
+
+      if (!inProgress && timesComplete == numUploadComponents) {
+        inProgress = true;
+        Save(null, angular.element(jQuery('.dl-container')).scope().doc);
+      }
+                
+    }
+  </script>  
+</apex:component>

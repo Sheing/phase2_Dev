@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>FCC Assistant - Transaction electronic submission confirmation - Other transaction</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>EEC_Letterhead</letterhead>
+    <name>92c - FCC Assistant - Transaction electronic submission confirmation - Other</name>
+    <style>freeForm</style>
+    <subject>Department of Early Education and Care - Licensing Transaction Successfully Submitted</subject>
+    <type>html</type>
+</EmailTemplate>

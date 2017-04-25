@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>130 - Investigation conclusion submitted for a Foster Home 51A or Incident from</name>
+    <style>none</style>
+    <subject>{!Case.Provider_Name_For_Email_Merge__c} - Investigation conclusion submitted for a &apos;Foster Home 51A or Incident&apos; from portal</subject>
+    <type>text</type>
+</EmailTemplate>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Historical Investigation Staging</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Historical Investigation Staging</value>
+    </caseValues>
+    <fields>
+        <label><!-- AG1 --></label>
+        <name>AG1__c</name>
+    </fields>
+    <fields>
+        <label><!-- AG2 --></label>
+        <name>AG2__c</name>
+    </fields>
+    <fields>
+        <label><!-- AG3 --></label>
+        <name>AG3__c</name>
+    </fields>
+    <fields>
+        <label><!-- Agencies Involved --></label>
+        <name>Agencies_Involved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assign Date --></label>
+        <name>Assign_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Corrective Action Due Days --></label>
+        <name>Corrective_Action_Due_Days__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cover Letter Custom CC List --></label>
+        <name>Cover_Letter_Custom_CC_List__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cover Letter Custom From Name --></label>
+        <name>Cover_Letter_Custom_From_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cover Letter Custom From Title --></label>
+        <name>Cover_Letter_Custom_From_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cover Letter Custom Text --></label>
+        <name>Cover_Letter_Custom_Text__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cover Letter Custom To Name --></label>
+        <name>Cover_Letter_Custom_To_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Due Date --></label>
+        <name>Due_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Duplicate Rule --></label>
+        <name>Duplicate_Rule__c</name>
+    </fields>
+    <fields>
+        <label><!-- Error Text --></label>
+        <name>Error_Text__c</name>
+    </fields>
+    <fields>
+        <label><!-- Filed with 51A --></label>
+        <name>Filed_with_51A__c</name>
+    </fields>
+    <fields>
+        <label><!-- Intake Id --></label>
+        <name>Intake_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Investigation Number --></label>
+        <name>Investigation_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- Investigation Processed --></label>
+        <name>Investigation_Processed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Leader Name --></label>
+        <name>Leader_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Leader --></label>
+        <name>Leader__c</name>
+    </fields>
+    <fields>
+        <label><!-- Program Id --></label>
+        <name>Program_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related to 51A --></label>
+        <name>Related_to_51A__c</name>
+    </fields>
+    <layouts>
+        <layout>Historical Investigation Staging Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

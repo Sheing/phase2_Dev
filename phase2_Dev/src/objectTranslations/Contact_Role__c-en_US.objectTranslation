@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Contact Role</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Contact Roles</value>
+    </caseValues>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Contact Roles --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Current --></label>
+        <name>Current_Formula__c</name>
+    </fields>
+    <fields>
+        <label><!-- End Date --></label>
+        <name>End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- End Role Licensing Transaction --></label>
+        <name>End_Role_Licensing_Transaction__c</name>
+        <relationshipLabel><!-- Ownership/Administrator End --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Portal Access --></label>
+        <name>Portal_Access__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider / Umbrella --></label>
+        <name>Provider__c</name>
+        <relationshipLabel><!-- Contact Roles --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Role --></label>
+        <name>Role__c</name>
+        <picklistValues>
+            <masterLabel>Administrative Designee</masterLabel>
+            <translation><!-- Administrative Designee --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Board Chair</masterLabel>
+            <translation><!-- Board Chair --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Director</masterLabel>
+            <translation><!-- Executive Director --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Funding Source</masterLabel>
+            <translation><!-- Funding Source --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Infant / Toddler Responsible</masterLabel>
+            <translation><!-- Infant / Toddler Responsible --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Main Contact</masterLabel>
+            <translation><!-- Main Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other Contact</masterLabel>
+            <translation><!-- Other Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Owner</masterLabel>
+            <translation><!-- Owner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Partner</masterLabel>
+            <translation><!-- Partner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Program Director / Administrative Head</masterLabel>
+            <translation><!-- Program Director / Administrative Head --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Schedule Administrative Hours --></label>
+        <name>Schedule_Administrative_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Schedule Teaching Hours --></label>
+        <name>Schedule_Teaching_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Date --></label>
+        <name>Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Role Licensing Transaction --></label>
+        <name>Start_Role_Licensing_Transaction__c</name>
+        <relationshipLabel><!-- Ownership/Administrator Start --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Contact Role Layout</layout>
+        <sections>
+            <label><!-- Contact Information --></label>
+            <section>Contact Information</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Licensing Information --></label>
+            <section>Licensing Information</section>
+        </sections>
+        <sections>
+            <label><!-- Scheduling Information --></label>
+            <section>Scheduling Information</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Associated Provider cannot be Family Child Care, FCC Assistant, or Unlicensed Provider --></errorMessage>
+        <name>Asoc_Prov_cant_be_FCC_FCC_Ast_or_Unlic</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- End Date must be greater than the Start Date --></errorMessage>
+        <name>End_Date_Greater_Than_Start_Date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- End Date must be greater than or equal to Today --></errorMessage>
+        <name>End_Date_must_be_greater_than_Today</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Executive Director role can only be used if Provider is an Umbrella --></errorMessage>
+        <name>Exec_Director_for_Umbrella_only</name>
+    </validationRules>
+</CustomObjectTranslation>

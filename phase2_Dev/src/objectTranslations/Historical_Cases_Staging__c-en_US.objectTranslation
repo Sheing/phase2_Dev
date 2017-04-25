@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Historical Cases Staging</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Historical Cases Staging</value>
+    </caseValues>
+    <fields>
+        <label><!-- Additional Description --></label>
+        <name>Additional_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Allegation Code --></label>
+        <name>Allegation_Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- Allegation Description --></label>
+        <name>Allegation_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Case Owner Name --></label>
+        <name>Case_Owner_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Case Owner --></label>
+        <name>Case_Owner__c</name>
+    </fields>
+    <fields>
+        <label><!-- Case Processed --></label>
+        <name>Case_Processed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Complaint Disposition --></label>
+        <name>Complaint_Disposition__c</name>
+    </fields>
+    <fields>
+        <label><!-- DCF File Submission Date --></label>
+        <name>DCF_File_Submission_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- DCF File Submitter --></label>
+        <name>DCF_File_Submitter__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Closed --></label>
+        <name>Date_Closed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Event Occurred --></label>
+        <name>Date_Event_Occurred__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Opened --></label>
+        <name>Date_Opened__c</name>
+    </fields>
+    <fields>
+        <label><!-- Duplicate Rule 1 --></label>
+        <name>Duplicate_Rule_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- ErrorText --></label>
+        <name>ErrorText__c</name>
+    </fields>
+    <fields>
+        <label><!-- Filed with DCF --></label>
+        <name>Filed_with_DCF__c</name>
+    </fields>
+    <fields>
+        <label><!-- Intake ID --></label>
+        <name>Intake_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Intake Method --></label>
+        <name>Intake_Method__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nature of complaint - Description --></label>
+        <name>Nature_of_complaint_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nature of complaint --></label>
+        <name>Nature_of_complaint__c</name>
+    </fields>
+    <fields>
+        <label><!-- Program ID --></label>
+        <name>Program_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Anonymous --></label>
+        <name>Reporter_Anonymous__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter City --></label>
+        <name>Reporter_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Data Entry --></label>
+        <name>Reporter_Data_Entry__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter First Name --></label>
+        <name>Reporter_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Home Phone --></label>
+        <name>Reporter_Home_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter ID --></label>
+        <name>Reporter_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Last Name --></label>
+        <name>Reporter_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Relationship To Provider --></label>
+        <name>Reporter_Relationship_To_Provider__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter State --></label>
+        <name>Reporter_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Street --></label>
+        <name>Reporter_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter Work Phone --></label>
+        <name>Reporter_Work_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reporter ZipCode --></label>
+        <name>Reporter_ZipCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Responsible --></label>
+        <name>Responsible__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Summary/Type of case --></label>
+        <name>Summary_Type_of_case__c</name>
+    </fields>
+    <fields>
+        <label><!-- Summary of Allegation --></label>
+        <name>Summary_of_Allegation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed ID --></label>
+        <name>Unlicensed_ID__c</name>
+    </fields>
+    <layouts>
+        <layout>Historical Cases Staging Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

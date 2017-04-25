@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Provider Meeting Participant</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Provider Meeting Participants</value>
+    </caseValues>
+    <fields>
+        <label><!-- Contact Name --></label>
+        <name>Contact_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- GSA Renewal Participant --></label>
+        <name>GSA_Renewal_Participant__c</name>
+        <relationshipLabel><!-- Provider Meeting Participants --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- GSA Renewal Provider --></label>
+        <name>GSA_Renewal_Provider__c</name>
+        <relationshipLabel><!-- Provider Meeting Participants --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Meeting Region --></label>
+        <name>Meeting_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Meeting Type --></label>
+        <name>Meeting_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Participation Status --></label>
+        <name>Participation_Status__c</name>
+        <picklistValues>
+            <masterLabel>Attended</masterLabel>
+            <translation><!-- Attended --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cancelled</masterLabel>
+            <translation><!-- Cancelled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Missed</masterLabel>
+            <translation><!-- Missed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Registered</masterLabel>
+            <translation><!-- Registered --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Potential Provider Name --></label>
+        <name>Potential_Provider_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Potential Provider --></label>
+        <name>Potential_Provider__c</name>
+        <relationshipLabel><!-- Provider Meeting Participants --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Provider Meeting --></label>
+        <name>Provider_Meeting__c</name>
+        <relationshipLabel><!-- Provider Meeting Participants --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Provider Name --></label>
+        <name>Provider_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Start Time --></label>
+        <name>Scheduled_Start_Time__c</name>
+    </fields>
+    <layouts>
+        <layout>PPM Meeting Participant</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- General Information --></label>
+            <section>General Information</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Provider Meeting Participant Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- General Information --></label>
+            <section>General Information</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Mandatory if Provider Meeting.Type contains &quot;Renewal&quot; --></errorMessage>
+        <name>GSA_Renewal_Provider_Mandatory</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Potential provider type does not match the provider meeting type. --></errorMessage>
+        <name>Meeting_type_matches_provider_type</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Mandatory if Provider Meeting.Type contains &quot;PPM&quot; --></errorMessage>
+        <name>Potential_Provider_is_Mandatory</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Mark_As_Attended --></label>
+        <name>Mark_As_Attended</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Standard Transaction Process Rule</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Standard Transaction Process Rule</value>
+    </caseValues>
+    <fields>
+        <help><!-- API name of the field that must be tested. Needs to be a True / False field. If the value of this field is &quot;False&quot; then the message will be appended to the field associated to the process step associated with this rule. --></help>
+        <label><!-- API Name of field to be Tested --></label>
+        <name>API_Name_of_field_to_be_Tested__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <help><!-- Contains the message that will be displayed on the field for the licensor to know what to do --></help>
+        <label><!-- Message If Field False --></label>
+        <name>Message_If_Field_False__c</name>
+    </fields>
+    <layouts>
+        <layout>Standard Transaction Process Rule Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Transaction Process Rule --></label>
+            <section>Transaction Process Rule</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

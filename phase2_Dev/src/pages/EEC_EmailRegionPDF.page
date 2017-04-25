@@ -1,0 +1,19 @@
+<apex:page standardcontroller="Licensing_Transaction__c" renderas="pdf">
+<html>
+<h1><center><b><u>FCC Application Payment Instructions</u></b></center></h1>
+<br/>
+<h2><center><b><u>FCC INSTRUCCIONES PARA EL PAGO DE SU SOLICITUD</u></b></center></h2>
+<br/>
+<p><center><b>Please return your completed application and check or money order<br></br> made out to: The <u>“Commonwealth Of Mass.”</u></b></center></p>
+<br/>
+<p><center><b>Favor de enviar su solicitud completa con un cheque o giro postal a <br></br> nombre del: <u>“Commonwealth of Mass”.</u></b></center></p>
+<br/>
+<center><apex:image id="pdf" value="{!$Resource.EEC_Pdf}"/></center>
+<p style="margin-left: 6.5em;"> <b>Mail to</b><br/>
+<b>Favor de enviar su solicitud a:</b><br/><center><b>Department of Early Education and Care</b><br/><b>{!Licensing_Transaction__c.Provider__r.Region_Address__c}</b></center></p>
+<pstyle="margin-left: 6.5em;"><b>If you have questions, call: {!Licensing_Transaction__c.Provider__r.Region_Phone__c}</b><br/><b>Si tiene alguna pregunta, por favor llame a la oficina de su region.</b></p>
+<p><center>Please retain this information for future reference.<br/>
+  Por favor guarde esta información como referencia.
+</center></p>
+</html>
+</apex:page>

@@ -1,0 +1,7 @@
+Hello, 
+
+Investigation {!Investigation__c.Name} associated to Provider {!Investigation__c.Provider_No__c} and led by {!Investigation__c.Assigned_To__c} has been approved by the Associate Commissioner of Investigations. Please review and close the investigation.
+
+Please log in to Salesforce and review the investigation: {!Investigation__c.Link}. 
+
+LEAD System

@@ -1,0 +1,348 @@
+<apex:page standardcontroller="Licensing_Transaction__c" standardstylesheets="false" 
+           extensions="EEC_LicensingCertificatePDFExtension" applybodytag="false" renderas="pdf">
+  <head>
+    <style type="text/css">
+      .removeLastPage:last-child {
+        position: absolute;
+        bottom: 0;
+      }
+
+      body {
+        border: 2px solid black;
+        border-style: double;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-weight: normal;
+      }
+
+      .container {
+        margin-left: 40px;
+        margin-right: 40px;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+      }
+
+      .removeLastPage {
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-size: 10pt;
+      }
+
+      @page {
+        size: landscape;
+      }
+
+      .logo {
+        float: left;
+      }
+
+      .header {
+        margin-top: 15px;
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .grey-banner {
+        background-color: #D2D2D2;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-left: 70px;
+        margin-right: 60px;
+      }
+
+      .governor-name {
+        float: right;
+        font-size: 12px;
+      }
+
+      .left-number {
+        float: left;
+        font-size: 12px;
+      }
+
+      .right-number {
+        float: right;
+        font-size: 12px;
+      }
+
+      .desc {
+        text-align: left;
+        font-size: 12px;
+      }
+
+      .name-section {
+        font-size: 12px;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-weight: bold;
+      }
+
+      .assistant-section {
+        font-size: 12px;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-weight: normal;
+        padding-bottom: 10px;
+      }
+
+      .sign-section {
+        font-size: 10px;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-weight: bold;
+      }
+
+      td {
+        min-width: 100px;
+        width: 100%;
+      }
+
+      .data-td {
+        padding-left: 40px;
+        padding-bottom: 3px;
+      }
+
+      .label-td {
+        width: 25%;
+        padding-bottom: 10px;
+      }
+
+      .tiny-label {
+        width: 40%;
+        font-size: 10px;
+      }
+
+      .signature {
+        text-align: right;
+        font-size: 13px;
+        width: 600px;
+        font-weight: bold;
+      }
+
+      .label-end {
+        width: 40%;
+        font-size: 16px;
+      }
+
+      .data-end {
+        text-align: right;
+        font-size: 16px;
+        width: 300px;
+      }
+
+      .center-div {
+        text-align: center;
+        font-size: 12px;
+        font-weight: normal;
+      }
+
+      .sidebarList li {
+        // css for li font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-weight: normal;
+      }
+
+      .text-content {
+        margin-bottom: 20px;
+      }
+
+      ul {
+        margin-bottom: 2px;
+      }
+
+      li {
+        margin-left: -31px;
+      }
+
+        li span {
+          padding-left: 20px;
+        }
+
+      .spacer {
+        margin-bottom: 10px;
+      }
+
+      .sign-section-name {
+        margin-bottom: 5px;
+      }
+
+      .inner-text {
+      }
+
+      .without-text {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body id="first-page" class="first-page" style="margin-bottom: 2px; page-break-after: always">
+    <div class="container">
+      <apex:variable var="provider" value="{!Licensing_Transaction__c.Provider__r}" />
+      <apex:variable var="lconditions" value="{!Licensing_Transaction__c.Conditions_and_Limitations__r}" />
+      <div class="logo">
+        <img src="{!URLFOR($Resource.EEC_Bootstrap,
+                          'EEC_Bootstrap/img/eecLogo.png')}"
+             alt="eec" />
+      </div>
+      <div class="header">
+        <div class="governor-name">
+          <strong><em>Charlie Baker, Governor</em></strong>
+        </div>
+        <div>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          THE COMMONWEALTH OF MASSACHUSETTS<br />
+          DEPARTMENT OF EARLY EDUCATION AND CARE
+        </div>
+        <br />
+        <div class="grey-banner pull-left">
+          <strong>{!if(provider.License_Type__c == 'Regular Assistant','Regular','Certified')} FCC Assistant</strong>
+        </div>
+      </div><br />
+      <div class="name-section">
+        <table style="">
+          <tr style="padding-bottom: 0;">
+            <td class="label-td">For:</td>
+            <td class="data-td" style="padding-bottom: 0;">{!provider.Name}</td>
+          </tr>
+          <tr>
+            <td class="label-td">&nbsp;</td>
+            <td class="data-td"><div>{!IF(provider.Provider_Address_1__c != '',provider.Provider_Address_1__c,'')}</div></td>
+          </tr>
+          <apex:outputpanel id="addr2Display" rendered="{!provider.Provider_Address_2__c != ''}">
+            <tr>
+              <td class="label-td">&nbsp;</td>
+              <td class="data-td"><div>{!provider.Provider_Address_2__c}</div></td>
+            </tr>
+          </apex:outputpanel>
+          <tr>
+            <td class="label-td">&nbsp;</td>
+            <td class="data-td"><div>{!IF(provider.Provider_Address_1__c != '',(provider.Provider_City__r.name+', '+provider.State__c+', '+provider.Provider_Zip_Code__c),'')}</div></td>
+          </tr>
+        </table>
+      </div><br />
+      <div class="name-section">
+        <div style="float:left; width:144px;padding-left:2px;height:60px;">
+          <label>Condition:</label>
+        </div>
+        <apex:outputpanel id="conditionsDisplay" rendered="{!if(lstConditions.size != 0,'true','false')}">
+          <div style="margin-top:-5px;height:60px;">
+            <apex:repeat value="{!lstConditions}" var="con">
+              <label>
+                {!con.Condition_On_License__c}
+              </label>
+              <br />
+            </apex:repeat>
+          </div>
+        </apex:outputpanel>
+        <apex:outputpanel id="NoconditionsDisplay" rendered="{!if(lstConditions.size == 0,'true','false')}">
+          <div style="margin-top:-5px;">
+            None
+          </div>
+        </apex:outputpanel>
+      </div>
+      <div class="name-section">
+        <table>
+          <tr>
+            <td class="label-td">FCC Assistant ID:</td>
+            <td class="data-td pull-left">
+              <apex:outputtext value="{!provider.Provider_Number__c}">
+              </apex:outputtext>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-td">Issue date:</td>
+            <td class="data-td pull-left">
+              <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                <apex:param value="{!provider.Last_Issue_Date__c}" />
+              </apex:outputtext>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-td">Expiration date:</td>
+            <td class="data-td">
+              <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                <apex:param value="{!provider.Renewal_date__c}" />
+              </apex:outputtext>
+            </td>
+          </tr>
+          <apex:outputpanel id="capacityLimit" rendered="{!if(provider.Certified_As__c != 'Regular Assistant','true','false')}">
+            <tr>
+              <td class="label-td">Capacity Limit:</td>
+              <td class="data-td">
+                <apex:outputtext value="{!if(Contains(provider.Certified_As__c,'6'),'up to 6 children',if(Contains(provider.Certified_As__c,'8'),'up to 8 children',if(Contains(provider.Certified_As__c,'10'),'up to 10 children','None')))}">
+
+                </apex:outputtext><br />
+              </td>
+            </tr>
+          </apex:outputpanel>
+        </table><br />
+      </div>
+      <table class="text-content {!if(provider.License_Type__c != 'Regular Assistant','without-text','')}">
+        <tr>
+          <td>
+            <apex:outputpanel id="regAssistant" rendered="{!if(provider.License_Type__c == 'Regular Assistant','true','false')}">
+              <div class="assistant-section">
+                As a Regular Assistant, you may:<br />
+                <ul>
+                  <li>
+                    <span>
+                      Work under the general supervision of a family child care provider, family child care plus provider or a large family child care
+
+                      provider for any length of time.
+                    </span>
+                  </li>
+
+                  <li>
+                    <span>
+                      Be alone on the child care premises with up to six children for up to twenty-five hours in a twelve month period or up to eight
+                      hours in a seven day period. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In order to be alone with the children, you must be certified in CPR and first aid.
+                    </span>
+                  </li>
+                </ul>
+                <span class="inner-text">
+                  As an assistant, you must maintain a record of all licensed child care homes where you have cared for children, including the dates
+
+                  and hours of services. You must keep this information for a period of five years.
+                </span>
+              </div>
+
+            </apex:outputpanel>
+            <apex:outputpanel id="otherAssistant" rendered="{!provider.License_Type__c != 'Regular Assistant'}">
+              <br />
+            </apex:outputpanel>
+          </td>
+        </tr>
+      </table>
+      <div class="sign-section {!if(provider.License_Type__c != 'Regular Assistant','sign-section-name','')}">
+        Issued by EEC Regional Office:&nbsp;<apex:outputtext value="{!provider.Region__r.Name}" />&nbsp;<apex:outputtext value="{!provider.Region__r.State__c}" />,&nbsp;<apex:outputtext value="{!provider.Region__r.Street__c}" />,&nbsp;<apex:outputtext value="{!provider.Region__r.City__c}" />,&nbsp;<apex:outputtext value="{!provider.Region__r.State__c}" />&nbsp;<apex:outputtext value="{!provider.Region__r.Zip__c}" />.&nbsp;Tel: <apex:outputtext value="{!provider.Region__r.Phone__c}" />.&nbsp; Email: <apex:outputtext value="{!provider.Region__r.Email__c}" />
+      </div>
+      <apex:outputpanel rendered="{!provider.License_Type__c != 'Regular Assistant'}">
+        <br /><br /><br />
+      </apex:outputpanel>
+      <apex:outputpanel rendered="{!provider.Provider_Address_2__c == ''}">
+        <br /><div style="margin-bottom:10px;">
+        </div>
+      </apex:outputpanel>
+      <table class="sign-section {!if(provider.License_Type__c != 'Regular Assistant','spacer','')}">
+        <tr>
+          <td class="tiny-label">License printed on &nbsp;&nbsp;<c:EEC_DateFormat date="{! TODAY() }" /></td>
+          <td class="signature">
+            <img src="{!URLFOR($Resource.EEC_Bootstrap,
+                          'EEC_Bootstrap/img/signature.png')}"
+                 alt="eec" /><br /><br />Thomas L. Weber, Commissioner<br /><br />
+          </td>
+        </tr>
+        <tr>
+          <td class="label-end">Please Post Conspicuously</td>
+          <td class="data-end">This License is Not Transferable<br /></td>
+        </tr>
+      </table><br /><br />
+    </div>
+  </body>
+  <body class="second-page">
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    <div class="center-div">
+      {!provider.Name}<br /><br />
+      <apex:outputtext rendered="{!IF(provider.ShippingStreet == null, true, false)}">{!provider.Provider_Address_1__c}<br /></apex:outputtext><br />
+      <apex:outputtext rendered="{!IF(provider.ShippingStreet != null, true, false)}">{!provider.ShippingStreet}<br /></apex:outputtext>
+      <apex:outputtext rendered="{!IF(provider.ShippingStreet == null && provider.Provider_Address_2__c != null, true, false)}">{!provider.Provider_Address_2__c}<br /></apex:outputtext><br />
+      <apex:outputtext rendered="{!IF(provider.ShippingStreet != null, true, false)}">{!provider.ShippingCity },&nbsp;{!provider.ShippingState}&nbsp;{!provider.ShippingPostalCode }<br /></apex:outputtext>
+      <apex:outputtext rendered="{!IF(provider.ShippingStreet == null, true, false)}">{!provider.Provider_City__r.Name },&nbsp;{!provider.State__c}&nbsp;{!provider.Provider_Zip_Code__c }</apex:outputtext><br />
+    </div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </body>
+</apex:page>

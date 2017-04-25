@@ -1,0 +1,7 @@
+Hello, 
+
+Investigation {!Investigation__c.Name} associated to Provider {!Investigation__c.Provider_No__c} has been approved and closed. The investigation report has been issued and sent to the Provider.
+
+The investigation can be directly accessed using the following link: {!Investigation__c.Link}. 
+
+LEAD System

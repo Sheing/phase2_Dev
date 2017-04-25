@@ -1,0 +1,326 @@
+<apex:page controller="EEC_ViewVarianceTransactionController" doctype="html-5.0" showheader="false" sidebar="false" standardstylesheets="false">
+  <head>
+    <title>EEC : View Transaction</title>
+    <c:EEC_Header id="pageHeader" />
+    <style>
+      .md-button.md-raised.md-eec, .md-button.md-raised.md-eec {
+        color: rgb(250,250,250);
+        background-color: #853F3F;
+      }
+
+        .md-button.md-raised.md-eec:hover, .md-button.md-raised.md-eec:hover {
+          color: rgb(250,250,250);
+          background-color: #703E3E;
+        }
+
+      .md-button.md-raised, .md-button.md-raised {
+        background-color: #f7f7f7;
+      }
+
+      .md-button span {
+        padding: 6px;
+      }
+
+      .top-level-label, .assistant-header-text {
+        font-weight: 600;
+        margin-right: 5px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+
+      input[type="radio"], input[type="checkbox"] {
+        margin: 4px 7px 0;
+      }
+
+      .command-button-container {
+        position: relative;
+        top: -2px;
+      }
+
+      .commandBtn {
+        margin: -1px 0px -2px;
+      }
+
+      .transaction-info-row {
+        margin-left: 0px;
+      }
+
+      .eec-subhead {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-left: 0px;
+      }
+
+      .form-control {
+        color: rgba(0,0,0,.87);
+      }
+
+      .navigation-buttons {
+        overflow: visible;
+      }
+
+      .not-visible {
+        display: none;
+      }
+
+      textarea {
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-bottom: 2px;
+        font-weight: normal;
+      }
+
+      .requiredInput {
+        margin-left: 30px;
+      }
+
+      .desc-panel {
+        margin-left: 15px;
+        width: 80%;
+      }
+
+      .background-form-container {
+        margin-bottom: 20px;
+      }
+
+      thead {
+        background-color: #f5f5f5;
+        font-size: 16px;
+        color: inherit;
+      }
+
+      .desc-answer {
+        margin-bottom: 15px;
+      }
+
+      .ques {
+        margin-bottom: 10px;
+      }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+      }
+
+      .col-lg-8 {
+        padding-left: 0px;
+      }
+
+      .table {
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+      }
+
+      #check-box-tables > .table > tbody > tr > td {
+        border-top: 0px;
+        border-bottom: 0px;
+      }
+
+      #check-box-tables > .table {
+        border-left: 0px;
+        border-right: 0px;
+        border-right: 0px;
+      }
+
+      .panel-title {
+        font-weight: 500;
+      }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .household-form-container {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .navigation-buttons .md-button {
+          width: 98%;
+        }
+
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+
+
+        .add-button-container {
+          padding-right: 0;
+          width: 100%;
+        }
+      }
+
+      .attachment-item {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+
+        .attachment-item p {
+          float: left;
+          margin-right: 15px;
+          align-self: center;
+        }
+
+          .attachment-item p:first-child {
+            flex: 2;
+          }
+          .table, tr, td {
+            border: none;
+            }
+    </style>
+    <script>
+    </script>
+  </head>
+  <body ng-app="eecApp">
+      <c:EEC_Nav_Bar id="navBar" />
+      
+      <div class="transprovider-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">
+      	<md-content style="margin-top: 20px;" ng-show="ctrl.checkForMessages()" layout="row" flex="100" layout-align="center center">   
+            <md-whiteframe class="md-whiteframe-z2 ng-cloak" layout="column" layout-padding="true" flex="75">
+            </md-whiteframe> 
+      	</md-content>    
+      	<apex:messages id="showmsg" styleClass="error-container" style="color: #FF0000; font-weight: bold;"/>
+         <apex:form id="ownerShipAdminForm" styleClass="transaction-parsley-form involvment-form">
+          <div class="panel panel-default" style="min-width:750px"> 
+            <div class="panel-heading">
+           <h3 class="panel-title">
+                    Transaction Information 
+              </h3>
+            </div>
+             <div class="panel-body"> 
+          <md-divider class="ng-cloak" layout-align="center center"></md-divider>
+          <div class="transaction-info">
+         <!--   <h3 class="eec-subhead">Transaction Information</h3> -->
+            <md-content class="transaction-info-row" layout="row"> 
+              <p class="md-subhead top-level-label">Transaction Type: </p>
+              <apex:outputtext value="{!LicenseRecordTypeLabel}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Transaction Number:</p>
+              <apex:outputtext value="{!licenseTransation.Name}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Status:</p>
+              <apex:outputtext value="{!licenseTransation.Status__c}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Last Reached Step:</p>
+              <apex:outputtext value="{!licenseTransation.Last_Reached_Step__c}" />
+            </md-content>
+             <apex:outputpanel id="CampPermitIssueDate">
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Submission Date:</p>
+              <apex:outputField value="{!licenseTransation.Submission_Date__c}"  />
+            </md-content>
+            </apex:outputpanel>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Submitted By:</p>
+              <apex:outputtext value="{!licenseTransation.Submitter__r.FirstName + ' ' + licenseTransation.Submitter__r.LastName}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Source:</p>
+              <apex:outputtext value="{!licenseTransation.Source__c}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row" style="display:{!if(licenseTransation.Status__c =='Cancelled (by Applicant)' || licenseTransation.Status__c =='Closed (Processed)' || licenseTransation.Status__c =='Closed (License Issued / Updated)' || licenseTransation.Status__c =='Closed (EEC Application Incomplete / Denied)','','none')}">
+              <p class="md-subhead top-level-label">Date Transaction Closed:</p>
+              <apex:outputField value="{!licenseTransation.Date_Closed__c}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row" style="display:{!if(licenseTransation.Status__c =='Cancelled (by Applicant)' || licenseTransation.Status__c =='Closed (Processed)' || licenseTransation.Status__c =='Closed (License Issued / Updated)' || licenseTransation.Status__c =='Closed (EEC Application Incomplete / Denied)','','none')}">
+              <p class="md-subhead top-level-label">Reason Transaction Closed / Cancelled:</p>
+              <apex:outputtext value="{!licenseTransation.Reason_Closed_Cancelled__c}" />
+            </md-content>
+          </div>
+          </div>
+          </div>
+         
+           <div class="panel panel-default">
+           <div class="panel-heading">
+              <h3 class="panel-title"> Your EEC Licensor</h3>
+           </div>
+           <div class="panel-body">
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">First / Last Name:</p>
+              <apex:outputtext value="{!licenseTransation.Assigned_To__r.FirstName + ' ' + licenseTransation.Assigned_To__r.LastName}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Phone:</p>
+              <apex:outputtext value="{!licenseTransation.Assigned_To__r.Phone}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Email:</p>
+              <apex:outputtext value="{!licenseTransation.Assigned_To__r.Email}" />
+            </md-content>
+           </div>
+          </div>
+              
+          <apex:outputpanel id="Comments" >
+            <div class="panel panel-default ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Transaction Special Requests / Comments
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div>             
+                        <apex:outputpanel id="specialreq">
+                            <apex:outputLabel styleClass="top-level-label" value="Special Requests and Comments" />                                    
+                            <br/> <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Transaction_Special_Requests_Comments__c}" />
+                        </apex:outputpanel>
+                    </div>
+                </div>
+             </div>
+           </apex:outputpanel>
+           <apex:outputpanel id="varaincereq" rendered="{!licenseTransation.Variance_on_Regulations__r.size > 0}">
+                <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Variance on Regulation request
+              </h3>
+             </div> 
+             <div class="panel-body">
+              <div layout="row" layout-wrap="true">
+                <apex:repeat value="{!licenseTransation.Variance_on_Regulations__r}" var="varian">
+                    <div class="col-md-12 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+                        <div layout="card-block row" layout-wrap="true">
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Regulation Number</p>
+                                <p class="{!IF(varian.Associated_Regulation__r.Regulation_Number__c != null, '', 'empty-input')}">{!IF(varian.Associated_Regulation__r.Regulation_Number__c  != null, varian.Associated_Regulation__r.Regulation_Number__c , varian.Associated_Regulation__r.Regulation_Number__c )}</p>
+                            </div>
+                            
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Regulation Article</p>
+                                <p class="{!IF(varian.Associated_Regulation__r.Article__c != null, '', 'empty-input')}">{!IF(varian.Associated_Regulation__r.Article__c  != null, varian.Associated_Regulation__r.Article__c , varian.Associated_Regulation__r.Article__c )}</p>
+                            </div>                          
+                            
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Your understanding of the regulation and the intent of the regulation</p>
+                                <p class="{!IF(varian.Provider_Understanding_of_Regulation__c != null, '', 'empty-input')}">{!IF(varian.Provider_Understanding_of_Regulation__c  != null, varian.Provider_Understanding_of_Regulation__c , varian.Provider_Understanding_of_Regulation__c )}</p>
+                            </div>
+                            
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Your alternative method of compliance</p>
+                                <p class="{!IF(varian.Provider_Alternative_Method_to_Comply__c != null, '', 'empty-input')}">{!IF(varian.Provider_Alternative_Method_to_Comply__c  != null, varian.Provider_Alternative_Method_to_Comply__c , varian.Provider_Alternative_Method_to_Comply__c )}</p>
+                            </div>
+                 </div>
+                 </div>
+                 </div>
+             </apex:repeat>
+             </div>
+             </div>
+             </div>
+             </apex:outputpanel>
+
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="Back" action="{!backInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" />
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="Edit" action="{!editInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!licenseTransation.Status__c=='To Submit'}" />
+          </md-content>
+          <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink styleclass="md-button md-raised"   immediate="true" action="{!CancelTransaction}" value="Cancel Transaction" onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!licenseTransation.Status__c=='To Submit'}" />
+          </md-content>
+                   </apex:form> 
+       </div>          
+              </body>
+
+</apex:page>

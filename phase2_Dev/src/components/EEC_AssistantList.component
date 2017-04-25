@@ -1,0 +1,210 @@
+<apex:component controller="EEC_AssistantListCtrl">
+  <style>
+    .slds {
+      color: rgba(0,0,0,.87);
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif;
+    }
+
+    .slds .slds-table--bordered {
+      border: 1px solid #d8dde6;
+    }
+      
+    .slds .slds-text-heading--label {
+      color: rgba(0,0,0,.87);
+    }
+
+    .eec-header-style {
+      font-size: 14px;
+      text-transform: capitalize;
+      font-weight: bold !important;
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+    }
+
+    .dropdown-input {
+      margin-left: 25px;
+      position: relative;
+      top: 10px;
+    }
+
+    .top-level-label {
+      font-weight: 600;
+      margin-right: 3px;
+      line-height: 20px;
+      color: rgba(0,0,0,0.54);
+    }
+
+    .empty-input {
+      margin-bottom: 30px;
+    }
+
+    button {
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+      font-weight: 500 !important;
+    }
+
+    .card-row-item {
+      margin-bottom: 10px;
+    }
+  </style>
+
+  <apex:attribute type="EEC_AssistantInterface" name="assistantInterface" assignTo="{!aif}" description="Interface reference for controller." />
+  <apex:attribute type="Boolean" name="isEditible" required="true" description="This will determine if adding an assisnt is allowed." />
+  <apex:attribute type="Boolean" name="isTable" description="This boolean will determine if the view should be a table or cards." />
+  <apex:attribute type="Boolean" name="isEndDateVisible" default="true" description="This boolean will determine if the end date should be shown." />
+  <apex:attribute type="Account" name="currentAccount" assignTo="{!mAccount}" description="If this component is used on a non transaction page it requires the account information to obtain the assistants." />
+  <apex:attribute type="String" name="introText" description="This is the introduction text featured at the top of the Assistants List." />
+  
+
+  <apex:actionfunction action="{!addAssistantToList}" name="addAssistantToList" rerender="assistant-list">
+    <apex:param name="accountId" value="" />
+  </apex:actionfunction>
+  <apex:outputpanel rendered="{!isEditible}" layout="block"><h3 class="assistant-list-header-title eec-subhead slds-text-heading--medium">Assistants List</h3></apex:outputpanel>
+  <apex:outputpanel id="assistant-list" layout="block" styleclass="assistants-list-container">
+    <apex:outputtext rendered="{!isEditible && introText == ''}">Please list below the Assistants you are working with or intending to work with?</apex:outputtext>
+    <apex:outputtext rendered="{!!isEditible && introText == ''}"><p class="assistant-header-text">Listed below are the Assistants you are working with or intending to work with:</p></apex:outputtext>
+    <apex:outputtext rendered="{!introText != ''}"><p class="assistant-header-text">{!introText}</p></apex:outputtext>
+    <!-- Card View -->
+    <apex:outputpanel layout="block" rendered="{!AssistantsListCount && (isTable == null || !isTable)}">
+      <div layout="row" layout-wrap="true">
+        <apex:repeat value="{!AssistantsList}" var="assistantWrapper">
+          <div class="col-md-6 col-sm-12" style="padding: 0;">
+            <div class="slds-box slds-box--x-small" layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+              <div layout="row" layout-wrap="true">
+                <div class="card-row-item col-md-6 col-sm-12">
+                  <p class="top-level-label">Assistant Name</p>
+                  <p class="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Name != null, '', 'empty-input')}">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Name != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Name, assistantWrapper.assistantInformation.Name)}</p>
+                </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+                  <p class="top-level-label">Assistant Current Certificate Status</p>
+                  <p class="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.License_Status__c != null, '', 'empty-input')}">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.License_Status__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.License_Status__c, assistantWrapper.assistantInformation.License_Status__c)}</p>
+                </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+                  <p class="top-level-label">Assistant Certificate Number</p>
+                  <p class="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Current_License_Number__c != null, '', 'empty-input')}">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Current_License_Number__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Current_License_Number__c, assistantWrapper.assistantInformation.Current_License_Number__c)}</p>
+                </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+                  <p class="top-level-label">Assistant Certificate Expiration Date</p>
+                  <c:EEC_DateFormat date="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Renewal_date__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Renewal_date__c, assistantWrapper.assistantInformation.Renewal_date__c)}" style="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Renewal_date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+                  <p class="top-level-label">Start Date<span class="required" style="display:{!IF(aif.BaseLicenseRecordTypeName != 'FCC_New_License', 'inline','none')}">*</span></p>
+                  <apex:inputfield rendered="{!isEditible}" value="{!assistantWrapper.providerAssistant.Start_Date__c}" html-data-parsley-required="{!IF(aif.BaseLicenseRecordTypeName != 'FCC_New_License', true, false)}" html-data-provide="datepicker" styleclass="form-control start-date-input" style="width: 95%;" />
+                  <apex:outputpanel rendered="{!!isEditible}">
+                    <c:EEC_DateFormat date="{!IF(assistantWrapper.providerAssistant.Start_Date__c != null, assistantWrapper.providerAssistant.Start_Date__c, '')}" style="{!IF(assistantWrapper.providerAssistant.Start_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                  </apex:outputpanel>
+                </div>
+                <apex:outputPanel styleClass="card-row-item col-md-6 col-sm-12" rendered="{!isEndDateVisible}">
+                  <p class="top-level-label">End Date</p>
+                  <apex:outputpanel rendered="{!isEditible}">
+                    <apex:inputfield value="{!assistantWrapper.providerAssistant.End_Date__c}" styleclass="form-control end-date-input" html-data-provide="datepicker" style="width: 95%;" />
+                    <p class="errorMsg endDateErrorMessage" style="display: none;">The end date must be empty, larger or equal to the start date.</p>
+                  </apex:outputpanel>
+                  <apex:outputpanel rendered="{!!isEditible}">
+                    <c:EEC_DateFormat date="{!IF(assistantWrapper.providerAssistant.End_Date__c != null, assistantWrapper.providerAssistant.End_Date__c, '')}" style="{!IF(assistantWrapper.providerAssistant.End_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                  </apex:outputpanel>
+                </apex:outputPanel>
+                <div class="card-row-item col-md-6 col-sm-12">
+                  <p class="top-level-label">Assistant License Type</p>
+                  <p class="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Certified_As__c != null, '', 'empty-input')}">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Certified_As__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Certified_As__c, assistantWrapper.assistantInformation.Certified_As__c)}</p>
+                </div>
+                <apex:outputpanel layout="block" rendered="{!assistantWrapper.isNew && isEditible}" html-flex="50" style="text-align: right;" styleClass="card-row-item">
+                  <apex:commandbutton action="{!removeAddedAssistant}" rerender="assistant-list" value="Delete" styleclass="md-button md-eec md-raised">
+                    <apex:param name="wrapperId" value="{!assistantWrapper.wrapperId}" />
+                  </apex:commandbutton>
+                </apex:outputpanel>
+              </div>
+            </div>
+          </div>
+        </apex:repeat>
+      </div>
+    </apex:outputpanel>
+
+    <!-- Table View -->
+    <apex:outputpanel layout="block" rendered="{!AssistantsListCount && (isTable != null && isTable)}">
+      <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
+        <thead>
+          <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Assistant Name</span></th>
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Assistant Current Certificate Status</span></th>
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Assistant Certificate Number</span></th>
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Assistant Certificate Expiration Date</span></th>
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Start Date</span><span class="required" style="display:{!IF(aif.BaseLicenseRecordTypeName != 'FCC_New_License', 'inline','none')}">*</span></th>
+            <apex:outputPanel rendered="{!isEndDateVisible}">
+              <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">End Date</span></th>
+            </apex:outputPanel>
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Assistant License Type</span></th>
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <apex:repeat value="{!AssistantsList}" var="assistantWrapper">
+            <tr class="slds-hint-parent">
+              <th data-label="assistant-name" role="row"><span class="slds-wrap">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Name != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Name, assistantWrapper.assistantInformation.Name)}</span></th>
+              <td class="slds-cell-wrap" data-label="assistant-current-certificate-status"><span class="slds-wrap">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.License_Status__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.License_Status__c, assistantWrapper.assistantInformation.License_Status__c)}</span></td>
+              <td class="slds-cell-wrap" data-label="assistant-certificate-number"><span class="slds-wrap">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Current_License_Number__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Current_License_Number__c, assistantWrapper.assistantInformation.Current_License_Number__c)}</span></td>
+              <td class="slds-cell-wrap" data-label="assistant-certificate-expiration-date"><span class="slds-wrap"><c:EEC_DateFormat date="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Renewal_date__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.Renewal_date__c, assistantWrapper.assistantInformation.Renewal_date__c)}" style="{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.Renewal_date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat></span></td>
+              <td class="slds-cell-wrap" data-label="start-date">
+                <span class="slds-wrap">
+                  <apex:inputfield rendered="{!isEditible}" value="{!assistantWrapper.providerAssistant.Start_Date__c}" html-data-parsley-required="{!IF(aif.BaseLicenseRecordTypeName != 'FCC_New_License', true, false)}" styleclass="form-control start-date-input" style="width: 95%;" />
+                  <apex:outputpanel rendered="{!!isEditible}">
+                    <c:EEC_DateFormat date="{!IF(assistantWrapper.providerAssistant.Start_Date__c != null, assistantWrapper.providerAssistant.Start_Date__c, '')}" style="{!IF(assistantWrapper.providerAssistant.Start_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                  </apex:outputpanel>
+                </span>
+              </td>
+              <apex:outputPanel rendered="{!isEndDateVisible}">
+                <td class="slds-cell-wrap" data-label="end-date">
+                  <span class="slds-wrap">
+                    <apex:outputpanel rendered="{!isEditible}">
+                      <apex:inputfield value="{!assistantWrapper.providerAssistant.End_Date__c}" styleclass="form-control end-date-input" style="width: 95%;" />
+                      <p class="errorMsg endDateErrorMessage" style="display: none;">The end date must be empty, larger or equal to the start date.</p>
+                    </apex:outputpanel>
+                    <apex:outputpanel rendered="{!!isEditible}">
+                      <c:EEC_DateFormat date="{!IF(assistantWrapper.providerAssistant.End_Date__c != null, assistantWrapper.providerAssistant.End_Date__c, '')}" style="{!IF(assistantWrapper.providerAssistant.End_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                    </apex:outputpanel>
+                  </span>
+                </td>
+              </apex:outputPanel>
+                
+              <td class="slds-cell-wrap" data-label="assistant-license-type"><span class="slds-wrap">{!IF(assistantWrapper.providerAssistant.FCC_Assistant__r.License_Type__c != null, assistantWrapper.providerAssistant.FCC_Assistant__r.License_Type__c, assistantWrapper.assistantInformation.License_Type__c)}</span></td>
+              <td class="slds-cell-wrap">
+                <apex:outputpanel layout="block" rendered="{!assistantWrapper.isNew && isEditible}" html-flex="50" style="text-align: right;">
+                  <apex:commandbutton action="{!removeAddedAssistant}" rerender="assistant-list" value="Delete" styleclass="md-button md-eec md-raised">
+                    <apex:param name="wrapperId" value="{!assistantWrapper.wrapperId}" />
+                  </apex:commandbutton>
+                </apex:outputpanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </tbody>
+      </table>
+    </apex:outputpanel>
+
+    <apex:outputpanel rendered="{!!AssistantsListCount}">
+      <div class="slds-box slds-box--x-small" layout-padding="true" layout-margin="true">There are currently no assistants available for the provider.</div>
+    </apex:outputpanel>
+    <apex:outputpanel rendered="{!isEditible}">
+      <div style="width: 100%; margin: 0px -22px; text-transform: uppercase;" layout="row" layout-align="end end">
+        <button id="add-new-assistant" type="button" style="text-transform: uppercase;" class="md-button md-eec md-raised">Add New Assistant</button>
+      </div>
+    </apex:outputpanel>
+  </apex:outputpanel>
+  <script>
+    // Callback function for lookup popups.
+      var handleParentLookup = function(objType, resultId, resultName) {
+        console.log(objType + ' <= Type, ' + resultId + ' <= Result Id, ' + resultName + ' <= Result Name');
+
+        // Send the id to the controller and rerender the list.
+        addAssistantToList(resultId);
+      }
+
+      // Case Parent lookup popup call.
+      j$('body').on('click', '#add-new-assistant', function() {
+        var lookupWindow = null;
+          lookupWindow = window.open(
+            '/apex/EEC_Lookup?sobject=Account',
+            'Lookup',
+            'height=500,width=500'
+          );
+      });
+  </script>
+</apex:component>

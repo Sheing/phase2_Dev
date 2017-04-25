@@ -1,0 +1,245 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" renderAs="pdf" standardController="Restraint_Report__c">
+<style type="text/css">
+table {
+        -fs-table-paginate: paginate !important;
+      }
+.table-header {
+        height: 30px !important;
+      }
+      
+        .form-label{
+          font-weight: bold;
+          font-size:14px;
+        }
+        
+ </style>
+ <style>
+table, th, td {
+    
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+</style>
+<apex:form >
+<apex:pageblock > 
+   
+               <head></head>
+               <body>
+                  <center><h1> 
+                      Restraint Report
+                  </h1></center>
+                  <br/>
+                </body>
+          <table style="width:100%" >
+                
+                <br/>
+                <tr>
+                    <td style="width:30%;text-align:left;"><b>Provider</b> {!Restraint_Report__c.Provider__r.name}</td>
+                    <td style="width:30%;"><b>Calender Year</b> {!Restraint_Report__c.Calendar_Year__c}</td>
+                    <td style="width:40%;text-align:right;"><b>Submitted By</b> {!Restraint_Report__c.Contact_Submitted_By__r.Name}</td>
+                    
+                    </tr>
+                    <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td style="width:30%;text-align:left;"><b>Restraint Method :</b> {!Restraint_Report__c.Restraint_Method2__c}</td>
+                    <td style="width:30%;"><b>Quarter :</b> {!Restraint_Report__c.Quarter__c}</td>
+                    <td style="width:40%;text-align:right;"><b>Submitted Date :</b>
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!Restraint_Report__c.Submitted_Date__c}" />
+                        </apex:outputText>
+                    </td>
+                 </tr>
+             </table>
+             <br/>
+             <hr/>
+             <center><h2 > 
+                      Position / Minutes
+                  </h2></center>
+                  <br/>
+         <apex:outputPanel rendered="{!IF(Restraint_Report__c.Restraint_Method2__c = 'DYS' , true, false)}">   
+           <table style="width:100%" >
+                
+                <br/>
+                <tr>
+                    <td ></td>
+                    <td style="width:10%;"><b>0-5</b></td>
+                    <td style="width:10%;"><b>6-10</b> </td>
+                    <td style="width:10%;"><b>11-20</b> </td>
+                    <td style="width:10%;"><b>21-30</b> </td>
+                    <td style="width:10%;"><b>31-40</b> </td>
+                    <td style="width:10%;"><b>41-50</b> </td>
+                    <td style="width:10%;"><b>51-60</b> </td>
+                    <td style="width:10%;"><b>>60</b></td>
+                </tr>
+                    <tr><td>&nbsp;</td></tr>
+                
+                <tr>
+                    <td style="width:30%;text-align:left;"><b>Physical and Mechanical</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Mechanical_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                    <td style="width:30%;text-align:left;"><b>Physical holds only</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_holds_Only_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Physical_Holds_Only_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 </table> 
+                 </apex:outputPanel>
+             <apex:outputPanel rendered="{!IF(Restraint_Report__c.Restraint_Method2__c != 'DYS' , true, false)}">   
+           <table style="width:100%" >
+                
+                <br/>
+                <tr>
+                    <td ></td>
+                    <td style="width:10%;"><b>0-5</b></td>
+                    <td style="width:10%;"><b>6-10</b> </td>
+                    <td style="width:10%;"><b>11-20</b> </td>
+                    <td style="width:10%;"><b>21-30</b> </td>
+                    <td style="width:10%;"><b>31-40</b> </td>
+                    <td style="width:10%;"><b>41-50</b> </td>
+                    <td style="width:10%;"><b>51-60</b> </td>
+                    <td style="width:10%;"><b>>60</b></td>
+                </tr>
+                    <tr><td>&nbsp;</td></tr>
+                
+                <tr>
+                    <td style="width:30%;text-align:left;"><b>Standing</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Standing_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                    <td style="width:30%;text-align:left;"><b>Sitting</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Sitting_51_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                    <td style="width:30%;text-align:left;"><b>Floor(Supine)</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Supine_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                    <td style="width:30%;text-align:left;"><b>Floor(Prone)</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Prone_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                    <td style="width:30%;text-align:left;"><b>Floor (Both Prone and Supine)</b></td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_0_5__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_6_10__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_11_20__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_21_30__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_31_40__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_41_50__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_51_60__c}</td>
+                    <td style="width:10%;"> {!Restraint_Report__c.Floor_Both_Prone_and_Supine_60__c}</td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 </table> 
+                 </apex:outputPanel>
+             
+             <br/>
+             <hr/>
+           <center><h3> 
+                      Injury Information
+                  </h3></center>
+                  <br/>
+            
+           <table style="width:100%">
+                
+    <br/>
+    <tr>
+        <td style="width:60%;text-align:left;"><b>Injured Resident (MinorInjury):</b> {!Restraint_Report__c.Injured_Residents_Minor_Injury__c}</td>
+        
+        <td style="width:40%;text-align:right;"><b>Injured Staff (Minor Injury):</b> {!Restraint_Report__c.Injured_Staff_Minor_Injury__c}</td>
+    <td>&nbsp;</td>
+    </tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr>
+        <td style="width:60%;text-align:left;"><b>Injured Resident (SeriousInjury):</b> {!Restraint_Report__c.Injured_Residents_Serious_Injury__c}</td>
+        
+        <td style="width:40%;text-align:right;"><b>Injured Staff (SeriousInjury) :</b> {!Restraint_Report__c.Injured_Staff_Serious_Injury__c}
+        </td>
+        <td>&nbsp;</td>
+     </tr>
+</table>
+
+             
+             <br/>
+             <hr/>
+          <center><h4 > 
+                      Other Restraints Information
+                  </h4></center>
+                  <br/>
+            
+           <table style="width:100%" >
+                
+                <br/>
+                <tr>
+                    <td style="width:40%;text-align:left;"><b>Number of Restraints Leading to Resident Injury:</b> {!Restraint_Report__c.No_Restraints_Leading_to_Res_Injury__c}</td>
+                    
+                    <td style="width:40%;text-align:right;"><b>Unduplicated Count of Residents Restrained:</b> {!Restraint_Report__c.Unduplicated_Count_of_Residnts_Restraind__c}</td>
+                </tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr>
+                    <td style="width:40%;text-align:left;"><b>Number of Restraints Leading to Staff Injury:</b> {!Restraint_Report__c.No_Restraints_Leading_to_Staff_Injury__c}</td>
+                    
+                    <td style="width:40%;text-align:right;"><b>Unduplicated Count of Residents Restrained:</b> {!Restraint_Report__c.Unduplicated_Count_of_Residnts_Restraind__c}</td>
+                 </tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                 <tr>
+                    <td style="width:40%;text-align:left;"><b>Total Bed Days Utilized this Quarter: </b> {!Restraint_Report__c.Total_Bed_Days_Utilized_this_Quarter__c}</td>
+                    
+                    <td></td>
+                 </tr>
+             </table>
+             
+             
+</apex:pageblock>
+
+</apex:form>
+</apex:page>

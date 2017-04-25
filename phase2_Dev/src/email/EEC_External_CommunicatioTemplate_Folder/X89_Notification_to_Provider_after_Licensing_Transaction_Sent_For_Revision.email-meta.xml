@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email sent to the provider to inform that the previously submitted transaction must be revised to be processed. The licensor entered the reason of the request in LEAD, and it will be added to the email.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>EEC_Letterhead</letterhead>
+    <name>89 - Notification to Provider after Licensing Transaction Sent For Revision</name>
+    <style>freeForm</style>
+    <subject>Notification to Provider after Licensing Transaction Sent For Revision</subject>
+    <type>html</type>
+</EmailTemplate>

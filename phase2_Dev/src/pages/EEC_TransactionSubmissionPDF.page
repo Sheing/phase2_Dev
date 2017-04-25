@@ -1,0 +1,923 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" renderAs="pdf" standardController="Licensing_Transaction__c" extensions="EEC_TransactionSubmissionPDFCtrl">
+<style type="text/css">
+table {
+        -fs-table-paginate: paginate !important;
+      }
+.table-header {
+        height: 30px !important;
+      }
+      
+        .form-label{
+          font-weight: bold;
+          font-size:14px;
+        }
+        
+ </style>
+ <style>
+table, th, td {
+    
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+</style>
+<apex:form >
+<apex:pageblock > 
+  <head></head>
+               <body>
+                  <center><h1> 
+                      Transaction Summary and Submission
+                  </h1></center>
+                  <br/>
+                </body> 
+                <center><h2> 
+                      Transaction Information
+                  </h2></center>
+                  <br/>
+              <table style="width:100%">
+               <tr>
+                    <td style="width:100%;text-align:left;"><b>Transaction Type : </b> {!Licensing_Transaction__c.Recordtype.name}</td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="width:100%;text-align:left;"><b>Transaction Number : </b> {!Licensing_Transaction__c.name}</td>
+               </tr>
+               <br/>
+               <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name =="FCC New License" || Licensing_Transaction__c.recordtype.name =="FCC Change of Household" || Licensing_Transaction__c.recordtype.name =="FCC Change Room / Floor Level" || Licensing_Transaction__c.recordtype.name =="Change of Address"),false,true)}">
+                <tr>
+                    <td style="width:100%;text-align:left;"><b>Would you like to change your license status to?  </b> {!Licensing_Transaction__c.License_Requested__c}</td>
+               </tr>
+               <br/>
+               </apex:outputpanel>
+              </table>
+              <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "Change of Address",true,false)}">
+              <center><h2> 
+                      New Address
+                  </h2></center>
+                  <br/>
+              <table>
+              <tr>
+                    <td style="text-align:left;"><b>Street Address 1:  </b> {!Licensing_Transaction__c.New_Street_Address_1__c}</td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>Street Address 2:  </b> {!Licensing_Transaction__c.New_Street_Address_2__c}</td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>City :  </b> {!Licensing_Transaction__c.New_City__c}</td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>Zipcode:  </b> {!Licensing_Transaction__c.New_Zip_Code__c}</td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>Live at New Address : </b> {!Licensing_Transaction__c.Live_at_New_Address__c}</td>
+               </tr>
+               <br/>
+                <tr>
+                    <td style="text-align:left;"><b>Moving Date : </b>
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!Licensing_Transaction__c.Moving_Date__c}" />
+                        </apex:outputText>
+                    </td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>Date Care Resumed:  </b>
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!Licensing_Transaction__c.Date_Care_Resumes__c}" />
+                        </apex:outputText>
+                    </td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>New Phone Number: </b> {!Licensing_Transaction__c.New_Address_Phone_Number__c}</td>
+               </tr>
+               <br/>
+               <tr>
+                    <td style="text-align:left;"><b>Phone Number Unlisted :</b> {!Licensing_Transaction__c.New_Phone_Number_Unlisted__c}</td>
+               </tr>
+               <br/>
+              </table>
+              </apex:outputpanel>
+              <br/>
+              <hr/>
+               <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name != "FCC Change Room / Floor Level" && !isFccAssistant,true,false)}">
+          <center><h3> 
+                      Household Members / Individuals Regularly on the Premises
+                  </h3></center>
+                  <br/>
+                  <table  border = "1">
+                  <thead>
+                    <tr>
+                      <th >First Name</th>
+                      <th >Last Name</th>
+                      <th >Date of Birth</th>
+                      <th >Relationship to Provider</th>
+                      <th >Occupation</th>
+                      <th >No. of Hours Home During Child Care</th>
+                      <th >Current School Grade</th>
+                      <th >Email address</th>
+                    </tr>
+                  </thead> 
+                  <apex:repeat value="{!ihmList}" var="hm">
+                    <tr>
+                      <td data-title="First Name"><apex:outputfield value="{!hm.First_Name__c}" /></td>
+                      <td data-title="Last Name"><apex:outputfield value="{!hm.Last_Name__c}" /></td>
+                      <td data-title="Date of Birth">
+                        <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                          <apex:param value="{!hm.Date_of_Birth__c}" />
+                        </apex:outputtext>
+                      </td>
+                      <td data-title="Relationship"><apex:outputfield value="{!hm.Relationship_to_Provider__c}" /></td>
+                      <td data-title="Occupation"><apex:outputfield value="{!hm.Occupation__c}" /></td>
+                      <td data-title="No of Hours"><apex:outputfield value="{!hm.Number_of_Hours_Home_During_Child_Care__c}" /></td>
+                      <td data-title="Current School Grade"><apex:outputfield value="{!hm.Current_School_Grade__c}" /></td>
+                      <td data-title="Email address"><apex:outputfield value="{!hm.Email_Address__c}" /></td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+                <br/>
+                <hr/>
+                </apex:outputpanel>
+        <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License"||Licensing_Transaction__c.recordtype.name == "FCC Renewal"||Licensing_Transaction__c.recordtype.name == "FCC License Upgrade",true,false)}">
+          <center><h2> 
+                      Licensing Status And Capacity
+                  </h2></center>
+                  <br/>
+         <table style="width:100%">
+          <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+            <tr>
+                <td style="text-align:left;"><b>Are you currently caring for children who are not related to you ? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Caring_For_Children_Not_Related__c}</td>
+           </tr>
+           </apex:outputpanel>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>Will you be providing evening, overnight or weekend care? (Please note that Reg. #7.09(7) states that no educator may regularly care for child care children more than 12 hours in any 24 hour period): </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Evening_Overnight_Weekend_Care__c}</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>Are any of your children home schooled? </b> </td>
+          </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Children_Home_Schooled__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Children_Home_Schooled__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe: </b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Children_Home_Schooled_Description__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Are you an approved foster care provider? </b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Approved_Foster_Care_Provider__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Approved_Foster_Care_Provider__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe: </b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Approved_Foster_Care_Provider_Descrip__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Are you in the process of becoming a foster care provider? </b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Becoming_Foster_Care_Provider__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Becoming_Foster_Care_Provider__c == "Yes",true,false)}">
+            <tr>
+                <td style="text-align:left;"><b>Please describe: </b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Becoming_Foster_Care_Provider_Descrip__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Is there any other business being operated out of your home? </b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Business_Operated_Out_of_Own_Home__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Business_Operated_Out_of_Own_Home__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe:</b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Bus_Operated_Out_of_Own_Home_Descrip__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal"||Licensing_Transaction__c.recordtype.name == "FCC License Upgrade",true,false)}">
+            <tr>
+                <td style="text-align:left;"><b>Are you currently working with a Family Child Care System?</b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Use_Family_Child_Care_System__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Use_Family_Child_Care_System__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe:</b> </td>
+            </tr>
+           <br/>
+            <tr> <td style="text-align:left;">{!Licensing_Transaction__c.Use_Family_Child_Care_System_Descrip__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+         </table>
+       </apex:outputpanel>
+       <br/>
+       <hr/>
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License" || Licensing_Transaction__c.recordtype.name == "FCC Renewal"||Licensing_Transaction__c.recordtype.name == "FCC License Upgrade",true,false)}">
+          <center><h2> 
+                      Assistants
+                  </h2></center>
+                  <br/>
+               <table style="width:100%">
+            <tr>
+                <td style="text-align:left;"><b>Are you working with an Assistant(s) or intending to work with an assistant? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Working_With_Assistant__c}</td>
+           </tr>
+           <br/>
+           </table>
+           <apex:outputpanel rendered="{!IF(Assistants.size>0,true,false)}">
+         <table style = "width:100%;" border = "1">
+                  <thead class="cf">
+                    <tr>
+                      <th class="panel-title">Assistant Name</th>
+                      <th class="panel-title">Assistant Current Certificate Status</th>
+                      <th class="panel-title">Assistant Certificate Number</th>
+                      <th class="panel-title">Assistant Certificate Expiration Date</th>
+                      <th class="panel-title">Start Date</th>
+                      <th class="panel-title">End Date</th>
+                      <th class="panel-title">Assistant License Type</th>
+                     
+                    </tr>
+                  </thead>
+                  <apex:repeat value="{!Assistants}" var="As">
+                    <tr>
+                      <td data-title="Assistant Name"><apex:outputfield value="{!As.FCC_Assistant__r.Name}" /></td>
+                      <td data-title="Assistant Current Certificate Status"><apex:outputfield value="{!As.FCC_Assistant__r.License_Status__c}" /></td>
+                      <td data-title="Assistant Certificate Number"><apex:outputfield value="{!As.FCC_Assistant__r.Current_License_Number__c}" /></td>
+                      <td data-title="Assistant Certificate Expiration Date"><apex:outputfield value="{!As.FCC_Assistant__r.Renewal_date__c}" /></td>
+                      <td data-title="Start Date"><apex:outputfield value="{!As.Start_Date__c}" /></td>
+                      <td data-title="End Date"><apex:outputfield value="{!As.End_Date__c}" /></td>
+                      <td data-title="Assistant License Type"><apex:outputfield value="{!As.FCC_Assistant__r.Certified_As__c}" /></td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+                <br/>
+                </apex:outputpanel>
+          </apex:outputpanel>
+          
+          <hr/>
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License" || isFccAssistant,true,false)}">
+          <center><h2> 
+                      EEC Involvement and Experience
+                  </h2></center>
+                  <br/>
+         <table style="width:100%">
+            <tr>
+                <td style="text-align:left;"><b>Have you ever had previous involvement with EEC due to unlicensed child care ? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Previous_Involvement_with_EEC_for_Unlice__c}</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>Have you ever applied for or been issued a certificate or license by the Department of Early Education and Care or its’ predecessor agencies (OCCS, OFC)? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Previous_Application_Certif_with_EEC__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Previous_Application_Certif_with_EEC__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please list the type of care, the license number(s) and expiration date(s) of any licenses/certificates you have held: </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Prev_App_Certif_with_EEC_Descrip__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Have you ever applied for or been issued a child care license or certificate by any other state? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Prev_App_Certif_with_Another_State__c}</td>
+           </tr>
+           <br/>
+            <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Prev_App_Certif_with_Another_State__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>If yes, please list the state, type of care, the license number(s) and expiration date(s) of any licenses/certificates you have held:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Prev_App_Certif_with_Another_State_Desc__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+            <tr>
+                <td style="text-align:left;"><b>Has any certificate or license ever been revoked, suspended? </b> </td>
+           </tr> 
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Certificate_of_License_Revoked_Suspend__c}</td>
+           </tr>
+           <br/>
+            <tr>
+                <td style="text-align:left;"><b>Have you ever voluntarily surrendered your certificate or license?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Certificate_or_License_Surrendered__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Certificate_or_License_Surrendered__c == "Yes" ||Licensing_Transaction__c.Certificate_of_License_Revoked_Suspend__c == "Yes" ,true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe the reasons why?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Revocation_Suspension_Surrender_Reas__c}</td>
+           </tr>
+           
+           </apex:outputpanel> 
+         </table>
+         <center><h3> 
+                      Employment History
+                  </h3></center>
+           <table style="width:100%;">
+           <tr>
+                <td style="text-align:left;"><b>EEC’s family child care regulations require at least one year of full time experience caring for children or a combination of experience and education and training.  Please describe how you meet these qualifications?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Experience_Caring_for_Children_QUalifica__c}</td>
+           </tr>
+           </table> 
+           <br/>      
+          <table border = "1">
+                  <thead class="cf">
+                    <tr>
+                      <th class="panel-title">Position</th>
+                      <th class="panel-title">Employment Start Date</th>
+                      <th class="panel-title">Employment End Date</th>
+                      <th class="panel-title">Reason for Leaving</th>
+                      <th class="panel-title">Employer</th>
+                      <th class="panel-title">Address</th>
+                      <th class="panel-title">Telephone</th>
+                    </tr>
+                  </thead>
+                  <apex:repeat value="{!ehList}" var="eh"> 
+                    <tr>
+                      <td data-title="Position"><apex:outputfield value="{!eh.Position__c}" /></td>
+                      <td data-title="Employment Start Date">
+                        <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                          <apex:param value="{!eh.Start_Date__c}" />
+                        </apex:outputtext>
+                      </td>
+                      <td data-title="Employment End Date">
+                        <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                          <apex:param value="{!eh.End_Date__c}" />
+                        </apex:outputtext>
+                      </td>
+                      <td data-title="Reason for Leaving"><apex:outputfield value="{!eh.Reason_for_Leaving__c}" /></td>
+                      <td data-title="Employer"><apex:outputfield value="{!eh.Employer__c}" /></td>
+                      <td data-title="Address"><apex:outputfield value="{!eh.Employer_Address__c}" /></td>
+                      <td data-title="Telephone"><apex:outputfield value="{!eh.Employer_Phone__c}" /></td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+                <br/>
+        </apex:outputpanel>
+        <hr/>
+        <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License"||Licensing_Transaction__c.recordtype.name == "FCC Renewal"||Licensing_Transaction__c.recordtype.name == "FCC License Upgrade" || isFccAssistant,true,false)}">
+          <center><h2> 
+                      Background Information
+                  </h2></center>
+                  <br/>
+       <table style="width:100%">
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal"||Licensing_Transaction__c.recordtype.name == "FCC License Upgrade" || isFccAssistant,true,false)}">
+         <tr>
+                <td style="text-align:left;"><b>Within the past three  (3) years has any child care child in your care suffered serious illness or injury, been
+            				hospitalized, or needed emergency medical treatment as a result of something that happened while in family child care?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Child_Emergency_Injury_Last_3_Years__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Child_Emergency_Injury_Last_3_Years__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please explain:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Child_Emerg_Injury_Last_3_Years_Descrip__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+            <tr>
+                <td style="text-align:left;"><b>Have you or any member of your household or any person regularly on the premises ever been arrested or charged with any crime in any state?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Charged_or_Arrested_for_Crime__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Charged_or_Arrested_for_Crime__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please list the date(s), the state(s), and the nature of the charges:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Charges_Description__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Have you or any member of your household, or any person regularly on the premises ever had any dealings with any child protection or child welfare agency in any state?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Dealings_with_Child_Prot_Child_Welfar__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Dealings_with_Child_Prot_Child_Welfar__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe the nature of those dealings, whether there were any findings that you abused or neglected a child, and when these dealings occurred:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Dealing_with_Child_Prot_Welfar_Descri__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Have you or any member of your household or any person regularly on the premises ever been classified or ordered to register as a Sex Offender (any level) in any state?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Registering_as_Sex_Offender__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Registering_as_Sex_Offender__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe the nature of the incident(s) that required that the classification or registration occur and date that the classification or registration occurred:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Sex_Offender_Nature_of_Incident__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Have you or any other person living in or regularly on the premises of the family child care home, ever had a restraining order issued against you/them or requested a restraining order for protection? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Restraining_Order_Issued__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Restraining_Order_Issued__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please explain:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Restraining_Order_Description__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Do you use alcoholic beverages, narcotics or other drugs in a manner or to an extent that might impact your ability to care for children?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Use_of_Alcoholic_Bev_Narcotics_Drugs__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Use_of_Alcoholic_Bev_Narcotics_Drugs__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please explain:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Alcoholic_Bev_Narcotics_Drugs_Desc__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <tr>
+                <td style="text-align:left;"><b>Have you or any member of your household, or any person regularly on the premises ever been found to have abused or neglected a child in any state?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Abused_or_neglected_a_child__c}</td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Abused_or_neglected_a_child__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Please describe the date, state and nature of those findings:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Abused_or_neglected_a_child_Description__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+       </table>
+         </apex:outputpanel>
+         <hr/>
+         <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License"||Licensing_Transaction__c.recordtype.name == "FCC Renewal"||Licensing_Transaction__c.recordtype.name == "FCC License Upgrade" || isFccAssistant,true,false)}">
+          <center><h2> 
+                      Training Information
+                  </h2></center>
+                  <br/>
+       <table style="width:100%">
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Do you currently belong to a food program?</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Belong_to_Food_Program__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" && Licensing_Transaction__c.Belong_to_Food_Program__c=="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>If yes, which one?</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Which_Food_Program__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Medication Administration: The Five Rights:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Took_Medication_Administration_Training__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC New License") && Licensing_Transaction__c.Took_Medication_Administration_Training__c=="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Date:</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Date_Med_Administration_Training_Taken__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+           <tr>
+                
+                <td style="text-align:left;"><b>Transportation Training Look Before You Lock:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Took_Transportation_Training__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC New License") && Licensing_Transaction__c.Took_Transportation_Training__c =="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Date:</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Date_Transportation_Training_Taken__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>SIDS Training, Reducing the Risk of SIDS in Child Care :</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Took_SIDS_Training__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC New License") && Licensing_Transaction__c.Took_SIDS_Training__c =="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Last training date :</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Date_Last_SIDS_Training_Taken__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>Basic training in USDA Nutrition Requirements and food choking hazards :</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Took_USDA_Nutrition_Training__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC New License") && Licensing_Transaction__c.Took_USDA_Nutrition_Training__c =="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Date :</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Date_USDA_Nutrition_Training_Taken__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC License Upgrade",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>If upgrading capacity: serving 7-10 Children in Family Child Care :</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Took_Upgrading_Capacity_Training__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC License Upgrade") && Licensing_Transaction__c.Took_Upgrading_Capacity_Training__c =="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Date :</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Date_Upgrading_Capacity_Training_Taken__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>FCC Orientation, Module II:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Took_FCC_Orientation__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" && Licensing_Transaction__c.Took_FCC_Orientation__c=="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Date :</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Date_FCC_Orientation_Taken__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>CPR :  </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.CPR_Certified__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC New License") && Licensing_Transaction__c.CPR_Certified__c =="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Issuance Date :</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.CPR_Certification_Issue_Date__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal" || Licensing_Transaction__c.recordtype.name == "FCC New License",true,false)}">
+           <tr>
+                <td style="text-align:left;"><b>First Aid:  </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.First_Aid_Certified__c}</td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+           <apex:outputpanel rendered="{!IF((Licensing_Transaction__c.recordtype.name == "FCC Renewal"|| Licensing_Transaction__c.recordtype.name == "FCC New License") && Licensing_Transaction__c.First_Aid_Certified__c =="Yes",true,false)}">
+           <tr>
+           <tr>
+                <td style="text-align:left;"><b>Issuance Date :</b> </td>
+           </tr>
+           <br/>
+                <td style="text-align:left;">{!Licensing_Transaction__c.First_Aid_Certification_Issue_Date__c}</td>
+           </tr>
+           
+           </apex:outputpanel>
+       </table>
+       <center><h3> 
+                      Additional Trainings
+                  </h3></center>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Renewal",true,false)}">
+         <table border = "1">
+                    <thead class="cf">
+                      <tr>
+                        <th class="panel-title">Topic</th>
+                        <th class="panel-title">Date</th>
+                        <th class="panel-title">Number of Hours</th>
+                      </tr>
+                    </thead>
+                    <apex:repeat value="{!teList}" var="at">
+                      <tr>
+                        <td data-title="Additional Trainings"><apex:outputfield value="{!at.Name}" /></td>
+                        <td data-title="Date">
+                          <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                            <apex:param value="{!at.Date_of_the_Training__c}" />
+                          </apex:outputtext>
+                        </td>
+                        <td data-title="Number of Hours"><apex:outputfield value="{!at.Number_of_Training_Hours__c}" /></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+            </apex:outputpanel>
+       </apex:outputpanel>
+       <hr/>
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name != "FCC Change of Household" && !isFccAssistant,true,false)}">
+          <center><h3> 
+                      Indoor Space Description
+                  </h3></center>
+                  <br/>
+        <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License" || Licensing_Transaction__c.recordtype.name == "Change of Address" || Licensing_Transaction__c.recordtype.name == "FCC Change Room / Floor Level" ,true,false)}">
+       <table style="width:100%">
+       <tr>
+                <td style="text-align:left;"><b>Please describe the family child care residence: (e.g. single family, duplex, apartment, etc):  </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.FCC_Residence_Description__c}</td>
+           </tr>
+           <br/>
+          </table>
+          </apex:outputpanel>
+          <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name != "FCC Change of Household",true,false)}">
+         <table style = "width:100%;" border = "1">
+                  <thead class="cf">
+                    <tr>
+                      <th class="panel-title">Room Name</th>
+                      <th class="panel-title">Use</th>
+                      <th class="panel-title">Dimension - Length (feet)</th>
+                      <th class="panel-title">Dimension - Width (feet)</th>
+                      <th class="panel-title">Floor Level</th>
+                    </tr>
+                  </thead>
+                  <apex:repeat value="{!roomList}" var="rm">
+                    <tr>
+                      <td data-title="Room Name"><apex:outputfield value="{!rm.Name}" /></td>
+                      <td data-title="Use"><apex:outputfield value="{!rm.Use__c}" /></td>
+                      <td data-title="Dimension - Length (feet)"><apex:outputfield value="{!rm.Dimension_Length_feet__c}" /></td>
+                      <td data-title="Dimension - Width (feet)"><apex:outputfield value="{!rm.Dimension_Width_feet__c}" /></td>
+                      <td data-title="Floor Level"><apex:outputfield value="{!rm.Floor_Level__c}" /></td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+                <br/>
+                </apex:outputpanel>
+             </apex:outputpanel>
+             
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC Change of Household" || isFccAssistant,true,false)}">
+          <center><h3> 
+                      Additional Indoor Space Information
+                  </h3></center>
+                  <br/>
+       <table style="width:100%">
+       <tr>
+                <td style="text-align:left;"><b>Are there at least two exits from your home? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.At_Least_2_Exits__c}</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>Please describe your exits. If you are using a basement space, there must be two exits from the basement level of the home:</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Exits_Descriptions__c}</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>What types of heating elements do you have? (Check all that apply):</b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Heating_Elements__c}</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>If you have anything other than baseboard or vents/grates, EEC Regulations require that the heating unit be barricaded in a way that keeps children safe. Do you need technical assistance on how to appropriately barricade heating units? </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Need_Assist_to_Barricade_Heating_Units__c}</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>Is the drinking water in your home from: </b> </td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;">{!Licensing_Transaction__c.Drinking_Water_Source__c}</td>
+           </tr>
+           <br/>
+       </table>
+       
+       </apex:outputpanel>
+       <hr/>
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC License Upgrade" || !isFccAssistant,true,false)}">
+          <center><h2> 
+                      Outdoor Space Description
+                  </h2></center>
+                  <br/>
+       <table style="width:100%">
+       <tr>
+                <td style="text-align:left;">Have there been any changes since your last application in what you are using for outdoor play space?</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>{!Licensing_Transaction__c.Outdoor_Space_Changed__c} </b> </td>
+           </tr>
+           <br/>
+           <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.Outdoor_Space_Changed__c == "Yes",true,false)}">
+           <tr>
+                <td style="text-align:left;">Please explain:</td>
+           </tr>
+           <br/>
+           <tr>
+                <td style="text-align:left;"><b>{!Licensing_Transaction__c.Outdoor_Space_Changes_Description__c} </b> </td>
+           </tr>
+           <br/>
+           </apex:outputpanel>
+       </table>
+       <hr/>
+       </apex:outputpanel>
+       
+       <apex:outputpanel rendered="{!IF(Licensing_Transaction__c.recordtype.name == "FCC New License" || isFccAssistant,true,false)}">
+          <left><h3> 
+                      Daily Routine and Activities
+                  </h3></left>
+                  <br/>
+       <apex:outputfield value="{!Licensing_Transaction__c.Daily_Routine_and_Activities__c}" />
+       <br/>
+       <left><h3> 
+                      Technical Assistance Requested
+                  </h3></left>
+                  <br/>
+       <apex:outputfield value="{!Licensing_Transaction__c.Technical_Assistance__c}" />
+       <br/>
+       <left><h3> 
+                     Transaction Special Requests / Comments
+                  </h3></left>
+                  <br/>
+       <apex:outputfield value="{!Licensing_Transaction__c.Transaction_Special_Requests_Comments__c}" />
+       </apex:outputpanel>
+</apex:pageblock>
+</apex:form>
+</apex:page>

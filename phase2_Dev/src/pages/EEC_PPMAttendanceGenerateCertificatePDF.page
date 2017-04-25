@@ -1,0 +1,127 @@
+<apex:page standardController="Provider_Meeting__c" extensions="EEC_PPMAttachmentCertificatePDF" applyBodyTag="false" renderas="pdf">
+    <head>
+        
+        <style type="text/css">
+            .removeLastPage:last-child {
+                position: absolute;
+                bottom: 0;
+            }
+            
+            .removeLastPage {
+                font-family: "helvetica";
+                font-size: 10pt;
+            }
+            @page {
+                size: landscape; 
+            }
+            .container{
+                text-align: center;
+                font-family :  'Times New Roman';
+                border:2px solid black;
+                border-style: double;
+                page-break-after:always;
+                
+            }
+            .containerwithoutPageBreake{
+                text-align: center;
+                font-family :  'Times New Roman';
+                border:2px solid black;
+                border-style: double;
+            }
+            .header-with-logo
+            {
+                font-size: 32px;
+                margin-bottom: 18px;
+            }
+            .certificate-header{
+                top-padding : 50px;
+                font-size: 50px;
+                font-style: italic;
+                margin-bottom: 5px;
+            }
+            .attendee-name{                
+                text-decoration : underline;
+                font-size : 48px;
+                font-style: italic;
+                margin-bottom: 20px;
+            }
+            .center-image{
+                margin-bottom: 25px;
+            }
+            .small-text
+            {
+                font-size : 20px;
+                font-weight : bold;
+                font-style: italic;
+            }
+            .mid-text
+            {
+                font-size : 24px;
+                font-style: italic;
+                font-weight : bold;
+                margin-bottom: 25px;
+            }
+            .certify
+            {
+                font-size : 24px;
+                margin-bottom: 10px;
+            }
+            .footer{
+                font-size : 22px;
+                margin-bottom: 25px;
+            }
+            .bottom{
+                font-size : 22px;
+                margin-top: -15px;
+                margin-bottom: 65px;
+            }
+        </style>
+        <body>
+            <apex:variable value="{!0}" var="rowNum"/>
+            <apex:repeat value="{!providerMeeting.Provider_Meeting_Participants__r}" var="participant">
+                
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                <apex:outputPanel styleClass="removeLastPage" >
+                
+                <div class="{!IF(rowNum == providerMeeting.Provider_Meeting_Participants__r.size ,'containerwithoutPageBreake','container')}"><br/>
+                    <div class="header-with-logo">
+                        <img
+                        src="{!URLFOR($Resource.EEC_Bootstrap,
+                          'EEC_Bootstrap/img/eecCertificateHeart.png')}"
+                        alt="eec"/>&nbsp;Commonwealth of Massachusetts<br/>
+                        Department of Early Education and Care<br/>
+                    </div> 
+                    <div class="certificate-header">
+                        Certificate of Attendance
+                    </div>
+                    <div class="small-text certify">This is to certify that</div>
+                    <div class="attendee-name" style="display:{!if(providerMeeting.Meeting_Type__c == 'Renewal (GSA)', 'block', 'none')}">
+                        {!participant.Contact_Name__c}<br/>
+                    </div>
+                    <div class="attendee-name" style="display:{!if(providerMeeting.Meeting_Type__c != 'Renewal (GSA)', 'block', 'none')}">
+                        {!participant.Potential_Provider_Name__c}<br/>
+                    </div>
+                    <div>
+                        <span class="small-text">Attended the two (2) hour</span><br/><br/>
+                        <div class="center-image">
+                            <img
+                                src="{!URLFOR($Resource.EEC_Bootstrap,
+                                  'EEC_Bootstrap/img/eecCertificateBigImage.png')}"
+                                     alt="eec"/> 
+                        </div>
+                        
+                        <div class="mid-text">{!meetingType}</div>
+                        <div class="small-text footer">Presented at the {!participant.Meeting_Region__c} Massachusetts Regional EEC Office</div>
+                        
+                        <div class="small-text footer">On &nbsp; <apex:outputText value="{0,date,MM'/'dd'/'yyyy}"> <apex:param value="{!providerMeeting.Scheduled_Start__c}" /></apex:outputText></div>
+                        <div class="small-text footer bottom">Presented by Department of Early Education and Care Licensing Staff &nbsp;&nbsp;
+                            <img src="{!URLFOR($Resource.EEC_Bootstrap,'EEC_Bootstrap/img/eecCertificateHeart.png')}" alt="eec"/></div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            </apex:repeat>
+           
+        </body>
+    </head>    
+</apex:page>

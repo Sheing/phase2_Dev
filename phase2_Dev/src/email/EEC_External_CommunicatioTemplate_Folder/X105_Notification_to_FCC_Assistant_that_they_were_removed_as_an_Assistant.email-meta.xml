@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>105 - Notification to FCC Assistant that they were removed as an Assistant on a Provider</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>EEC_Letterhead</letterhead>
+    <name>105 - Notification to FCC Assistant that they were removed as an Assistant</name>
+    <style>formalLetter</style>
+    <subject>Department of Early Education and Care - Notification of update of your provider affiliation</subject>
+    <type>html</type>
+</EmailTemplate>

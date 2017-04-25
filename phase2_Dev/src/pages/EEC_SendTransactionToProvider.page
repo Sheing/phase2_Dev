@@ -1,0 +1,185 @@
+<apex:page standardController="Licensing_Transaction__c" extensions="EEC_SendTransactionToProviderController" applyhtmltag="false" applybodytag="false" showheader="false" sidebar="false" standardstylesheets="false">
+<head>
+ <title>{!if(mode == 'Tran', 'Send a Transaction Back to Provider', 'Send Back Rejected Documents')}</title>
+<!-- <apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system.min.css')}" />  -->
+ <c:EEC_Header id="pageHeader" />
+    <script>
+        j$(document).ready(function(){
+            j$("[id*=fccState]").prop("disabled",false);
+            j$('form').bind('submit', function () {
+                j$(this).find(':disabled').removeAttr('disabled');
+            });
+        });
+        function changeState(state){
+            var regExp = /\(([^)]+)\)/;
+            var st = regExp.exec(j$("select option[value = '" + state.value + "']").text());
+            j$("[id*=fccState]").val(st);
+        }
+    </script>
+<style type="text/css">
+      .form-label {
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      thead {
+        background-color: #f5f5f5;
+      }
+
+      .header-button {
+        margin-right: 3px;
+      }
+
+      .not-visible {
+        display: none;
+      }
+
+      .form-group {
+        width: 100%;
+      }
+
+      .btn-group {
+        margin-bottom: 100px;
+      }
+       .top-level-label {
+                font-weight: 600;
+                margin-right: 5px;
+                line-height: 20px; 
+                color: rgba(0,0,0,0.54);
+              }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .table {
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+      }
+       .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        .radio-group label{
+        font-weight : normal;  
+      }
+
+      .licensing-table > thead:first-child > tr:first-child > th {
+        width: 135.43px;
+      }
+
+      .table-group-one .table > thead:first-child > tr:first-child > th {
+        width: 135.43px;
+      }
+
+      .table-group-two .table > thead:first-child > tr:first-child > th {
+        width: 189.6px;
+      }
+
+      .provider-container {
+        margin-bottom: 100px;
+      }
+
+      @media only screen and (max-width: 800px) {
+        .right-group {
+          padding-right: 3px;
+          width: 100%;
+        }
+      }
+
+      @media only screen and (max-width: 959px) and (min-width: 0px) {
+        .navigation-buttons input, a {
+          font-size: 12px;
+        }
+      }
+
+      md-card {
+        font-size: 14px;
+      }
+     .indented {   
+      padding-left: 20pt;   
+      padding-right: 50pt; 
+      padding-top: 10pt;
+      }
+    </style>
+</head>
+<body class="slds-container">
+    <apex:form id="idform" styleclass="slds-grid slds-wrap">
+         
+         <div class="slds-form--inline" role="group" style="display:{!if(mode == 'Tran','block','none')}"> 
+         <p class="indented">In order to send back this transaction for revision to the Provider, fill the "Note For Revision" with a description of what the provider should do before re-submitting his/her transaction. Once you click on "Send for Revision", an email will be sent to the Provider with your "Note for Revision" and the transaction will be available on the Portal for the provider to review. You will be alerted again once the transaction is submitted again. Note that the Provider will have access to the full transaction and any information can be updated by the Provider (including attachments) and that if any attachments have been marked as Rejected, then it will be sent back as well.</p>
+         </div>
+         
+         <div class="slds-form--inline" role="group" style="display:{!if(mode == 'Doc','block','none')}"> 
+        <p class="indented"> Once you click on "Send for Revision", an email will be sent to the Provider with the list of documents that are currently marked as "Rejected". The Provider will be able to upload new version of these documents on the Portal. Once new version of these documents are submitted, you will be alerted by email and a task will be created for review. Note that only attachments associated to the transaction will be available for revision, the transaction itself will not be available for edit.</p>
+         </div>
+         
+          <div class="slds-form--inline" role="group" style="display:{!if(mode == 'Tran','block','none')}"> 
+           <div class="slds-form-element" > 
+                <div class="slds-form-element"> 
+                    <label  class="indented" for="case-status">Note For Transaction Revision:</label> 
+                    <div class="indented">
+                 <apex:inputtextarea id="noteforRevision" styleclass="form-control" style="width: 100%;" value="{!licensingTransaction.EEC_Note_For_Revision__c}" />  
+                      </div>
+
+               </div> 
+              </div> 
+         </div> 
+       
+           <div class="right-group pull-right md-button" style="display:{!if(mode == 'Tran','block','none')}">
+            <apex:commandbutton onclick="sendforRevision();" styleclass="md-button md-raised md-eec header-button" value="Send for Revision" rerender="result-container">
+            </apex:commandbutton>
+            
+                                  <apex:outputpanel styleclass="right-group" >
+                                    <apex:commandbutton onclick="window.close();" value="Cancel" styleclass="md-button md-raised md-eec header-button"  />
+                                  </apex:outputpanel>
+        
+             <apex:actionFunction name="sendForRevisionAction" action="{!sendForRevision}"  oncomplete="sendforRevisionComplete();" />
+            
+        </div>
+        
+           <div class="right-group pull-right md-button" style="display:{!if(mode == 'Doc','block','none')}">
+            <apex:commandbutton action="{!sendRejectedDocuments}" oncomplete="sendforRevisionComplete();" styleclass="md-button md-raised md-eec header-button" value="Send for Revision" rerender="result-container">
+            </apex:commandbutton>
+             <apex:outputpanel styleclass="right-group">
+             <apex:commandbutton onclick="window.close();" styleclass="md-button md-raised md-eec header-button" value="Cancel" rerender="result-container" />
+             </apex:outputpanel>
+        
+        </div>
+     </apex:form>
+     <script>
+     	function sendforRevision(){
+     		var noteforRevision = document.getElementById("{!$Component.idform.noteforRevision}");
+     		if(noteforRevision.value == ''){
+     			alert('You need to fill "note for revision" before you can send back this transaction to the provider so the provider is informed of the actions required on his / her transaction.');
+     			return false;
+     		}
+     		else{
+     			sendForRevisionAction();
+     		}
+     	}
+     	
+     	function sendforRevisionComplete(){
+       window.close();
+       refreshParent();
+     		
+     	}
+
+      function refreshParent() {
+      //alert('{!parent}');
+     window.opener.location.href='{!parent}';
+     window.opener.location.reload();
+            }
+
+     </script>
+</body>
+</apex:page>

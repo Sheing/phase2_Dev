@@ -1,0 +1,513 @@
+<apex:page controller="EEC_TransactionWizardController" standardStylesheets="false" showheader="false" sidebar="false" docType="html-5.0">
+  <head>
+    <title>EEC : Transaction - RESIDENTIAL PROGRAM DETAIL</title>
+    <c:EEC_Header id="pageHeader" />
+      <script>
+        j$(document).ready(function(){
+            if('{!LicenseRecordTypeName}' == 'FCC_Assistant_New_License')
+                j$("[id*=requestedLicensePicklistHidden]").val(j$("[id*=requestedLicensePicklist] :selected").text());                   
+            j$("[id*=mailingState]").prop("disabled",true);
+            j$(".navigation-buttons a").click(function() {
+                //j$("[id*=requestedLicensePicklistHidden]").val(j$("[id*=requestedLicensePicklist] :selected").text());                   
+            });
+        });
+        function changeState(state){
+            var regExp = /\(([^)]+)\)/;
+            var st = regExp.exec(j$("select option[value = '" + state.value + "']").text());
+            j$("[id*=mailingState]").val(st[1]);
+        }
+        function changeProviderState(state){
+            var regExp = /\(([^)]+)\)/;
+            var st = regExp.exec(j$("select option[value = '" + state.value + "']").text());
+            j$("[id*=providerState]").val(st[1]);
+        }
+      </script>
+      
+    <style>
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {
+        
+        width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .transresprogram-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            margin-bottom: 15px;
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+      
+        
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+        
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        -webkit-appearance: none;
+        border: none;
+        box-shadow: none;
+        background: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: inherit;
+        font-variant: inherit;
+        font-family: inherit;
+        outline: none;
+        letter-spacing: .01em;
+        margin: 3px 0px;
+        white-space: normal;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+    </style>
+      
+  </head>
+    
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar"  rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}"/>
+      
+    <div class="transresprogram-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="row" layout-padding="true" layout-margin="true" ng-controller="TransactionResController as ctrl">
+      <md-content style="margin-top: 20px;" ng-show="ctrl.checkForMessages()" layout="row" flex="100" layout-align="center center">   
+        <md-whiteframe class="md-whiteframe-z2 ng-cloak" layout="column" layout-padding="true" flex="75">
+          <apex:pageMessages id="showmsg"></apex:pageMessages>
+        </md-whiteframe> 
+      </md-content>
+    
+    <apex:form id="TransactionDesignationForm" styleClass="transaction-parsley-form col-lg-8 col-md-8 col-sm-12">
+      <apex:outputPanel style="padding:50px 50px 50px 50px" id="userDetail"  styleClass="ng-cloak">
+        <h3 class="md-display-1">Residential Program Details</h3>
+        <md-divider layout-align="center center"></md-divider>  
+        <apex:pageBlock html-layout="column" html-layout-padding="true" id="designation">
+          
+          <!-- Basic Information -->
+            <div class="base-info" layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true">   
+                <h3 class="md-title" flex="100">Provider / Transaction information</h3>
+
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Provider Name</label>
+                  <apex:outputText value="{!provider.Name}" id="providerName" />
+                </md-content>
+                
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Transaction Type</label>
+                  <apex:outputText value="{!LicenseRecordTypeLabel}" id="transactionTypeTA" />
+                </md-content>
+
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Transaction Number</label>
+                  <apex:outputText value="{!licenseTransation.Name}" id="transactionNumberTA" />
+                </md-content>
+            </div>
+          
+          <!-- Level of Care and Children Served -->
+            <div layout="row" layout-wrap="true" id="business">
+            
+                <h3 class="md-title" flex="100">Level of Care and Children Served</h3> 
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Level_of_Care__c==null,false,true)}}" >
+                  <label class="input-label">Level of Care<span class="required">*</span></label>
+                  <apex:InputField styleClass="form-control" style="width:300px" value="{!licenseTransation.Level_of_care__c}" html-data-parsley-required="true"/>  
+                </div>
+                 <apex:actionFunction name="interCount" action="{!internationalCountries}" reRender="radioChoose"/>
+                
+                <div flex="100" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Characteristics_of_children_served__c==null,false,true)}}">
+                  <br/><label class="input-label">Characteristics of Children Served<span class="required">*</span></label>
+                  <apex:inputfield styleclass="form-control" onchange="interCount();"  value="{!licenseTransation.Characteristics_of_children_served__c}" />  
+                </div>
+                <div flex="100">
+                    <apex:outputPanel id="radioChoose">
+                            <apex:outputPanel html-hidden="true">  
+                              <apex:inputCheckbox selected="{!characterRadio}" html-hidden="true" html-data-parsley-required="true" />
+                           </apex:outputPanel>
+                    </apex:outputPanel>
+                </div> 
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Gender_of_children_served__c ==null,false,true)}}">
+                  <br/><label class="input-label">Gender of Children Served<span class="required">*</span></label>
+                  <apex:InputField styleClass="form-control" style="width:300px" value="{!licenseTransation.Gender_of_children_served__c }" html-data-parsley-required="true"/>  
+                </div>
+                
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Minimum_age_of_children_served__c ==null,false,true)}}">
+                 <br/> <label class="input-label">Min. Age of Children Served<span class="required">*</span></label>
+                  <apex:InputField styleClass="form-control" style="width:300px" value="{!licenseTransation.Minimum_age_of_children_served__c }" html-data-parsley-required="true"/>  
+                </div>
+                
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Maximum_age_of_children_served__c ==null,false,true)}}">
+                  <br/><label class="input-label">Max. Age of Children Served<span class="required">*</span></label>     
+                  <apex:InputField styleClass="form-control" style="width:300px" value="{!licenseTransation.Maximum_age_of_children_served__c }" html-data-parsley-required="true"/>  
+                </div>
+               
+            </div>
+          
+          <!-- Capacity and Staff to Child Ratio -->
+                <div lass="base-info" layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" id="development">
+                    <h3 class="md-title" flex="100">Capacity and Staff to Child Ratio</h3>             
+
+                    <apex:outputPanel rendered="{!LicenseRecordTypeName !='Residential_New_License'}">
+                    <div flex="100" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Capacity__c==null,false,true)}}">
+                      <label class="input-label">Current Capacity<span class="required">*</span></label>
+                      <apex:InputText styleClass="form-control" style="width:300px" value="{!licenseTransation.Capacity__c}" disabled="false" html-data-parsley-required="true"/>    
+                    </div>
+                    </apex:outputPanel>
+                    <div flex="100">
+                       &nbsp;
+                    </div>
+                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Requested_capacity__c==null,false,true)}}">
+                      <label class="input-label">Requested Capacity<span class="required">*</span></label>
+                      <apex:InputField styleClass="form-control" value="{!licenseTransation.Requested_capacity__c}" html-data-parsley-required="true"  />    
+                    </div>
+                    
+                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Awake_Staff_to_child_ratio__c==null,false,true)}}">
+                      <label class="input-label">Awake Staff to Child Ratio<span class="required">*</span></label>
+                      <apex:InputField styleClass="form-control" value="{!licenseTransation.Awake_Staff_to_child_ratio__c}" html-data-parsley-required="true" html-data-parsley-pattern-message="Format entered should be XXX:YYY where XXX and YYY is a number between 1 and 999" html-data-parsley-pattern="^[0-9]+:[^:]"/>    
+                    </div>
+                    
+                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Asleep_Staff_to_child_ratio__c==null,false,true)}}">
+                      <br/><label class="input-label">Asleep Staff to Child Ratio<span class="required">*</span></label>
+                      <apex:InputField styleClass="form-control" value="{!licenseTransation.Asleep_Staff_to_child_ratio__c}" html-data-parsley-required="true" html-data-parsley-pattern-message="Format entered should be XXX:YYY where XXX and YYY is a number between 1 and 999"  html-data-parsley-pattern="^[0-9]+:[^:]"/>    
+                    </div>
+                    
+                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Ratio_comments__c==null,false,true)}}">
+                      <br/><label class="input-label">Ratio Comment</label>
+                      <apex:InputField styleClass="form-control" value="{!licenseTransation.Ratio_comments__c}"/>    
+                    </div>
+                    
+                </div>
+          
+          <!-- Other Characteristics --> 
+                <div layout="row" layout-wrap="true" id="other">
+                    <h3 class="md-title" flex="100">Other Characteristics</h3>           
+
+                    <div flex="50" class="form-group">
+                        <label class="input-label">Do you use Physical Restraints?<span class="required">*</span></label>
+                        <apex:actionRegion >
+                            <div class="requiredInput">
+                                <div class="requiredBlock"></div>
+                                    <apex:selectRadio value="{!licenseTransation.Use_of_physical_restraints1__c}" >
+                                       <apex:selectoptions value="{!items}"  html-data-parsley-required="true" />
+                                        <apex:actionSupport event="onchange" reRender="phyRest" />
+                                    </apex:selectRadio>
+                                </div>
+                        </apex:actionRegion>
+                        
+                        <apex:outputpanel id="phyRest" styleClass="desc-panel">
+                            <apex:outputPanel rendered="{!licenseTransation.Use_of_physical_restraints1__c == 'Yes'}">
+                                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Restraint_method__c==null,false,true)}}">
+                                    <label class="input-label">Restraint Method<span class="required">*</span></label>
+                                    <apex:InputField styleClass="form-control" style="width:300px" value="{!licenseTransation.Restraint_method__c}" html-data-parsley-required="true"/>    
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputpanel>
+                    </div>  
+                     
+                    <div flex="100" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Working_with_which_Referral_Agencies__c==null,false,true)}}">
+                      <apex:actionRegion >
+                          <label class="input-label">What referral Agencies are you working with?<span class="required">*</span></label>
+                          <apex:InputField styleClass="form-control" onchange="referralAgen();"  value="{!licenseTransation.Working_with_which_Referral_Agencies__c}" />
+                      </apex:actionRegion>
+                    </div>
+                    <apex:actionFunction name="referralAgen" action="{!otherReferral}" reRender="otherRef,referralAg"/>
+                    <div flex="100">
+                    <apex:outputPanel id="referralAg">
+                        <apex:outputPanel html-hidden="true">  
+                              <apex:inputCheckbox selected="{!refCheck}" html-hidden="true" html-data-parsley-required="true" />
+                           </apex:outputPanel>
+                    </apex:outputPanel>
+                    </div> 
+                    <div flex="100" >
+                    <apex:outputPanel id="otherRef">
+                        <apex:outputPanel rendered="{!referralAgency}">
+                              <br/><label class="input-label">Other Referral Agencies<span class="required">*</span></label>
+                              <apex:InputField styleClass="form-control" style="width:300px" value="{!licenseTransation.Other_Referral_Agency__c}"/>    
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    </div>
+                </div>
+
+
+           <!-- Navigation Buttons -->
+           <md-content class="navigation-buttons" style="margin-top:50px;" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+                <apex:commandLink styleClass="md-button md-raised md-eec save-btn" value="Save and Previous" onclick="if(!form.validate()){return false;}" action="{!SaveAndPreviousResidentialDetail}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+               <apex:commandLink styleClass="md-button md-raised md-eec save-btn" value="Save and Next" onclick="if(!form.validate()){return false;}" action="{!SaveAndNextResidentialDetail}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+            </md-content>
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+                <apex:commandLink styleClass="md-button md-raised"   immediate="true" action="{!CancelTransaction}" value="Cancel {!formattedLicenseRecordTypeLabel} Transaction"  onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                <apex:commandLink styleClass="md-button md-raised save-btn" value="{!saveAndReturnLabel}" onclick="if(!form.validate()){return false;}" action="{!saveAndReturnResidentialDetail}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+            </md-content> 
+          </apex:pageBlock>
+        </apex:outputPanel>
+                            <apex:actionFunction action="{!SaveAndNextResidentialDetail}" name="SaveNext"/>
+                           <apex:actionFunction action="{!SaveAndPreviousResidentialDetail}" name="SavePrevious" oncomplete="addMargin();">
+                           <apex:param name="previousPage" assignTo="{!previousPageName}" value=""/>
+                        </apex:actionFunction>
+      </apex:form>
+       
+      <eec-wizard btn-progress-color="#fff" class="col-lg-3" flex="30" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" hide="true" show-gt-md="true">
+        <c:EEC_Navigation current="Residential Program Details"
+                                                 recordTypeDeveloperName="{!LicenseRecordTypeName}"
+                                                 providerRecordType="{!providerRecordType}"> 
+           </c:EEC_Navigation>
+      </eec-wizard>  
+    </div>
+      
+    <c:EEC_Site_Footer id="siteFooter" /> 
+    
+    <script>
+         var form = j$(".transaction-parsley-form").parsley({
+                        errorsWrapper: '<div class="parsley-errors-list"></div>',
+                        errorTemplate: '<p class="errorMsg"></p>'    
+                      });
+      
+      jQuery(window).load(function() {
+        _.each(jQuery('[id*=lookup'), function(value,key) { 
+          jQuery(value).off('click'); 
+          jQuery(value).attr('href', '');
+          jQuery(value).css('text-decoration', 'none');
+          jQuery(value).css('cursor', 'not-allowed');
+          jQuery(value).css('color', 'black');
+          jQuery(value).hover(function() {
+          jQuery(this).css('color', 'black');
+          jQuery(this).css('cursor', 'not-allowed');  
+          jQuery(this).css('text-decoration', 'none');
+          });
+        }); 
+      });
+    </script>
+      
+    <script>
+     function addMargin(){
+            j$(".required-input").addClass("required-input-with-error");
+        }
+      app.controller('TransactionResController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.data = {};
+        tranCtrl.data.addressCheckbox = "{!provider.Live_at_this_address__c}";
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", 'Transaction/Provider Info');
+        tranCtrl.selected = [];
+        //  Function to toggle the checkbox.
+        tranCtrl.toggle = function (item, list) {
+          var idx = list.indexOf(item);
+          if (idx > -1) list.splice(idx, 1);
+          else list.push(item);
+        };
+        // Function to check if checkbox is already checked.
+        tranCtrl.exists = function (item, list) {
+          return list.indexOf(item) > -1;
+        };  
+        // Function to check for messages available due to errors.
+        tranCtrl.checkForMessages = function() {
+          // TODO: Switch this to use Angular and now jQuery.            
+          var ele = jQuery('[id*="showmsg"]');
+          if (ele.children().length > 0) {
+            return true;   
+          }
+          return false;
+        };
+      }]);
+      // TODO: Attempt this in Angular over jQuery.     
+      // If a dateformat is clicked - generated by SForce - then attach input-has-value class.
+      jQuery('.dateFormat').on('click', function() { jQuery(this).parent().parent().parent().addClass('md-input-has-value'); });
+      function doNavigate(previousPage, nextPage){
+         if(nextPage != ''){
+          if(!form.validate()){
+           return false;
+          }
+          else{
+           SaveNext();
+          }
+         }
+         else if(previousPage != ''){
+          if(!form.validate()){
+           return false;
+          }
+          else{
+          SavePrevious(previousPage);
+          }
+         }
+        }
+    </script>
+  </body>
+</apex:page>

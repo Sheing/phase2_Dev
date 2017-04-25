@@ -1,0 +1,765 @@
+<apex:page controller="EEC_AttachmentSelectionController" applyhtmltag="false" applybodytag="false" action="{!doCreateDocument}" showheader="false" sidebar="false" standardstylesheets="false" readonly="false">
+<html lang="en" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+      <c:EEC_Header id="pageHeader" /> 
+    <!--<meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />-->
+    <title>EEC: Attachment Selection</title>
+
+   <style>
+         .s3-attachments-inline {
+      font-family: Arial,Helvetica,sans-serif;
+      color: #222;
+    }
+      
+    .s3-attachments-inline form {
+      /*display: flex;
+      flex-direction: column; */
+      overflow-y: scroll;
+      max-height: 180px;
+    }
+      
+    .s3-attachments-inline h3 {
+      font-size: 1.1em; 
+      border-top-color: rgb(153, 89, 5);
+      border-top-style: solid;
+      border-top-width: 2px;
+    }
+      
+    .attachment-item {
+      width: 100%; 
+      display: flex;
+      flex-direction: column; 
+    }
+      
+    .attachment-primary-content {
+      width: 100%; 
+      display: flex;
+      flex-direction: row;
+    }
+      
+    .attachment-primary-content p {
+      float: left; 
+      margin-right: 15px;
+      align-self: center;
+    }
+      
+    .attachment-primary-content p:first-child {
+      flex: 2; 
+    }
+      
+    .navigation-buttons {
+      overflow: visible; 
+    }
+      
+    .clear-button {
+      width: 20px; 
+    }
+        
+    @media only screen and (min-width: 0px) and (max-width: 959px) {
+      .navigation-buttons .md-button {
+        width: 98%;
+      }
+        
+      .navigation-buttons md-content {
+        width: 100%;
+      }
+      
+      .clear-button {
+        width: 98%;
+      }
+    }
+      
+    .top-level-label {
+      font-weight: 600;
+      margin-right: 3px;
+      line-height: 20px; 
+      color: rgba(0,0,0,0.54);
+    }
+      
+    .attachment-description-form {
+      width: 98%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+      
+    .attachment-description-form .description-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center; 
+    }
+      
+    .attachment-description-form label {
+      flex: 3; 
+      margin: 0;
+      border-radius: 5px 5px 0 0;
+    }
+      
+    .attachment-description-form label input {
+      border-radius: 5px 0px 0px 5px;
+    }
+      
+    .attachment-description-form .icon-container {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+      
+    .attachment-description-form .icon-container i {
+      flex: 1;
+      text-align: center;
+      align-self: center;
+      cursor: pointer;
+      border-radius: 0px 5px 5px 0px;
+      background-color: #853F3F;
+      color: rgba(255,255,255,1);
+      padding: 5px;
+    }
+      
+    .attachment-description-form .icon-container i:hover {
+      background-color: #703E3E; 
+    }
+      
+    .attachment-description-form .icon-container i.success {  
+      background-color: #66BB6A;
+      color: rgba(255,255,255,1);
+      border-radius: 0;
+    }
+      
+    .attachment-description-form .icon-container i.success:hover {  
+      background-color: #81C784;
+    }
+      
+    .attachment-description-form .icon-container i.cancel {  
+      background-color: #EF5350;
+      color: rgba(255,255,255,1);
+      border-radius: 0 5px 5px 0;
+    }  
+      
+    .attachment-description-form .icon-container i.cancel:hover {  
+      background-color: #E57373;
+    }  
+    
+    // Rules for using icons as white on a dark background.
+    .attachment-description-form .icon-container i.md-light { color: rgba(255, 255, 255, 1); }
+    .attachment-description-form .icon-container i.md-inactive { color: rgba(255, 255, 255, 0.3); }
+      
+    .errorMsg {
+      color: red; 
+    }
+    .slds-container {
+        padding-bottom: 30px;
+        margin-left: 20px;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .button-container {
+        margin-top: 21px;
+        padding-left: 5px;
+      }
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+
+        .requiredInput2 {
+              margin-left: 0px;
+            }
+            
+            .requiredInput1 {
+              margin-left: 0px;
+            }
+            
+        .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+      
+      .sr-item-row {
+        cursor: pointer;
+        padding: 10px;
+      }
+
+        .sr-item-row:hover {
+          background: rgba(225,225,225,0.8);
+          cursor: pointer;
+        }
+
+      .top-level-label {
+        font-weight: 600;
+        margin-right: 3px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+        
+      .inner-label {
+        color: black;
+        font-weight: normal;
+        line-height: initial;
+        white-space: nowrap;
+      }
+
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {        
+        width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .transprovider-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            /*margin-bottom: 15px;*/
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+       .requiredInput2 {
+              margin-left: 0px;
+            }
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        -webkit-appearance: none;
+        border: none;
+        box-shadow: none;
+        background: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: inherit;
+        font-variant: inherit;
+        font-family: inherit;
+        outline: none;
+        letter-spacing: .01em;
+        margin: 3px 0px;
+        white-space: normal;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+      .requiredInput1 {
+              margin-left: 0px;
+            }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      .top-level-label {
+          font-weight: 600;
+          margin-right: 5px;
+          line-height: 20px; 
+          color: rgba(0,0,0,0.54);
+       }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+      
+      /*New Style*/
+      .transaction-info-row {
+            margin-left: 0px; 
+          }
+      .reasonErrorMessage{
+            display : none;
+          }
+      .visible{
+            display : block;
+         }
+		
+		.s3-input-container{
+			align-items:baseline;
+		    display: -webkit-inline-box;
+		}
+    </style>
+  </head>
+  <body ng-app="eecApp">
+    <apex:messages id="showmsg" styleClass="error-container" style="color: #FF0000; font-weight: bold;"/>
+    <div style="padding-right: 50px;" class="attachment-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column" layout-padding="true" layout-margin="true" ng-controller="AttachmentController as ctrl">
+    <apex:form id="idForm" html-layout="column" html-layout-padding="true" style="padding-left: 50px;" >
+      <h3 class="md-display-1">Attachment Selection</h3>
+      <md-divider layout-align="center center"></md-divider><br/> 
+     
+      <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Introduction</h3>
+           </div>
+           <div class="panel-body"  style="padding-bottom: 0px;">
+            <apex:outputText value="{!leadConfiguration.Attachment_Selection_Page_Intro__c}" escape="false" />            
+           </div>
+      </div>
+
+      <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Document Header</h3>
+           </div>
+           <div class="panel-body"  style="padding-bottom: 0px;">
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label" style="width:200px;">Type: </p>
+              <apex:outputtext value="{!document.Document_Type__r.Name}" />
+            </md-content>
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label" style="width:200px;">Description: </p>
+              <apex:outputtext value="{!document.Document_Type__r.Description__c}" />
+            </md-content>
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label" style="width:200px;">Document Name: </p>
+              <apex:inputText styleClass="form-control" value="{!documentName}" />
+            </md-content>
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label" style="width:200px;">Notes and Comments: </p>
+              <apex:inputtextarea styleClass="form-control" value="{!documentNotes}" />
+            </md-content>          
+           </div>
+      </div>
+      
+      <apex:actionFunction name="uploadAttachment" action="{!doSave}" oncomplete="refreshParent();">
+          <apex:param name="attachmentbody" value="" id="attachmentbody" /> 
+          <apex:param name="attachmentdeletebody" value="" id="attachmentdeletebody" /> 
+      </apex:actionFunction>     
+    </apex:form>
+    
+    <form id="AttachmentForm" class="attachment-form" name="AttachmentForm" style="margin-bottom:100px;padding-left: 50px;width:100%" layout="column" layout-padding="true">
+    <ng-form name="HouseholdInnerForm">  
+       <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Attachments</h3>
+           </div>
+           <div class="panel-body" style="padding-bottom: 0px;">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col" style="width:50%"><span ><b>File Name</b></span></th>
+                        <th scope="col" style="width:20%"><span ><b>Date attached</b></span></th> 
+                        <th scope="col" style="padding-left: 38px;width:15%"><span ><b>View</b></span></th>
+                        <th scope="col" style="padding-left: 38px;width:15%"><span ><b>Delete</b></span></th>  
+                      </tr>
+                    </thead>
+                    <tbody>
+                          <tr ng-repeat="(index,attachment) in ctrl.householdMembers">
+                            <td scope="col" style="padding-top: 20px;">
+                                <span>{{attachment.Filename__c}}</span>
+                            </td>
+                            <td scope="col" style="padding-top: 20px;">
+                                <span>{{attachment.Created_Date}}</span>
+                            </td>                             
+                            <td scope="col">
+                                <a style="display:{{attachment.File_Url == '' ? 'none' : 'block'}}" href="{{attachment.File_Url}}" class="md-button md-raised md-eec"  html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" target="_blank">View</a>
+                            </td>
+                            <td scope="col">
+                                <md-button class="md-button md-raised md-eec" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" type="button" ng-click="ctrl.removeMember(index)">Delete</md-button>
+                            </td>
+                          </tr>
+                    </tbody>
+                </table>
+           </div> 
+       </div>
+
+          <apex:outputPanel layout="block" styleClass="modal-body">      
+	           <s3-file-upload button-text="Select Attachment"
+	                   endpoint_url="{!$Setup.AWS_Config__c.S3_Endpoint_Url__c}" 
+	                   bucket-name="{!$Setup.AWS_Config__c.S3_Bucket_Name__c}"
+	                   acl="{!$Setup.AWS_Config__c.S3_Access_Control_Level__c}"
+	                   prefix="{!document.Id}/"
+	                   key="{!accessKey}"
+	                   remote-func-params="{!$RemoteAction.EEC_AttachmentSelectionController.generateMultiplePolicySignature}"
+	                   multiple-enabled="false"
+	                   timestamp-enabled="true"                
+	                   keep-files-enabled="false"> 
+	           </s3-file-upload>
+
+				<apex:outputPanel layout="block"> 
+           			<button class="md-button md-raised md-eec" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" ng-click="ctrl.upload();" type="button" >Upload</button> 
+           		</apex:outputPanel>
+         </apex:outputPanel>
+                       
+        <div class="row" style="text-align:center">
+            <md-button type="button" class="md-button md-raised md-eec" onclick="closeWin();" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">Cancel and Back</md-button>
+            <md-button type="button" class="md-button md-raised md-eec" ng-click="ctrl.processJson()" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">Save</md-button>
+        </div>
+        </ng-form>
+    </form>
+     <c:EEC_Site_Scripts id="pageScripts"/>  
+   </div>
+    <script>
+      
+      app.controller('AttachmentController', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
+        var tranCtrl = this;
+        tranCtrl.isSubmitted = false;
+        tranCtrl.funcId = null;
+        tranCtrl.selected = [];
+        tranCtrl.householdMembers = [];
+        tranCtrl.householdMembersToDelete = [];
+        tranCtrl.existingHHMembers = {!attachmentJSON};
+        
+        $scope.numUploadComponents = 0;
+        $scope.timesUploadComplete = 0;
+        $scope.bucketName = '{!$Setup.AWS_Config__c.S3_Bucket_Name__c}';
+        
+        var uploadFileName = '';
+        var uploadPrefix = '';
+        var uploadContentType = '';
+        var uploadACL = '';
+        var uploadBucket = '';
+        
+        // If we have pre-existing members then add them to the list and present them.
+        if (!_.isEmpty(tranCtrl.existingHHMembers)) {
+          // Loop through each member and create a JS equalivent.
+          for (i=0;i<tranCtrl.existingHHMembers.length;i++) {  
+            // Create a new Angular Member based on the data given.
+            var shortDateFormat = "MM/dd/yyyy";  
+            var member = {
+              "Id": tranCtrl.existingHHMembers[i].s3File.Id,
+              "Filename__c": tranCtrl.existingHHMembers[i].s3File.Filename__c,
+              "Created_Date": $j.format.date(new Date(tranCtrl.existingHHMembers[i].s3File.CreatedDate), shortDateFormat),
+              "File_Url": tranCtrl.existingHHMembers[i].fileUrl,
+              "Prefix__c": tranCtrl.existingHHMembers[i].s3File.Prefix__c,
+              "Content_Type__c": tranCtrl.existingHHMembers[i].s3File.Content_Type__c,
+              "Acl__c": tranCtrl.existingHHMembers[i].s3File.Acl__c,
+              "Bucket__c": tranCtrl.existingHHMembers[i].s3File.Bucket__c
+            };    
+            tranCtrl.householdMembers.push(member);  
+          }
+        }
+
+        // Call this function to broadcast to the directive to process the upload.
+        this.upload = function() {
+        j$('.loading-container').show();
+        $scope.numUploadComponents = jQuery('s3-file-upload').length;
+        // Call all upload directives to process files.
+        $rootScope.$broadcast('upload', {});
+        };
+        
+        
+      // Capture Emit event from Directive for result data.
+      $scope.$on('uploadComplete', function(event, data) {
+        console.log('Times Upload Complete => uploadComplete: ' + $scope.timesUploadComplete);
+        $scope.timesUploadComplete++;
+        console.log('Times Upload Complete => uploadComplete [AFTER]: ' + $scope.timesUploadComplete);
+        var shortDateFormat = "MM/dd/yyyy";
+        if (angular.isArray(data)) {
+          var json = [];
+          for (var i = 0; i < data.length; i++) {
+            if (!data[i].status) {
+              console.log("----> Error: File not successfully uploaded.");
+              break;
+            }
+            console.log(data[i].data);
+            var attachment = data[i].data;
+            // Split the filename to get the prefix.
+            var splitFilename = attachment.key.split('/');
+            // Create the JSON needed for the S3_File__c objects.
+            
+            var member = {
+              "Created_Date": $j.format.date(new Date(), shortDateFormat),
+              "Filename__c": splitFilename[1],
+              "Prefix__c": splitFilename[0],
+              "Content_Type__c": attachment['Content-Type'],
+              "Acl__c": attachment.acl,
+              "Bucket__c": $scope.bucketName,
+              "Document__c":"{!document.Id}",
+              "File_Url":""
+            };
+            
+            tranCtrl.householdMembers.push(member);
+          }
+          console.log("Files Uploaded Successfully!");
+          tranCtrl.clear();
+        } else if ($scope.timesUploadComplete == $scope.numUploadComponents) {
+          console.log("Error: " + data.error);
+
+          if (data.error.indexOf('No files') > -1) {
+            console.log("No files to upload. Continue to next page.");
+            angular.element(jQuery('.fileListContainer')).scope().ctrl.clear();
+          }
+        }
+      });
+      
+      this.clear = function(clearIndex) {
+            if (!angular.isUndefined(clearIndex)) {
+              $rootScope.$broadcast('clearFiles_' + clearIndex, {});
+            } else {
+              $rootScope.$broadcast('clearFiles',{});
+            }
+            $scope.numUploadComponents = 0;
+            $scope.timesUploadComplete = 0;
+      }
+          
+       // Remove a attachment from the list.
+       tranCtrl.removeMember = function(index) {
+          // If item was in existing members then we need to flag it for deletion.
+          var member = tranCtrl.householdMembers[index];
+          if (!_.isEmpty(member.Id)) {
+            tranCtrl.householdMembersToDelete.push(member);
+          }
+          tranCtrl.householdMembers.splice(index, 1);   
+       }
+       
+       // Process the JSON and prep it for Apex processing.
+       tranCtrl.processJson = function() { 
+          // Set the form as submitted to show any error handling.
+          tranCtrl.isSubmitted = true;
+          // Set the function id in the controller for onComplete is Async.
+          // If the form is valid and we have member items them Update them.
+          if (tranCtrl.householdMembers.length > 0 || tranCtrl.householdMembersToDelete.length > 0) {  
+            var hhMembersJson = tranCtrl.householdMembers;
+            var hhMembersToDeleteJson = tranCtrl.householdMembersToDelete;
+              
+            if (hhMembersJson.length > 0) {  
+              // Find and remove the hash key variable from the current members. 
+              for (i = 0; i < hhMembersJson.length; i++) {
+                _.each(hhMembersJson[i], function(value, key) {
+                  if (_.includes(key,'hash')) {
+                    delete hhMembersJson[i][key];    
+                  }
+                });      
+              }
+            }
+                
+            if (hhMembersToDeleteJson.length > 0) {
+              // Find and remove the hash key variable from the members to delete. 
+              for (i = 0; i < hhMembersToDeleteJson.length; i++) {
+                _.each(hhMembersToDeleteJson[i], function(value, key) {
+                  if (_.includes(key,'hash')) {
+                    delete hhMembersToDeleteJson[i][key];    
+                  }
+                });      
+              }   
+            }
+            // Turn the json to a string for Apex processing.
+            var json = JSON.stringify(hhMembersJson);
+            var deleteJson = JSON.stringify(hhMembersToDeleteJson);
+            // Call to process the Json.
+            uploadAttachment(json, deleteJson);
+          }
+      }
+
+      // Function to check for messages available due to errors.
+      tranCtrl.checkForMessages = function() {
+          // TODO: Switch this to use Angular and not jQuery.            
+          var ele = jQuery('[id*="showmsg"]');
+          if (ele.children().length > 0) {
+            return true;   
+          }
+          return false;
+        };
+      }]);
+      
+      function closeWin() {
+        window.close();
+      }
+      
+      function refreshParent(){
+         if(opener != undefined)
+         	opener.closeModal();
+         else if(window.opener != undefined)
+         	window.opener.closeModal();
+         else if(window.top != undefined)
+         	window.top.closeModal();
+         else
+         	window.opener.location.reload(true);
+         window.close();
+      }
+    </script>
+  </body>
+  </html>
+</apex:page>

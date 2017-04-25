@@ -1,0 +1,78 @@
+<apex:component >
+    <style>
+    	.provider-lt-card{
+        	margin-bottom : 5px;
+            display: flex;
+            min-height: 100px;
+        	border-radius: 4px;
+        	box-shadow: 1px 1px 1px 1px #888888;
+        }
+        .color-code{
+        	width:2%;
+        	min-height : 100px;
+        	border-radius: 4px 0 0 4px;
+        }
+        .col-lg-12{
+        	padding-top : 10px;
+        }
+    </style>
+    <apex:attribute type="String" name="recordID" description="Transaction Record ID" />
+    <apex:attribute type="String" name="transactionID" description="Transaction number" />
+    <apex:attribute type="String" name="type" description="Type of Licnesing Transaction" />
+    <apex:attribute type="String" name="licensor" description="The licensing transactions licensor" />
+    <apex:attribute type="String" name="lastStep" description="Last Step Reached" />
+    <apex:attribute type="String" name="progressStyleColor" description="The status of licensing Transaction" />
+    <apex:attribute type="String" name="providerRecordType" description="Provider Record Type." />
+    
+    <script type="text/javascript">
+    	$(document).ready(function() {
+		    $('#trans-{!recordID}').click(function(e) { 
+		      var recordTypeName = '{!type}';
+		      var providerRecordTypeName = '{!providerRecordType}';
+		      
+		      if((providerRecordTypeName == 'Large Group' || providerRecordTypeName == 'Small Group') && (recordTypeName.toLowerCase().indexOf('gsa') >= 0  || 
+		      	recordTypeName.toLowerCase() == 'close prior expiration' || recordTypeName.toLowerCase() == 'change of provider name' || recordTypeName.toLowerCase() == 're-issuance of license certificate')){
+		      	window.location.href = 'EEC_ViewGSALicenseTransaction?ltID=' + '{!recordID}';
+		      }
+		      else if((providerRecordTypeName == 'Adoption Agency' || providerRecordTypeName == 'Foster Care Agency' || providerRecordTypeName == 'Group Care' || providerRecordTypeName == 'Temporary Shelter') && (recordTypeName.toLowerCase().indexOf('placement') >= 0 || recordTypeName.toLowerCase().indexOf('residential') >= 0 || recordTypeName.toLowerCase() == 'r&p change of admin authority' || 
+		      	recordTypeName.toLowerCase() == 'close prior expiration' || recordTypeName.toLowerCase() == 'change of provider name' || recordTypeName.toLowerCase() == 're-issuance of license certificate')){
+		      	window.location.href = 'EEC_ViewLicenseTransaction?ltID=' + '{!recordID}';
+		      }
+		      else if(recordTypeName.toLowerCase() == 'variance on regulation request' || 
+		      	recordTypeName.toLowerCase() == 'close prior expiration' || recordTypeName.toLowerCase() == 'change of provider name' || recordTypeName.toLowerCase() == 're-issuance of license certificate'){
+		      	window.location.href = 'EEC_ViewVarianceTransaction?ltID=' + '{!recordID}';
+		      }
+		      else{
+		      	window.location.href = 'EEC_ViewTransaction?ltID=' + '{!recordID}';
+		      }
+		    });
+		});
+    </script>
+
+    <div class="provider-lt-card" id="trans-{!recordID}">
+		<div class="color-code" style="{!progressStyleColor}">
+		</div>
+		<div class="col-lg-12">
+			<div class="col-lg-6">
+				<div class="provider-status">
+					<apex:outputText styleClass="item-content" value="{!transactionID}"></apex:outputText>
+					<apex:outputText styleClass="item-label" value="Transaction ID"></apex:outputText> 
+				</div>
+				<div class="provider-status">
+					<apex:outputText styleClass="item-content" value="{!type}"></apex:outputText>
+					<apex:outputText styleClass="item-label" value="Type of Transaction"></apex:outputText> 
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="provider-status">
+					<apex:outputText styleClass="item-content" value="{!IF(licensor != null , licensor , 'N/A')}"></apex:outputText>
+					<apex:outputText styleClass="item-label" value="Licensor"></apex:outputText> 
+				</div>
+				<div class="provider-status">
+					<apex:outputText styleClass="item-content" value="{!IF(lastStep != null , lastStep , 'N/A')}"></apex:outputText>
+					<apex:outputText styleClass="item-label" value="Last Step"></apex:outputText> 
+				</div>
+			</div>
+		</div>
+   </div>
+</apex:component>

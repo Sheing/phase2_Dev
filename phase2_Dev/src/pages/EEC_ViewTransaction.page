@@ -1,0 +1,1145 @@
+<apex:page controller="EEC_ViewTransactionController" doctype="html-5.0" showheader="false" sidebar="false" standardstylesheets="false">
+
+  <head>
+    <title>EEC : View Transaction</title>
+    <c:EEC_Header id="pageHeader" />
+    <style>
+      .md-button.md-raised.md-eec, .md-button.md-raised.md-eec {
+        color: rgb(250,250,250);
+        background-color: #853F3F;
+      }
+
+        .md-button.md-raised.md-eec:hover, .md-button.md-raised.md-eec:hover {
+          color: rgb(250,250,250);
+          background-color: #703E3E;
+        }
+
+      .md-button.md-raised, .md-button.md-raised {
+        background-color: #f7f7f7;
+      }
+
+      .md-button span {
+        padding: 6px;
+      }
+
+      .top-level-label, .assistant-header-text {
+        font-weight: 600;
+        margin-right: 5px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+
+      input[type="radio"], input[type="checkbox"] {
+        margin: 4px 7px 0;
+      }
+
+      .command-button-container {
+        position: relative;
+        top: -2px;
+      }
+
+      .commandBtn {
+        margin: -1px 0px -2px;
+      }
+
+      .transaction-info-row {
+        margin-left: 0px;
+      }
+
+      .eec-subhead {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-left: 0px;
+      }
+
+      .form-control {
+        color: rgba(0,0,0,.87);
+      }
+
+      .navigation-buttons {
+        overflow: visible;
+      }
+
+      .not-visible {
+        display: none;
+      }
+
+      textarea {
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-bottom: 2px;
+        font-weight: normal;
+      }
+
+      .requiredInput {
+        margin-left: 30px;
+      }
+
+      .desc-panel {
+        margin-left: 15px;
+        width: 80%;
+      }
+
+      .background-form-container {
+        margin-bottom: 20px;
+      }
+
+      thead {
+        background-color: #f5f5f5;
+        font-size: 16px;
+        color: inherit;
+      }
+
+      .desc-answer {
+        margin-bottom: 15px;
+      }
+
+      .ques {
+        margin-bottom: 10px;
+      }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+      }
+
+      .col-lg-8 {
+        padding-left: 0px;
+      }
+
+      .table {
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+      }
+
+      #check-box-tables > .table > tbody > tr > td {
+        border-top: 0px;
+        border-bottom: 0px;
+      }
+
+      #check-box-tables > .table {
+        border-left: 0px;
+        border-right: 0px;
+        border-right: 0px;
+      }
+
+      .panel-title {
+        font-weight: 500;
+      }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .household-form-container {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .navigation-buttons .md-button {
+          width: 98%;
+        }
+
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+
+
+        .add-button-container {
+          padding-right: 0;
+          width: 100%;
+        }
+      }
+
+      .attachment-item {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+
+        .attachment-item p {
+          float: left;
+          margin-right: 15px;
+          align-self: center;
+        }
+
+          .attachment-item p:first-child {
+            flex: 2;
+          }
+    </style>
+    <script>
+
+    </script>
+  </head>
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar" />
+    <div class="background-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">
+      <apex:messages style="color: #FF0000; font-weight: bold;" />
+
+      <div class="background-form-container" style="margin-bottom:100px;" layout="column" layout-padding="true" flex="100">
+        <apex:form id="BackgroundInformationForm">
+          <h3 class="md-display-1">View Transaction</h3>
+          <md-divider class="ng-cloak" layout-align="center center"></md-divider>
+          <div class="transaction-info">
+            <h3 class="eec-subhead">Transaction Information</h3>
+            <div class="row">
+              <div class="col-lg-6">
+                <md-content class="transaction-info-row" layout="row">
+                  <p class="md-subhead top-level-label">Transaction Type: </p>
+                  <apex:outputtext value="{!LicenseRecordTypeLabel}" />
+                </md-content>
+                <md-content class="transaction-info-row" layout="row">
+                  <p class="md-subhead top-level-label">Transaction Number: </p>
+                  <apex:outputtext value="{!licenseTransation.Name}" />
+                </md-content>
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Renewal' || LicenseRecordTypeName == 'FCC_License_Upgrade'}">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Would you like to change your license status to?: </p>
+                    <apex:outputtext value="{!licenseTransation.License_Requested__c}" />
+                  </md-content>
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Inactivate' ||
+                                                    LicenseRecordTypeName == 'FCC_Re_Active' ||
+                                                    LicenseRecordTypeName == 'Close_Prior_Expiration' ||
+                                                    LicenseRecordTypeName == 'Re_issuance_of_License_Cert' }">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Reason for request: </p>
+                    <apex:outputtext value="{!licenseTransation.Reason_for_Request__c}" />
+                  </md-content>
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Inactivate' ||
+                                                    LicenseRecordTypeName == 'FCC_License_Upgrade'||
+                                                    LicenseRecordTypeName == 'Close_Prior_Expiration'}">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Date of Activity Ends: </p>
+                    <c:EEC_DateFormat date="{!licenseTransation.Date_Activity_Ends__c}"></c:EEC_DateFormat>
+                  </md-content>
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Re_Active'}">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Date Care Resumes: </p>
+                    <c:EEC_DateFormat date="{!licenseTransation.Date_Care_Resumes__c}"></c:EEC_DateFormat>
+                  </md-content>
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Downgrade_Capacity'}">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Prior License Capacity: </p>
+                    <apex:outputtext value="{!licenseTransation.Prior_Licensed_Capacity__c}" />
+                  </md-content>
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Downgrade_Capacity'}">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">License capacity requested: </p>
+                    <apex:outputtext value="{!licenseTransation.License_Requested__c}" />
+                  </md-content>
+                </apex:outputpanel>
+                <md-content class="transaction-info-row" layout="row">
+                  <p class="md-subhead top-level-label">Status: </p>
+                  <apex:outputtext value="{!licenseTransation.Status__c}" />
+                </md-content>
+                <md-content class="transaction-info-row" layout="row">
+                  <p class="md-subhead top-level-label">Submission Date: </p>
+                  <c:EEC_DateFormat date="{!licenseTransation.Submission_Date__c}"></c:EEC_DateFormat>
+                </md-content>
+              </div>
+              <div class="col-lg-6">
+                <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_New_License' ||
+                                                     LicenseRecordTypeName == 'FCC_Renewal' ||
+                                                     LicenseRecordTypeName == 'FCC_License_Upgrade' ||
+                                                     LicenseRecordTypeName == 'Change_of_Address' ||
+                                                     LicenseRecordTypeName == 'FCC_Change_Room_Floor_Level' ||
+                                                     LicenseRecordTypeName == 'FCC_Change_of_Household'}">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Last Reached Step: </p>
+                    <apex:outputtext value="{!licenseTransation.Last_Reached_Step__c}" />
+                  </md-content>
+                </apex:outputpanel>
+                <md-content class="transaction-info-row" layout="row">
+                  <p class="md-subhead top-level-label">Submitted By: </p>
+                  <apex:outputtext value="{!licenseTransation.Submitter__r.FirstName + ' ' + licenseTransation.Submitter__r.LastName}" />
+                </md-content>
+                <md-content class="transaction-info-row" layout="row">
+                  <p class="md-subhead top-level-label">Source: </p>
+                  <apex:outputtext value="{!licenseTransation.Source__c}" />
+                </md-content>
+                 <apex:outputpanel rendered="{!licenseTransation.Status__c == 'Closed (Processed)' || licenseTransation.Status__c == 'Closed (License Issued / Updated)' || licenseTransation.Status__c == 'Closed (EEC Application Incomplete / Denied)' || licenseTransation.Status__c == 'Cancelled (by Applicant)'}">
+                    <md-content class="transaction-info-row" layout="row">
+                      <p class="md-subhead top-level-label">Date Transaction Closed: </p>
+                      <c:EEC_DateFormat date="{!licenseTransation.Date_Closed__c}"></c:EEC_DateFormat>
+                    </md-content>
+                </apex:outputpanel>
+                <apex:outputPanel rendered="{!licenseTransation.Status__c == 'Closed (Processed)' || licenseTransation.Status__c == 'Closed (License Issued / Updated)' || licenseTransation.Status__c == 'Closed (EEC Application Incomplete / Denied)' || licenseTransation.Status__c == 'Cancelled (by Applicant)'}">
+                    <md-content class="transaction-info-row" layout="row">
+                      <p class="md-subhead top-level-label">Reason Transaction Closed / Cancelled: </p>
+                      <apex:outputtext value="{!licenseTransation.Reason_Closed_Cancelled__c}" />
+                    </md-content>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Your EEC Licensor
+              </h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-lg-6 col-md-6">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">First / Last Name: </p>
+                    <apex:outputtext value="{!licenseTransation.Assigned_To__r.FirstName + ' '+ licenseTransation.Assigned_To__r.LastName}" />
+                  </md-content>
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Email: </p>
+                    <apex:outputtext value="{!licenseTransation.Assigned_To__r.Email}" />
+                  </md-content>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                  <md-content class="transaction-info-row" layout="row">
+                    <p class="md-subhead top-level-label">Phone: </p>
+                    <apex:outputtext value="{!licenseTransation.Assigned_To__r.Phone}" />
+                  </md-content>
+                </div>
+              </div>
+            </div>
+          </div>
+          <apex:outputpanel rendered="{!LicenseRecordTypeName == 'FCC_Change_of_Name' }">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Name Changed Detail
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                    <md-content class="transaction-info-row" layout="row">
+                      <p class="md-subhead top-level-label">Prior First and Last Name: </p>
+                      <apex:outputtext value="{!licenseTransation.Prior_First_Name__c + ' '+ licenseTransation.Prior_First_Name__c}" />
+                    </md-content>
+                  </div>
+                  <div class="col-lg-6 col-md-6">
+                    <md-content class="transaction-info-row" layout="row">
+                      <p class="md-subhead top-level-label">New First and Last Name: </p>
+                      <apex:outputtext value="{!licenseTransation.New_First_Name__c  + ' '+ licenseTransation.New_Last_Name__c}" />
+                    </md-content>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputpanel>  
+          <apex:outputpanel rendered="{!LicenseRecordTypeName!='Variance_On_Regulation_Request' && LicenseRecordTypeName!='FCC_Downgrade_Capacity'}">
+            <h3 class="eec-subhead" flex="95" layout-margin="true">Transaction - Summary and Submission</h3><br />
+          </apex:outputpanel>
+          <apex:outputpanel rendered="{!LicenseRecordTypeName=='Change_of_Address' }">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  New Address
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                          <md-content class="transaction-info-row" layout="row">
+                            <p class="md-subhead top-level-label">New Street Address: </p>
+                            <apex:outputfield value="{!licenseTransation.New_Street_Address_1__c}" />
+                          </md-content>
+                          <md-content class="transaction-info-row" layout="row">
+                            <p class="md-subhead top-level-label">New Street Address 2: </p>
+                            <apex:outputtext value="{!licenseTransation.New_Street_Address_2__c}" />
+                          </md-content>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                           <md-content class="transaction-info-row" layout="row">
+                            <p class="md-subhead top-level-label">New City/Town: </p>
+                            <apex:outputtext value="{!licenseTransation.New_City__r.Name}" />
+                          </md-content> 
+                          <md-content class="transaction-info-row" layout="row">
+                            <p class="md-subhead top-level-label">New Zip Code: </p>
+                            <apex:outputtext value="{!licenseTransation.New_Zip_Code__c}" />
+                          </md-content>
+                        </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputpanel>
+          <apex:outputpanel rendered="{!LicenseRecordTypeName == 'Change_of_Address' }">
+            <div class="panel panel-default new-address {!IF(LicenseRecordTypeName!='FCC_Change_Room_Floor_Level'  && LicenseRecordTypeName != 'FCC_Downgrade_Capacity','','not-visible')}">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Previous Address
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                      <md-content class="transaction-info-row" layout="row">
+                        <p class="md-subhead top-level-label">Previous Address: </p>
+                        <apex:outputtext value="{!licenseTransation.Previous_Street_Address_1__c}" />
+                      </md-content>
+                      <md-content class="transaction-info-row" layout="row">
+                        <p class="md-subhead top-level-label">Previous Address 2: </p>
+                        <apex:outputtext value="{!licenseTransation.Previous_Street_Address_2__c}" />
+                      </md-content>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                       <md-content class="transaction-info-row" layout="row">
+                        <p class="md-subhead top-level-label">Previous City/Town: </p>
+                        <apex:outputtext value="{!licenseTransation.Previous_City__r.Name}" />
+                      </md-content> 
+                      <md-content class="transaction-info-row" layout="row">
+                        <p class="md-subhead top-level-label">Previous Zip Code: </p>
+                        <apex:outputtext value="{!licenseTransation.Previous_Zip_Code__c}" />
+                      </md-content>
+                    </div>
+                </div>
+              </div>
+            </div>
+           </apex:outputpanel>  
+          
+          <apex:outputpanel rendered="{!IF(LicenseRecordTypeName == 'FCC_New_License'
+                                            || LicenseRecordTypeName == 'FCC_Renewal'
+                                            || LicenseRecordTypeName == 'FCC_License_Upgrade'
+                                            || LicenseRecordTypeName == 'Change_of_Address'
+                                            || LicenseRecordTypeName == 'FCC_Change_of_Household' ,'true','false')}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Household Members / Individuals Regularly on the Premises
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div id="no-more-tables">
+                  <table class="table table-condensed">
+                    <thead>
+                      <tr>
+                        <th class="panel-title">First Name</th>
+                        <th class="panel-title">Last Name</th>
+                        <th class="panel-title">Date of Birth</th>
+                        <th class="panel-title">Relationship to Provider</th>
+                        <th class="panel-title">Occupation</th>
+                        <th class="panel-title">No. of Hours Home During Child Care</th>
+                        <th class="panel-title">Current School Grade</th>
+                        <th class="panel-title">Email address</th>
+                      </tr>
+                    </thead>
+                    <apex:repeat value="{!ihmList}" var="hm">
+                      <tr>
+                        <td data-title="First Name"><apex:outputfield value="{!hm.First_Name__c}" /></td>
+                        <td data-title="Last Name"><apex:outputfield value="{!hm.Last_Name__c}" /></td>
+                        <td data-title="Date of Birth">
+                          <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                            <apex:param value="{!hm.Date_of_Birth__c}" />
+                          </apex:outputtext>
+                        </td>
+                        <td data-title="Relationship"><apex:outputfield value="{!hm.Relationship_to_Provider__c}" /></td>
+                        <td data-title="Occupation"><apex:outputfield value="{!hm.Occupation__c}" /></td>
+                        <td data-title="No of Hours"><apex:outputfield value="{!hm.Number_of_Hours_Home_During_Child_Care__c}" /></td>
+                        <td data-title="Current School Grade"><apex:outputfield value="{!hm.Current_School_Grade__c}" /></td>
+                        <td data-title="Email address"><apex:outputfield value="{!hm.Email_Address__c}" /></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </apex:outputpanel>
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_New_License'
+                            || LicenseRecordTypeName == 'FCC_Renewal'
+                            || LicenseRecordTypeName == 'FCC_License_Upgrade','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Licensing Status And Capacity
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License'}">
+                <apex:outputtext styleclass="top-level-label" value="Are you currently caring for children who are not related to you?:" />
+                <apex:outputpanel >
+                  <apex:selectradio value="{!licenseTransation.Caring_For_Children_Not_Related__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </apex:outputpanel>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName!='FCC_New_License'}">
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputtext styleclass="top-level-label" value="Will you be providing evening, overnight or weekend care? (Please note that Reg. #7.09(7) states that no educator may regularly care for child care children more than 12 hours in any 24 hour period):" />
+                <apex:outputpanel >
+                  <apex:selectradio value="{!licenseTransation.Evening_Overnight_Weekend_Care__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </apex:outputpanel>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputtext styleclass="top-level-label" value="Are any of your children home schooled?:" />
+                <apex:selectradio value="{!licenseTransation.Children_Home_Schooled__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="chmDesc" class="{!IF(licenseTransation.Children_Home_Schooled__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade') && licenseTransation.Children_Home_Schooled__c == 'Yes'}">
+                  <apex:outputtext styleclass="top-level-label" value="Please describe:" style="font-weight: bold;" />
+                  <apex:outputfield value="{!licenseTransation.Children_Home_Schooled_Description__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputtext styleclass="top-level-label" value="Are you an approved foster care provider?:" />
+                <apex:selectradio value="{!licenseTransation.Approved_Foster_Care_Provider__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="afcDesc" class="{!IF(licenseTransation.Approved_Foster_Care_Provider__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade') && licenseTransation.Approved_Foster_Care_Provider__c == 'Yes'}">
+                  <apex:outputtext styleclass="top-level-label" value="Please describe:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Approved_Foster_Care_Provider_Descrip__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputtext styleclass="top-level-label" value="Are you in the process of becoming a foster care provider?:" />
+                <apex:selectradio value="{!licenseTransation.Becoming_Foster_Care_Provider__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="bfcDesc" class="{!IF(licenseTransation.Becoming_Foster_Care_Provider__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade') && licenseTransation.Becoming_Foster_Care_Provider__c == 'Yes'}">
+                  <apex:outputtext styleclass="top-level-label" value="Please describe:" style="font-weight: bold" />
+                  <apex:outputfield value="{!licenseTransation.Becoming_Foster_Care_Provider_Descrip__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputtext styleclass="top-level-label" value="Is there any other business being operated out of your home?:" />
+                <apex:selectradio value="{!licenseTransation.Business_Operated_Out_of_Own_Home__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="booDesc" class="{!IF(licenseTransation.Business_Operated_Out_of_Own_Home__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade') && licenseTransation.Business_Operated_Out_of_Own_Home__c == 'Yes'}">
+                  <apex:outputtext styleclass="top-level-label" value="Please describe:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Bus_Operated_Out_of_Own_Home_Descrip__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputtext styleclass="top-level-label" value="Are you currently working with a Family Child Care System?:" />
+                <apex:selectradio value="{!licenseTransation.Use_Family_Child_Care_System__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="ufcDesc" class="{!IF(licenseTransation.Use_Family_Child_Care_System__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade') && licenseTransation.Use_Family_Child_Care_System__c == 'Yes'}">
+                  <apex:outputtext styleclass="top-level-label" value="Please provide the name of System:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Use_Family_Child_Care_System_Descrip__c}" />
+                </apex:outputpanel>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_New_License'
+                            || LicenseRecordTypeName == 'FCC_Renewal'
+                            || LicenseRecordTypeName == 'FCC_License_Upgrade'
+                            || LicenseRecordTypeName == 'FCC_Provider_Assistant_Update','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">Assistants</h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel rendered="{!LicenseRecordTypeName != 'FCC_Provider_Assistant_Update'}">
+                <apex:outputtext styleclass="top-level-label" value="Are you working with an Assistant(s) or intending to work with an assistant?:" />
+                <apex:selectradio value="{!licenseTransation.Working_With_Assistant__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div class="slds">
+                <c:EEC_AssistantList iseditible="false" assistantinterface="{!ctrlInstance}" />
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_New_License','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                EEC Involvement and Experience
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="Have you ever had previous involvement with EEC due to unlicensed child care?:" />
+                <apex:outputpanel >
+                  <apex:selectradio value="{!licenseTransation.Previous_Involvement_with_EEC_for_Unlice__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </apex:outputpanel>
+              </apex:outputpanel>
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="Have you ever applied for or been issued a certificate or license by the Department of Early Education and Care or its’ predecessor agencies (OCCS, OFC)?:" />
+                <apex:selectradio value="{!licenseTransation.Previous_Application_Certif_with_EEC__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="pacDesc" class="{!IF(licenseTransation.Previous_Application_Certif_with_EEC__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!licenseTransation.Previous_Application_Certif_with_EEC__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please list the type of care, the license number(s) and expiration date(s) of any licenses/certificates you have held:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Prev_App_Certif_with_EEC_Descrip__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="Have you ever applied for or been issued a child care license or certificate by any other state?:" />
+                <apex:selectradio value="{!licenseTransation.Prev_App_Certif_with_Another_State__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="pacaDesc" class="{!IF(licenseTransation.Prev_App_Certif_with_Another_State__c == 'Yes' ,'desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!licenseTransation.Prev_App_Certif_with_Another_State__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="If yes, please list the state, type of care, the license number(s) and expiration date(s) of any licenses/certificates you have held:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Prev_App_Certif_with_Another_State_Desc__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="Has any certificate or license ever been revoked, suspended?:" />
+                <apex:selectradio value="{!licenseTransation.Certificate_of_License_Revoked_Suspend__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="Have you ever voluntarily surrendered your certificate or license?:" />
+                <apex:selectradio value="{!licenseTransation.Certificate_or_License_Surrendered__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="rssDesc" class="{!IF(licenseTransation.Certificate_of_License_Revoked_Suspend__c == 'Yes' || licenseTransation.Certificate_or_License_Surrendered__c == 'Yes','desc-answer', 'not-visible')}">
+                <apex:outputpanel rendered="{!licenseTransation.Certificate_of_License_Revoked_Suspend__c == 'Yes' || licenseTransation.Certificate_or_License_Surrendered__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please describe the reasons why?" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Revocation_Suspension_Surrender_Reas__c}" />
+                </apex:outputpanel>
+              </div><br />
+              <h3 class="panel-title" flex="95" layout-margin="true" style="margin-left: 0;">Employment History</h3><br />
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="EEC’s family child care regulations require at least one year of full time experience caring for children or a combination of experience and education and training.  Please describe how you meet these qualifications?: " />
+                <apex:outputfield value="{!licenseTransation.Experience_Caring_for_Children_QUalifica__c}">
+                </apex:outputfield>
+              </apex:outputpanel>
+              <br /><br />
+              <div id="no-more-tables">
+                <table class="table table-bordered table-condensed cf">
+                  <thead class="cf">
+                    <tr>
+                      <th class="panel-title">Position</th>
+                      <th class="panel-title">Employment Start Date</th>
+                      <th class="panel-title">Employment End Date</th>
+                      <th class="panel-title">Reason for Leaving</th>
+                      <th class="panel-title">Employer</th>
+                      <th class="panel-title">Address</th>
+                      <th class="panel-title">Telephone</th>
+                    </tr>
+                  </thead>
+                  <apex:repeat value="{!ehList}" var="eh">
+                    <tr>
+                      <td data-title="Position"><apex:outputfield value="{!eh.Position__c}" /></td>
+                      <td data-title="Employment Start Date">
+                        <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                          <apex:param value="{!eh.Start_Date__c}" />
+                        </apex:outputtext>
+                      </td>
+                      <td data-title="Employment End Date">
+                        <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                          <apex:param value="{!eh.End_Date__c}" />
+                        </apex:outputtext>
+                      </td>
+                      <td data-title="Reason for Leaving"><apex:outputfield value="{!eh.Reason_for_Leaving__c}" /></td>
+                      <td data-title="Employer"><apex:outputfield value="{!eh.Employer__c}" /></td>
+                      <td data-title="Address"><apex:outputfield value="{!eh.Employer_Address__c}" /></td>
+                      <td data-title="Telephone"><apex:outputfield value="{!eh.Employer_Phone__c}" /></td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default {!IF(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Background Information
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}" id="BIBlockSectionItem">
+                <apex:outputlabel styleclass="top-level-label" value="Within the past three  (3) years has any child care child in your care suffered serious illness or injury, been
+            hospitalized, or needed emergency medical treatment as a result of something that happened while in family child care?:" />
+                <apex:selectradio value="{!licenseTransation.Child_Emergency_Injury_Last_3_Years__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="ceiDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade') && licenseTransation.Child_Emergency_Injury_Last_3_Years__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please explain:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Child_Emerg_Injury_Last_3_Years_Descrip__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputlabel styleclass="top-level-label" value="Have you or any member of your household or any person regularly on the premises ever been arrested or charged with any crime in any state?:" />
+                <apex:selectradio value="{!licenseTransation.Charged_or_Arrested_for_Crime__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="cDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!licenseTransation.Charged_or_Arrested_for_Crime__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please list the date(s), the state(s), and the nature of the charges: " style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Charges_Description__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputlabel styleclass="top-level-label" value="Have you or any member of your household, or any person regularly on the premises ever had any dealings with any child protection or child welfare agency in any state?:" />
+                <apex:selectradio value="{!licenseTransation.Dealings_with_Child_Prot_Child_Welfar__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="dcpDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade')  && licenseTransation.Dealings_with_Child_Prot_Child_Welfar__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please describe the nature of those dealings, whether there were any findings that you abused or neglected a child, and when these dealings occurred:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Dealing_with_Child_Prot_Welfar_Descri__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputlabel styleclass="top-level-label" value="Have you or any member of your household or any person regularly on the premises ever been classified or ordered to register as a Sex Offender (any level) in any state?:" />
+                <apex:selectradio value="{!licenseTransation.Registering_as_Sex_Offender__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="sonDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade')  && licenseTransation.Registering_as_Sex_Offender__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please describe the nature of the incident(s) that required that the classification or registration occur and date that the classification or registration occurred:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Sex_Offender_Nature_of_Incident__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputlabel styleclass="top-level-label" value="Have you or any other person living in or regularly on the premises of the family child care home, ever had a restraining order issued against you/them or requested a restraining order for protection?:   " />
+                <apex:selectradio value="{!licenseTransation.Restraining_Order_Issued__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <div id="roDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade')  && licenseTransation.Restraining_Order_Issued__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please explain:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Restraining_Order_Description__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputlabel styleclass="top-level-label" value="Do you use alcoholic beverages, narcotics or other drugs in a manner or to an extent that might impact your ability to care for children?:" />
+                <apex:outputpanel >
+                  <apex:selectradio value="{!licenseTransation.Use_of_Alcoholic_Bev_Narcotics_Drugs__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </apex:outputpanel>
+              </apex:outputpanel>
+              <div id="alDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade')  && licenseTransation.Use_of_Alcoholic_Bev_Narcotics_Drugs__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please explain:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Alcoholic_Bev_Narcotics_Drugs_Desc__c}" />
+                </apex:outputpanel>
+              </div>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'}">
+                <apex:outputlabel styleclass="top-level-label" value="Have you or any member of your household, or any person regularly on the premises ever been found to have abused or neglected a child in any state?:" />
+                <apex:outputpanel >
+                  <apex:selectradio value="{!licenseTransation.Abused_or_neglected_a_child__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </apex:outputpanel>
+              </apex:outputpanel>
+              <div id="abDesc" class="desc-answer">
+                <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade')  && licenseTransation.Abused_or_neglected_a_child__c == 'Yes'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please describe the date, state and nature of those findings:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Abused_or_neglected_a_child_Description__c}" />
+                </apex:outputpanel>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default {!IF(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Training Information
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="Do you currently belong to a food program?: " />
+                  <apex:selectradio value="{!licenseTransation.Belong_to_Food_Program__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="wfpDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Renewal' && licenseTransation.Belong_to_Food_Program__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="If yes, which one?: " />
+                    <apex:outputfield value="{!licenseTransation.Which_Food_Program__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="Medication Administration: The Five Rights:" />
+                  <apex:selectradio value="{!licenseTransation.Took_Medication_Administration_Training__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="dmaDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal') && licenseTransation.Took_Medication_Administration_Training__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Date: " />
+                    <apex:outputfield value="{!licenseTransation.Date_Med_Administration_Training_Taken__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="Transportation Training, Look Before You Lock:" />
+                  <apex:selectradio value="{!licenseTransation.Took_Transportation_Training__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="dttDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal') && licenseTransation.Took_Transportation_Training__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Date: " />
+                    <apex:outputfield value="{!licenseTransation.Date_Transportation_Training_Taken__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="SIDS Training, Reducing the Risk of SIDS in Child Care: " />
+                  <apex:selectradio value="{!licenseTransation.Took_SIDS_Training__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="dlstDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal') && licenseTransation.Took_SIDS_Training__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Last training date: " />
+                    <apex:outputfield value="{!licenseTransation.Date_Last_SIDS_Training_Taken__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="Basic training in USDA Nutrition Requirements and food choking hazards: " />
+                  <apex:selectradio value="{!licenseTransation.Took_USDA_Nutrition_Training__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="duntDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal') && licenseTransation.Took_USDA_Nutrition_Training__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Date: " />
+                    <apex:outputfield value="{!licenseTransation.Date_USDA_Nutrition_Training_Taken__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{! (LicenseRecordTypeName=='FCC_License_Upgrade' || LicenseRecordTypeName=='FCC_Renewal')  && NOT(ISBLANK(licenseTransation.License_Requested__c)) && licenseTransation.License_Requested__c != 'Up to 6 Children'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="If upgrading capacity: serving 7-10 Children in Family Child Care: " />
+                  <apex:selectradio value="{!licenseTransation.Took_Upgrading_Capacity_Training__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="ductDesc" styleclass="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_License_Upgrade' || LicenseRecordTypeName=='FCC_Renewal')  && licenseTransation.Took_Upgrading_Capacity_Training__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Date: " />
+                    <apex:outputfield value="{!licenseTransation.Date_Upgrading_Capacity_Training_Taken__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName =='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="FCC Orientation, Module II: " />
+                  <apex:selectradio value="{!licenseTransation.Took_FCC_Orientation__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="dfotDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Renewal' && licenseTransation.Took_FCC_Orientation__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Date: " />
+                    <apex:outputfield value="{!licenseTransation.Date_FCC_Orientation_Taken__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="CPR: " />
+                  <apex:selectradio value="{!licenseTransation.CPR_Certified__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="ccidDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal') && licenseTransation.CPR_Certified__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Issuance Date: " />
+                    <apex:outputfield value="{!licenseTransation.CPR_Certification_Issue_Date__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'}">
+                <div class="col-lg-8">
+                  <apex:outputlabel styleclass="top-level-label" value="First Aid: " />
+                  <apex:selectradio value="{!licenseTransation.First_Aid_Certified__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div id="ficiDesc" class="desc-answer col-lg-4">
+                  <apex:outputpanel rendered="{!(LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal') && licenseTransation.First_Aid_Certified__c == 'Yes'}">
+                    <apex:outputlabel styleclass="top-level-label" value="Issuance Date: " />
+                    <apex:outputfield value="{!licenseTransation.First_Aid_Certification_Issue_Date__c}" />
+                  </apex:outputpanel>
+                </div>
+              </apex:outputpanel>
+              <br />
+              <apex:outputpanel rendered="{!teList.size > 0}">
+                <h3 class="eec-subhead" flex="95" layout-margin="true">Additional Trainings</h3>
+                <div id="no-more-tables">
+                  <table class="table table-bordered table-condensed cf {!IF(LicenseRecordTypeName =='FCC_Renewal','','not-visible')}">
+                    <thead class="cf">
+                      <tr>
+                        <th class="panel-title">Topic</th>
+                        <th class="panel-title">Date</th>
+                        <th class="panel-title">Number of Hours</th>
+                      </tr>
+                    </thead>
+                    <apex:repeat value="{!teList}" var="at">
+                      <tr>
+                        <td data-title="Additional Trainings"><apex:outputfield value="{!at.Name}" /></td>
+                        <td data-title="Date">
+                          <apex:outputtext value="{0,date,MM'/'dd'/'yyyy}">
+                            <apex:param value="{!at.Date_of_the_Training__c}" />
+                          </apex:outputtext>
+                        </td>
+                        <td data-title="Number of Hours"><apex:outputfield value="{!at.Number_of_Training_Hours__c}" /></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </apex:outputpanel>
+            </div>
+          </div>
+          <apex:outputpanel rendered="{!IF(LicenseRecordTypeName == 'FCC_New_License'
+                                            || LicenseRecordTypeName == 'FCC_Renewal'
+                                            || LicenseRecordTypeName == 'FCC_License_Upgrade'
+                                            || LicenseRecordTypeName == 'Change_of_Address'
+                                            || LicenseRecordTypeName == 'FCC_Change_of_Household' ,'true','false')}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Indoor Space Description
+                </h3>
+              </div>
+              <div class="panel-body">
+                <apex:outputpanel rendered="{!LicenseRecordTypeName =='FCC_New_License' || LicenseRecordTypeName=='Change_of_Address' || LicenseRecordTypeName=='FCC_Change_Room_Floor_Level'}">
+                  <apex:outputlabel styleclass="top-level-label" value="Please describe the family child care residence: (e.g. single family, duplex, apartment, etc): " />
+                  <apex:outputfield value="{!licenseTransation.FCC_Residence_Description__c}" />
+                </apex:outputpanel>
+                <br /><br />
+                <div id="no-more-tables">
+                  <table class="table table-condensed cf {!IF(LicenseRecordTypeName != 'FCC_Change_of_Household' && LicenseRecordTypeName != 'FCC_Downgrade_Capacity','','not-visible')}">
+                    <thead class="cf">
+                      <tr>
+                        <th class="panel-title">Room Name</th>
+                        <th class="panel-title">Use</th>
+                        <th class="panel-title">Dimension - Length (feet)</th>
+                        <th class="panel-title">Dimension - Width (feet)</th>
+                        <th class="panel-title">Floor Level</th>
+                      </tr>
+                    </thead>
+                    <apex:repeat value="{!roomList}" var="rm">
+                      <tr>
+                        <td data-title="Room Name"><apex:outputfield value="{!rm.Name}" /></td>
+                        <td data-title="Use"><apex:outputfield value="{!rm.Use__c}" /></td>
+                        <td data-title="Dimension - Length (feet)"><apex:outputfield value="{!rm.Dimension_Length_feet__c}" /></td>
+                        <td data-title="Dimension - Width (feet)"><apex:outputfield value="{!rm.Dimension_Width_feet__c}" /></td>
+                        <td data-title="Floor Level"><apex:outputfield value="{!rm.Floor_Level__c}" /></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default {!IF(LicenseRecordTypeName=='FCC_Downgrade_Capacity' || LicenseRecordTypeName=='Variance_On_Regulation_Request','not-visible','')}">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Additional Indoor Space Information
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div class="ques">
+                  <apex:outputlabel styleclass="top-level-label" value="Are there at least two exits from your home? " />
+                  <apex:selectradio value="{!licenseTransation.At_Least_2_Exits__c}" disabled="true">
+                    <apex:selectoptions value="{!items}" />
+                  </apex:selectradio>
+                </div>
+                <div class="ques">
+                  <apex:outputlabel styleclass="top-level-label" value="Please describe your exits. If you are using a basement space, there must be two exits from the basement level of the home: " />
+                  <apex:outputfield style="margin-left:10px;" value="{!licenseTransation.Exits_Descriptions__c}" />
+                </div>
+                <div class="ques">
+                  <apex:outputlabel styleclass="top-level-label" value="What types of heating elements do you have? (Check all that apply):" />
+                  <div id="check-box-tables">
+                    <apex:selectcheckboxes value="{!selectedHestElems}" styleclass="table" disabled="true">
+                      <apex:selectoptions value="{!heatingElements}" />
+                    </apex:selectcheckboxes>
+                  </div>
+                </div>
+                <div id="nabhDesc" class="desc-answer">
+                  <apex:outputpanel rendered="{!IF(((selectedHestStr =='Baseboards,') || (selectedHestStr == 'Vents / Grates,') || (selectedHestStr == 'Baseboards,Vents / Grates,')),false,true)}">
+                    <apex:outputlabel styleclass="top-level-label" value="If you have anything other than baseboard or vents/grates, EEC Regulations require that the heating unit be barricaded in a way that keeps children safe. Do you need technical assistance on how to appropriately barricade heating units?: " />
+                    <apex:selectradio value="{!licenseTransation.Need_Assist_to_Barricade_Heating_Units__c}" disabled="true">
+                      <apex:selectoptions value="{!items}" />
+                    </apex:selectradio>
+                  </apex:outputpanel>
+                </div>
+                <div class="ques">
+                  <apex:outputlabel styleclass="top-level-label" value="Is the drinking water in your home from: " />
+                  <apex:outputfield value="{!licenseTransation.Drinking_Water_Source__c}" />
+                </div>
+              </div>
+            </div>
+          </apex:outputpanel>
+          <div class="panel panel-default {!IF(LicenseRecordTypeName=='FCC_License_Upgrade','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Outdoor Space Description
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel >
+                <apex:outputlabel styleclass="top-level-label" value="Have there been any changes since your last application in what you are using for outdoor play space?: " />
+                <apex:selectradio value="{!licenseTransation.Outdoor_Space_Changed__c}" disabled="true">
+                  <apex:selectoptions value="{!items}" />
+                </apex:selectradio>
+              </apex:outputpanel>
+              <apex:outputpanel id="oscDesc" styleclass="desc-answer">
+                &nbsp;
+                <apex:outputpanel rendered="{!licenseTransation.Outdoor_Space_Changed__c == 'Yes'}">
+                  <apex:outputtext styleclass="top-level-label" value="Please explain:" style="font-weight: bold !important;" />
+                  <apex:outputfield value="{!licenseTransation.Outdoor_Space_Changes_Description__c}" />
+                </apex:outputpanel>
+              </apex:outputpanel>
+            </div>
+          </div>
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_New_License','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Daily Routine and Activities
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel >
+                <apex:outputfield value="{!licenseTransation.Daily_Routine_and_Activities__c}" />
+              </apex:outputpanel>
+            </div>
+          </div>
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_New_License' ||
+                                LicenseRecordTypeName=='FCC_License_Upgrade' ||
+                                LicenseRecordTypeName == 'FCC_Renewal' ||
+                                LicenseRecordTypeName == 'Change_of_Address' ||
+                                LicenseRecordTypeName == 'FCC_Change_Room_Floor_Level' ||
+                                LicenseRecordTypeName == 'FCC_Change_of_Household','','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Requested Technical Assistance
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel >
+                <apex:outputfield value="{!licenseTransation.Technical_Assistance__c}" />
+              </apex:outputpanel>
+            </div>          
+          </div>
+          
+           <div class="panel panel-default {!IF(varianceList.size > 0 && (LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal'|| LicenseRecordTypeName=='FCC_License_Upgrade'|| LicenseRecordTypeName=='Change_of_Address'|| LicenseRecordTypeName=='FCC_Change_Room_Floor_Level' || LicenseRecordTypeName == 'Variance_On_Regulation_Request'),'','not-visible')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Variance on Regulation Request
+              </h3>
+            </div>
+            <div class="panel-body">
+                <div id="no-more-tables">
+                  <table class="table table-condensed cf {!IF((LicenseRecordTypeName=='FCC_New_License' || LicenseRecordTypeName=='FCC_Renewal' || LicenseRecordTypeName=='FCC_License_Upgrade'|| LicenseRecordTypeName=='Change_of_Address'|| LicenseRecordTypeName=='FCC_Change_Room_Floor_Level' || LicenseRecordTypeName == 'Variance_On_Regulation_Request'),'','not-visible')}">
+                    <thead class="cf">
+                      <tr>
+                        <th class="panel-title">Regulation Number</th>
+                        <th class="panel-title">Regulation Article</th>
+                        <th class="panel-title">Your understanding of the regulation and the intent of the regulation</th>
+                        <th class="panel-title">Your alternative method of compliance</th>
+                      </tr>
+                    </thead>
+                    <apex:repeat value="{!varianceList}" var="vl">
+                      <tr>
+                        <td data-title="Regulation" width="10%"><apex:outputfield value="{!vl.Associated_Regulation__r.Regulation_Number__c}" /></td>
+                        <td data-title="Regulation Article" width="50%"><apex:outputfield value="{!vl.Associated_Regulation__r.Article__c}" /></td>
+                        <td data-title="Understanding of the regulation" width="20%"><apex:outputfield value="{!vl.Provider_Understanding_of_Regulation__c}" /></td>
+                        <td data-title="Alternative method of compliance" width="20%"><apex:outputfield value="{!vl.Provider_Alternative_Method_to_Comply__c}" /></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_Change_of_Name' || LicenseRecordTypeName == 'FCC_Provider_Assistant_Update' || LicenseRecordTypeName == 'FCC_Downgrade_Capacity','not-visible', '')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Transaction Special Requests / Comments
+              </h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel >               
+                <apex:outputlabel styleclass="top-level-label" value="Special Requests and Comments:" />
+                <apex:outputfield value="{!licenseTransation.Transaction_Special_Requests_Comments__c}" />
+              </apex:outputpanel>
+            </div>
+          </div>
+
+          <div class="panel panel-default {!IF(LicenseRecordTypeName == 'FCC_Change_of_Name' || LicenseRecordTypeName == 'FCC_Provider_Assistant_Update' || LicenseRecordTypeName == 'FCC_Downgrade_Capacity','not-visible','')}">
+            <div class="panel-heading">
+              <h3 class="panel-title">Attachments</h3>
+            </div>
+            <div class="panel-body">
+              <apex:outputpanel id="fileAttachmentContainer" styleclass="fileAttachmentContainer" style="width: 100%;">
+                <apex:outputpanel id="fileListContainer">
+                  <!-- Incident Attachments -->
+                  <apex:outputpanel rendered="{!attachments.size > 0}">
+                    <apex:repeat value="{!attachments}" var="attachment">
+                      <div class="attachment-item">
+                        <p>{!attachment.Filename__c}</p>
+                        <p><apex:outputtext value="{0, date, MMMM d','  yyyy}"><apex:param value="{!attachment.CreatedDate}" /></apex:outputtext></p>
+                      </div>
+                    </apex:repeat>
+                  </apex:outputpanel>
+                  <!-- No Attachments -->
+                  <apex:outputpanel rendered="{!attachments.size == 0}">
+                    <p>No attachments for this Licensing Transaction.</p>
+                  </apex:outputpanel>
+                </apex:outputpanel>
+              </apex:outputpanel>
+            </div>
+          </div>
+
+          <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="Back" action="{!backInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" />
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="Edit" action="{!editInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!licenseTransation.Status__c=='To Submit'}" />
+          </md-content>
+          <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink styleclass="md-button md-raised"   immediate="true" action="{!CancelTransaction}" value="Cancel Transaction" onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!licenseTransation.Status__c=='To Submit'}" />
+          </md-content>
+        </apex:form>
+      </div>
+    </div>
+    <c:EEC_Site_Footer id="siteFooter" />
+    <script>
+      app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.funcId = null;
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", "Review & Submission");
+        tranCtrl.selected = [];
+      }]);
+    </script>
+  </body>  
+</apex:page>

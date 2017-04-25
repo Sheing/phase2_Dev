@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Provider_Meeting</fullName>
+        <fields>Name</fields>
+        <fields>Meeting_Type__c</fields>
+        <fields>Meeting_Region__c</fields>
+        <fields>Scheduled_Start__c</fields>
+        <fields>Meeting_Status__c</fields>
+        <fields>Language__c</fields>
+        <fields>Leader__c</fields>
+        <label>Provider Meeting</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>AdditionalStaff__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Additional Licensor that will be attending / supporting the meeting</description>
+        <externalId>false</externalId>
+        <label>Additional Staff</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Provider_Meetings1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Attended_No_of_participants__c</fullName>
+        <description>Number of participants that attended</description>
+        <externalId>false</externalId>
+        <label>Attended - No. of participants</label>
+        <summaryFilterItems>
+            <field>Provider_Meeting_Participant__c.Participation_Status__c</field>
+            <operation>equals</operation>
+            <value>Attended</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Provider_Meeting_Participant__c.Provider_Meeting__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Expected_No_of_participants__c</fullName>
+        <description>Number of participants that are scheduled or were scheduled to attend</description>
+        <externalId>false</externalId>
+        <label>Expected - No. of participants</label>
+        <summaryFilterItems>
+            <field>Provider_Meeting_Participant__c.Participation_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Cancelled</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Provider_Meeting_Participant__c.Provider_Meeting__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Language__c</fullName>
+        <description>Language the speaker of the meeting will be using</description>
+        <externalId>false</externalId>
+        <label>Language</label>
+        <picklist>
+            <picklistValues>
+                <fullName>English</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Spanish</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Chinese</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Portuguese</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other_Non_English</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Language_for_Portal__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+
+(ISPICKVAL(Language__c ,&quot;English&quot;) || ISPICKVAL(Language__c ,&quot;Spanish&quot;) || ISPICKVAL(Language__c ,&quot;Chinese&quot;) || ISPICKVAL(Language__c ,&quot;Portuguese&quot;)),TEXT(Language__c ),
+
+  IF((ISPICKVAL(Language__c ,&quot;Other Non-English&quot;) ), &quot;&quot;, Other_Language__c))</formula>
+        <label>Language for Portal</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Leader__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Licensor that will lead the meeting</description>
+        <externalId>false</externalId>
+        <label>Leader</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Provider_Meetings</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Meeting_Address__c</fullName>
+        <description>This field will be populated by default with the Region address but can be updated by the user</description>
+        <externalId>false</externalId>
+        <label>Meeting Address</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Meeting_Location_Description__c</fullName>
+        <description>This field will be populated by default with the Region associated field but can be updated by the user</description>
+        <externalId>false</externalId>
+        <label>Meeting Location Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Meeting_Region__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>Region the meeting will be hold</description>
+        <externalId>false</externalId>
+        <label>Meeting Region</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Region__c.RecordType.Name</field>
+                <operation>equals</operation>
+                <value>Licensing Region</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Region__c</referenceTo>
+        <relationshipLabel>Provider Meetings</relationshipLabel>
+        <relationshipName>Provider_Meetings</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Meeting_Status__c</fullName>
+        <description>Status of the meeting</description>
+        <externalId>false</externalId>
+        <label>Meeting Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Open for registration</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed for registration</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Meeting_Type__c</fullName>
+        <description>Type of meeting that will be conducted</description>
+        <externalId>false</externalId>
+        <label>Meeting Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>PPM (FCC)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PPM (GSA)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Renewal (GSA)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Meeting_Type_for_Certificate__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISPICKVAL( Meeting_Type__c , &apos;PPM (FCC)&apos;) , &apos;Family Child Care Potential Provider Meeting&apos;,  
+IF( ISPICKVAL( Meeting_Type__c , &apos;PPM (GSA)&apos;) , &apos;Group and School Age Child Care Potential Provider Meeting&apos;,  
+IF( ISPICKVAL(Meeting_Type__c, &apos;Renewal (GSA)&apos;) , &apos;Group and School Age Child Care License Renewal Training&apos;, &apos;False&apos;) ) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Meeting Type for Certificate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>No_of_seats_available__c</fullName>
+        <description>Number of seats available. Will be set by default after creation of the record to the value from the Region</description>
+        <externalId>false</externalId>
+        <label>No. of seats available</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Remaining_Spots__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( (No_of_seats_available__c  -  Expected_No_of_participants__c)  &gt;= 0, 
+     No_of_seats_available__c  -  Expected_No_of_participants__c, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Number of Remaining Spots</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Language__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Language</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scheduled_End__c</fullName>
+        <description>End Time of the meeting</description>
+        <externalId>false</externalId>
+        <label>Scheduled End</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Scheduled_Start__c</fullName>
+        <description>Start Time of the meeting</description>
+        <externalId>false</externalId>
+        <label>Scheduled Start</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <label>Provider Meeting</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Meeting_Status__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>No_of_seats_available__c</columns>
+        <columns>Number_of_Remaining_Spots__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Meeting_PPM_FCC</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Meeting_Status__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting_Type__c</field>
+            <operation>equals</operation>
+            <value>PPM (FCC)</value>
+        </filters>
+        <label>All Meeting - PPM(FCC)</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Meetings_Last_12_Months</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Meeting_Status__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting_Status__c</field>
+            <operation>equals</operation>
+            <value>Open for registration,Closed for registration,Completed,Cancelled</value>
+        </filters>
+        <filters>
+            <field>Scheduled_Start__c</field>
+            <operation>equals</operation>
+            <value>LAST_N_MONTHS:12</value>
+        </filters>
+        <label>All Meetings - Last 12 Months</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Meetings_PPM_GSA</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Meeting_Status__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting_Type__c</field>
+            <operation>equals</operation>
+            <value>PPM (GSA)</value>
+        </filters>
+        <label>All Meetings - PPM(GSA)</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Meetings_Renewal_GSA</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Meeting_Status__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting_Type__c</field>
+            <operation>equals</operation>
+            <value>Renewal (GSA)</value>
+        </filters>
+        <label>All Meetings  - Renewal(GSA)</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Upcoming_Meetings</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Meeting_Status__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Scheduled_Start__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>All Upcoming Meetings &gt;=Today</label>
+    </listViews>
+    <listViews>
+        <fullName>Meetings_Closed_for_Registration</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting_Status__c</field>
+            <operation>equals</operation>
+            <value>Closed for registration</value>
+        </filters>
+        <label>Meetings - Closed for Registration</label>
+    </listViews>
+    <listViews>
+        <fullName>Meetings_Open_for_Registration</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Meeting_Region__c</columns>
+        <columns>Scheduled_Start__c</columns>
+        <columns>Scheduled_End__c</columns>
+        <columns>Language__c</columns>
+        <columns>Leader__c</columns>
+        <columns>No_of_seats_available__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting_Status__c</field>
+            <operation>equals</operation>
+            <value>Open for registration</value>
+        </filters>
+        <label>Meetings - Open for Registration</label>
+    </listViews>
+    <nameField>
+        <displayFormat>PM-{0000000}</displayFormat>
+        <label>Provider Meeting No.</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Provider Meetings</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Meeting_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Meeting_Region__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Meeting_Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Scheduled_Start__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Scheduled_End__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Language__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Meeting_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Meeting_Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Scheduled_Start__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Meeting_Region__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Number_of_Remaining_Spots__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Meeting_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Scheduled_Start__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Meeting_Region__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Language__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Meeting_Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Leader__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Cannot_change_meeting_status_Completed</fullName>
+        <active>true</active>
+        <description>Can Not change to &quot;Completed&quot; if &quot;Attended - No. of Participants&quot; = 0</description>
+        <errorConditionFormula>IF(  AND(ISPICKVAL( Meeting_Status__c , &apos;Completed&apos;),(Attended_No_of_participants__c  = 0))  , True, False)</errorConditionFormula>
+        <errorDisplayField>Meeting_Status__c</errorDisplayField>
+        <errorMessage>You must update the participants with &quot;Attended&quot; status prior to changing the status of the meeting to Completed.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Changing_Meeting_status_to_Completed</fullName>
+        <active>true</active>
+        <description>Can Not Change to &quot;Completed&quot; if Today &lt; Scheduled End</description>
+        <errorConditionFormula>TODAY() &lt;  DATEVALUE(Scheduled_End__c) &amp;&amp;  ISPICKVAL( Meeting_Status__c , &apos;Completed&apos;)</errorConditionFormula>
+        <errorDisplayField>Meeting_Status__c</errorDisplayField>
+        <errorMessage>Meeting Status can not be changed to &quot;Completed&quot; if the Scheduled End Date is in the future</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Time_greater_than_Start_Time</fullName>
+        <active>true</active>
+        <description>End Time must be after Start Time</description>
+        <errorConditionFormula>Scheduled_End__c  &lt;&gt;  Scheduled_Start__c  &amp;&amp; 
+Scheduled_End__c   &lt;   Scheduled_Start__c</errorConditionFormula>
+        <errorDisplayField>Scheduled_End__c</errorDisplayField>
+        <errorMessage>Scheduled End Time must be AFTER the Scheduled Start Time</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Field_other_language_Mandatory</fullName>
+        <active>true</active>
+        <description>Mandatory if &quot;Other non-english&quot; is selected</description>
+        <errorConditionFormula>CONTAINS(TEXT(Language__c),&quot;Other&quot;)
+&amp;&amp;   ISBLANK( Other_Language__c )</errorConditionFormula>
+        <errorDisplayField>Other_Language__c</errorDisplayField>
+        <errorMessage>Mandatory if Language = &quot;Other Non-English&quot;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Number_of_seats_cannot_be_changed</fullName>
+        <active>false</active>
+        <description>No. of seats available cannot be increased when Meeting.Status = &quot;Closed for Registration&quot;.</description>
+        <errorConditionFormula>AND( ISCHANGED( No_of_seats_available__c ) , ISPICKVAL( Meeting_Status__c , &apos;Closed for registration&apos;) )</errorConditionFormula>
+        <errorDisplayField>No_of_seats_available__c</errorDisplayField>
+        <errorMessage>Cannot change No. of seats when Status = &quot;Closed for Registration&quot;.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Generate_Participant_Certificates</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Generate Participant Certificates</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>if(&apos;{!TEXT(Provider_Meeting__c.Meeting_Status__c)}&apos; == &apos;Completed&apos; ){ 
+parent.location.href = &apos;/apex/EEC_PPMAttachmentCertificate?id=&apos; + &apos;{! Provider_Meeting__c.Id }&apos; 
+} else { 
+alert(&apos;Certificates can only be generated after meeting is completed&apos;); 
+}</url>
+    </webLinks>
+</CustomObject>

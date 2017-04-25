@@ -1,0 +1,118 @@
+<apex:page controller="EEC_LEADJobsController">
+<apex:form >
+ 
+<apex:pageBlock title="Process Historic Data LEAD Jobs">
+
+		<center><apex:pageMessages ></apex:pageMessages></center>
+		<apex:pageBlockSection title="Legacy Unclicensed Providers" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Unlicensed Providers</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Unlicensed Providers" action="{!processLegacyUnlicensedProviders}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Intake/Cases" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Intake/Cases</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Cases" action="{!processLegacyCases}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Intake Notes on Cases" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Intake Notes on Cases</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Intake Notes on Cases" action="{!processLegacyIntakeNotes}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Investigations" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Investigations</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Investigations" action="{!processLegacyInvestigations}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Staff" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Staff</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Staff" action="{!processLegacyStaff}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Intervention" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Intervention</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Intervention" action="{!processLegacyIntervention}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Follow" collapsible="false" columns="2">
+			<div>
+			   <b>Process Legacy Follow</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Follow" action="{!processLegacyFollow}"/>
+			</div>
+		</apex:pageBlockSection>
+    
+    
+		<!--added by Sri as part of code merge-->
+		<apex:pageBlockSection title="Legacy Visits" collapsible="false" columns="2">
+			<div>
+			   <b>Process LM 2010 / FCC Mobile Legacy Visits</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Visits" action="{!processLegacyVisits}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Legacy Visit Items / Sub-Item visits" collapsible="false" columns="2">
+			<div>
+			   <b>Process FCC Mobile Legacy Visit/Sub-Item visits</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process Legacy Visit/Sub-Item visits" action="{!processLegacyVisitItems}"/>
+			</div>
+		</apex:pageBlockSection>
+		
+		<apex:pageBlockSection title="EECRs NonCompliance Visits/Investigations" collapsible="false" columns="2">
+			<div>
+			   <b>Process EECRs NonCompliance Visits/Investigations</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process EECRs NonCompliance Visits/Investigations" action="{!processLegacyNonComplianceVisits}"/>
+			</div>
+		</apex:pageBlockSection>
+		
+		<apex:pageBlockSection title="EECRs NonCompliance Visit items / Investigation Non-compliance items" collapsible="false" columns="2">
+			<div>
+			   <b>Process EECRs NonCompliance Visit items / Investigation Non-compliance items</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Process EECRs NonCompliance Visit items / Investigation Non-compliance item" action="{!processLegacyNonComplianceVisitItems}"/>
+			</div>
+		</apex:pageBlockSection>
+
+		<apex:pageBlockSection title="Clear Staging Data (for testing only)" collapsible="true">
+			<div>
+				<apex:commandButton value="Clear All Staging Data" action="{!clearAllStagingRecords}"/>
+			</div>
+			<div>
+				<apex:commandButton value="Delete All Legacy Visits" action="{!deleteAllLegacyVisits}"/>
+			</div>
+			<div>
+				<apex:commandButton value="Delete All Legacy Investigations" action="{!deleteAllLegacyInvestigations}"/>
+			</div>
+		</apex:pageBlockSection>
+    
+		
+</apex:pageBlock>
+
+
+</apex:form>
+</apex:page>

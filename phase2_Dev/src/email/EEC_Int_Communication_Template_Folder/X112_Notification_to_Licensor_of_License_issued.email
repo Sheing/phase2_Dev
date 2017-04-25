@@ -1,0 +1,5 @@
+Hello,
+
+The License or Certificate for {!Licensing_Transaction__c.Provider__c} associated to {!Licensing_Transaction__c.RecordType} transaction has been generated in LEAD.
+
+You can review the transaction by logging to : {!Licensing_Transaction__c.Link}

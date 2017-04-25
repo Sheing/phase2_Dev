@@ -1,0 +1,984 @@
+<apex:page controller="EEC_TransactionWizardController"  docType="HTML-5.0" showheader="false" sidebar="false" standardStylesheets="false">
+
+<head>
+<!--<apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system.min.css')}" />-->
+  <title>EEC</title>
+  <c:EEC_Header id="pageHeader" />  
+        <style>
+         html {
+        font: 100%/1.5 "Salesforce Sans", Arial, sans-serif !important;
+        background: white !important;
+        color: #16325c !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+
+      body {
+        font-size: 0.875rem !important;
+        font-family: "Salesforce Sans", Arial, sans-serif !important;
+        background: transparent !important;
+      }
+
+      .loading-status {
+        line-height: 32px;
+      }
+
+        .loading-status:before {
+          content: " ";
+          width: 30px;
+          height: 60px;
+          float: left;
+          display: block;
+          position: relative;
+          background: url("{!URLFOR($Resource.SLDS0120, 'assets/images/spinners/slds_spinner_brand.gif')}") top center no-repeat;
+          background-size: 100%;
+        }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff')}") format("woff");
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff')}") format("woff");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff')}") format("woff");
+        font-weight: 700;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .slds-container {
+        padding-bottom: 30px;
+        margin-left: 20px;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .button-container {
+        margin-top: 21px;
+        padding-left: 5px;
+      }
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+
+        .requiredInput2 {
+              margin-left: 0px;
+            }
+            
+            .requiredInput1 {
+              margin-left: 0px;
+            }
+            
+        .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+      
+      .sr-item-row {
+        cursor: pointer;
+        padding: 10px;
+      }
+
+        .sr-item-row:hover {
+          background: rgba(225,225,225,0.8);
+          cursor: pointer;
+        }
+
+      .top-level-label {
+        font-weight: 600;
+        margin-right: 3px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+        
+      .inner-label {
+        color: black;
+        font-weight: normal;
+        line-height: initial;
+        white-space: nowrap;
+      }
+
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {        
+        width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .transprovider-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            /*margin-bottom: 15px;*/
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+       .requiredInput2 {
+              margin-left: 0px;
+            }
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        -webkit-appearance: none;
+        border: none;
+        box-shadow: none;
+        background: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: inherit;
+        font-variant: inherit;
+        font-family: inherit;
+        outline: none;
+        letter-spacing: .01em;
+        margin: 3px 0px;
+        white-space: normal;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+      .requiredInput1 {
+              margin-left: 0px;
+            }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      .top-level-label {
+          font-weight: 600;
+          margin-right: 5px;
+          line-height: 20px; 
+          color: rgba(0,0,0,0.54);
+       }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+      
+      /*New Style*/
+      .transaction-info-row {
+            margin-left: 0px; 
+          }
+      .reasonErrorMessage{
+            display : none;
+          }
+      .visible{
+            display : block;
+         }
+
+    </style>
+      <script>
+        </script>
+</head>
+
+<body>
+  <c:EEC_Nav_Bar id="navBar"  rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}"/>
+  <apex:messages id="showmsg" styleClass="error-container" style="color: #FF0000; font-weight: bold;"/>
+
+   <div class="modal fade" id="newSC" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-lg " style="width:95%;">
+           <div class="modal-content">
+               <div class="modal-body" style="padding:0px">
+                  <iframe src="{!$Page.EEC_DocumentLookupPopup}?providerId={!provider.id}&licenseTransationId={!licenseTransation.id}&providerType={!providerRecordType}"  width="100%" height="700" frameborder="0"></iframe>
+               </div>
+           </div>
+       </div>
+   </div>   
+   
+  <div class="container" layout-padding="true" layout-margin="true" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column">
+    <apex:form html-ng-app="eecApp" id="idForm" html-layout="column" html-layout-padding="true" styleClass="col-lg-12 col-md-12 col-sm-12" style="margin-bottom:100px;padding-left: 50px;" >
+      <h3 class="md-display-1">Attachments</h3>
+      
+   <apex:actionFunction name="doselectDocument" immediate="true" action="{!doSelectDocument}" rerender="idAttachmentBlock">
+      <apex:param name="documentId" value="" id="documentDocId"/>
+      <apex:param name="documentName" value="" id="documentDocName"/>
+      <apex:param name="clickedId" value="" id="clickedDocId" />
+      <apex:param name="clickedType" value="" id="clickedDocType"/>
+      <apex:param name="documentTypeId" value="" id="documentTypeDocId"/>
+   </apex:actionFunction>
+   
+      <md-divider layout-align="center center"></md-divider><br/> 
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="md-title" flex="100" style="margin-top: 0px;">
+                <apex:outputLabel styleClass="input-label"  value="Introduction"/>
+          </h3>
+        </div>
+         <div class="panel-body">
+         	 <apex:outputLabel escape="false" value="{!attachmentSpotlightText}"></apex:outputLabel>  
+         </div>
+      </div>
+             
+    <apex:outputPanel id="idAttachmentBlock">
+    <apex:actionRegion >
+      <div class="panel panel-default" style="display:{!if(AND(listRequiredDocument != NULL, listRequiredDocument.size>0), 'block', 'none')}">
+            <div class="panel-heading">
+              <h3 class="md-title" flex="100" style="margin-top: 0px;">
+                    <apex:outputLabel styleClass="input-label"  value="Required Attachments"/>
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+    <div style="overflow: visible;display:{!if(AND(listRequiredDocument != NULL, listRequiredDocument.size>0), 'block', 'none')}">
+            <apex:repeat value="{!listRequiredDocument}" var="rm" rendered="{!AND(listRequiredDocument != NULL,listRequiredDocument.size>0)}"> 
+                <div class="col-md-6 col-sm-12" style="padding: 0;width:44%">
+                    <div class="slds-box" layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+                      <div layout="row" layout-wrap="true">
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Type:</p>
+                            <apex:outputText value="{!rm.TypeName}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Description:</p>
+                            <apex:outputText value="{!rm.Description}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">File Name:</p>
+                            <apex:outputText value="{!rm.FileName}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Attachment Status:</p>
+                            <apex:outputText value="{!rm.AttachmentStatus}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Comments:</p>                         
+                          	 <apex:outputText value="{!rm.DocComments}" rendered="{!rm.TransactionDocumentId == null || rm.TransactionDocumentId == ''}"/>
+                             <apex:inputTextArea styleClass="form-control" rendered="{!rm.TransactionDocumentId != null && rm.TransactionDocumentId != ''}" value="{!rm.DocComments}" onblur="updateComments('{!rm.TransactionDocumentId}', this.value);">
+                             </apex:inputTextArea>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">                                  
+                          <p>
+                            <button id="add-new-document" onClick="openDocument(this, '{!licenseTransation.Id}', 'Required', '{!rm.Types}');return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Library</button>
+                          </p>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p>
+                            <button id="OpenImgUpload" onClick="openAttachment('{!licenseTransation.Id}', 'Required', '{!rm.Types}'); return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Computer</button>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </apex:repeat> 
+    </div>   
+    </div> 
+    </div> 
+    </div> 
+
+    <div style="clear:both">  
+    </div> 
+     <div class="panel panel-default " style="display:{!if(AND(listOptionalDocument != NULL, listOptionalDocument.size>0), 'block', 'none')}">
+            <div class="panel-heading">
+              <h3 class="md-title" flex="100" style="margin-top: 0px;">
+                    <apex:outputLabel styleClass="input-label"  value="Optional Attachments"/>
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>        
+    <div style="overflow: visible;display:{!if(AND(listOptionalDocument != NULL, listOptionalDocument.size>0), 'block', 'none')}">
+             <apex:repeat value="{!listOptionalDocument}" var="rm" rendered="{!AND(listOptionalDocument != NULL,listOptionalDocument.size>0)}">
+                <div class="col-md-6 col-sm-12" style="padding: 0;width:44%">
+                    <div class="slds-box" layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+                      <div layout="row" layout-wrap="true">
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Type:</p>
+                            <apex:outputText value="{!rm.TypeName}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Description:</p>
+                            <apex:outputText value="{!rm.Description}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">File Name:</p>
+                            <apex:outputText value="{!rm.FileName}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Attachment Status:</p>
+                            <apex:outputText value="{!rm.AttachmentStatus}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Comments:</p>                         
+                            <apex:outputText value="{!rm.DocComments}" rendered="{!rm.TransactionDocumentId == null || rm.TransactionDocumentId == ''}"/>
+                             <apex:inputTextArea styleClass="form-control" rendered="{!rm.TransactionDocumentId != null && rm.TransactionDocumentId != ''}" value="{!rm.DocComments}" onblur="updateComments('{!rm.TransactionDocumentId}', this.value);">
+                             </apex:inputTextArea>                          
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">                                  
+                          <p>
+                            <button id="add-new-document" onClick="openDocument(this, '{!licenseTransation.Id}', 'Optional', '{!rm.Types}');return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Library</button>
+                          </p>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p>
+                            <button id="OpenImgUpload" onClick="openAttachment('{!licenseTransation.Id}', 'Optional', '{!rm.Types}'); return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Computer</button>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </apex:repeat>
+              </div>
+              </div>
+              </div>
+       </div>
+
+       <div style="clear:both">
+       </div>    
+        <div class="panel panel-default " style="display:{!if(AND(listIndividualDocument != NULL, listIndividualDocument.size>0), 'block', 'none')}">
+            <div class="panel-heading">
+              <h3 class="md-title" flex="100" style="margin-top: 0px;">
+                    <apex:outputLabel styleClass="input-label"  value="Individual Related Required Documents"/>
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+       <div style="overflow: visible;display:{!if(AND(listIndividualDocument != NULL, listIndividualDocument.size>0), 'block', 'none')}">
+                <apex:repeat id="individualAttachment" value="{!listIndividualDocument}" var="rm" rendered="{!AND(listIndividualDocument != NULL,listIndividualDocument.size>0)}"> 
+                
+                <div class="col-md-6 col-sm-12" style="padding: 0;width:44%">
+                    <div class="slds-box" layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+                      <div layout="row" layout-wrap="true">
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Individual:</p>
+                            <apex:outputText value="{!rm.Individual}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Role:</p>
+                            <apex:outputText value="{!rm.Role}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Type:</p>
+                            <apex:outputText value="{!rm.TypeName}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Description:</p>
+                            <apex:outputText value="{!rm.Description}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Mandatory / Optional:</p>
+                            <apex:outputText value="{!rm.Mandatory}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">File Name:</p>
+                            <apex:outputText value="{!rm.FileName}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Attachment Status:</p>
+                            <apex:outputText value="{!rm.AttachmentStatus}"/>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Comments:</p>                          
+                             <apex:outputText value="{!rm.DocComments}" rendered="{!rm.TransactionDocumentId == null || rm.TransactionDocumentId == ''}"/>
+                             <apex:inputTextArea styleClass="form-control" rendered="{!rm.TransactionDocumentId != null && rm.TransactionDocumentId != ''}" value="{!rm.DocComments}" onblur="updateComments('{!rm.TransactionDocumentId}', this.value);">
+                             </apex:inputTextArea>                         
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">                                  
+                          <p>
+                            <button id="add-new-document" onClick="openDocument(this, '{!rm.ContactRoleId}', 'Individual', '{!rm.Types}');return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Library</button>
+                          </p>
+                        </div>
+                        <div class="card-row-item col-md-12 col-sm-12">
+                          <p>
+                            <button id="OpenImgUpload" onClick="openAttachment('{!rm.ContactRoleId}', 'Individual', '{!rm.Types}'); return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Computer</button>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>                
+              </apex:repeat> 
+              </div>
+              </div>
+              </div>
+        </div>
+
+        <div style="clear:both">
+       </div> 
+        <div>
+             <div>
+             <div>
+        <div style="overflow: visible;display:{!if(mapVarianceDocument != NULL, 'block', 'none')}">
+                    <apex:repeat id="varianceAttachment" value="{!mapVarianceDocument}" var="rm" rendered="{!mapVarianceDocument != NULL}">
+                            <div class="panel panel-default ">
+                                <div class="panel-heading">
+                            <h3 class="md-title" flex="100" style="margin-top: 0px;">
+                                 <apex:outputLabel styleClass="input-label"  value="Variance on {!mapVarianceIds[rm]} Related Documents"/>
+                             </h3>
+                             </div>
+                             <div class="panel-body">
+                             	<apex:repeat value="{!mapVarianceDocument[rm]}" var="article" rendered="{!mapVarianceDocument[rm] != NULL}">
+                                <div class="col-md-6 col-sm-12" style="padding: 0;width:44%">
+                                <div class="slds-box" layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden; min-height: 186px">
+                                    <div layout="row" layout-wrap="true">
+                                       <div class="slds-item col-md-12 col-sm-12">
+                                        <p class="top-level-label">Name:</p>
+                                            <apex:outputText value="{!article.Name}"/>
+                                          </div>
+                                   <div class="slds-item col-md-12 col-sm-12">
+                                        <p class="top-level-label">File Name:</p>
+                                            <apex:outputText value="{!article.FileName}"/>
+                                         </div>
+                                         <div class="slds-item col-md-12 col-sm-12"> 
+                                          <p class="top-level-label">Comments:</p>                                          
+                                             <apex:outputText value="{!article.DocComments}" rendered="{!article.TransactionDocumentId == null || article.TransactionDocumentId == ''}"/>
+                             				<apex:inputTextArea value="{!article.DocComments}" styleClass="form-control" rendered="{!article.TransactionDocumentId != null && article.TransactionDocumentId != ''}" onblur="updateComments('{!article.TransactionDocumentId}', this.value);">
+                             				</apex:inputTextArea>                                         
+                                          </div>
+                                          <div class="col-md-4 col-sm-4"> 
+                                          <apex:commandlink action="{!delAttachment}" immediate="true"  value="Delete" styleClass="md-button md-eec md-raised" reRender="idAttachmentBlock">
+                                            <apex:param value="{!article.TransactionDocumentId}" name="index" />
+                                          </apex:commandlink>
+                                          </div>
+                                    </div>
+                                </div>
+                                  </div>
+                              </apex:repeat>
+                             </div>
+                              <div style="clear:both">
+                              </div>                               
+                              <button id="add-new-document" onClick="openDocument(this,'{!rm}', 'Variance', '');return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Library</button>
+                              <button id="OpenImgUpload" onClick="openAttachment('{!rm}', 'Variance', ''); return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Computer</button>
+                    </div>
+                    </apex:repeat>
+                    </div>
+                    </div>
+                    </div>
+        </div>
+
+        <div style="clear:both">
+       </div> 
+        <div style="overflow: visible;">
+         <div class="panel panel-default ">
+            <div class="panel-heading">
+            	<h3 class="md-title" flex="100" style="margin-top: 0px;">
+                    <apex:outputLabel styleClass="input-label"  value="Additional Attachments"/>
+                </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+            <apex:repeat value="{!listAdditionalDocument}" var="rm" rendered="{!AND(listAdditionalDocument != NULL,listAdditionalDocument.size>0)}">
+                 <div class="col-md-6 col-sm-12" style="padding: 0;width:44%">
+                    <div class="slds-box" layout="column" layout-padding="true" layout-margin="true" >
+                      <div layout="row" layout-wrap="true">
+                        <div class="slds-item col-md-12 col-sm-12">                       
+                          <p class="top-level-label">Name:</p>
+                            <apex:outputText value="{!rm.Name}"/>
+                        </div>
+                      <div class="slds-item col-md-12 col-sm-12">
+                          <p class="top-level-label">File Name:</p>
+                            <apex:outputText value="{!rm.FileName}"/>
+                        </div>
+                      <div class="slds-item col-md-12 col-sm-12">
+                          <p class="top-level-label">Comments:</p>                          
+                             <apex:outputText value="{!rm.DocComments}" rendered="{!rm.TransactionDocumentId == null || rm.TransactionDocumentId == ''}"/>
+                             <apex:inputTextArea styleClass="form-control" rendered="{!rm.TransactionDocumentId != null && rm.TransactionDocumentId != ''}" value="{!rm.DocComments}" onblur="updateComments('{!rm.TransactionDocumentId}', this.value);">
+                             </apex:inputTextArea>
+                        </div>
+                      <div class="slds-item col-md-12 col-sm-12">
+                          <apex:commandlink action="{!delAttachment}" immediate="true" value="Delete" styleClass="md-button md-eec md-raised" reRender="idAttachmentBlock">
+                            <apex:param value="{!rm.TransactionDocumentId}" name="index" />
+                           </apex:commandlink>
+                        </div>                        
+                      </div> 
+                    </div> 
+                  </div>
+              </apex:repeat>
+             
+              <div style="clear:both">
+              </div> 
+             <button id="add-new-document" onClick="openDocument(this,'{!licenseTransation.Id}', 'Additional', '');return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Library</button>
+                <button id="OpenImgUpload" onClick="openAttachment('{!licenseTransation.Id}', 'Additional', ''); return false;" type="button" style="text-transform: uppercase;width: 354px;" class="md-button md-eec md-raised">Upload / Replace Document from Computer</button>
+        </div>   
+         </div>
+              </div>
+              </div>         
+     <apex:actionFunction name="doOpenAttachment" action="{!doOpenAttachment}" oncomplete="j$('#attachmentModal').modal('show');" >
+         <apex:param name="objectId" value="" assignTo="{!clickedobjectId}"/>
+         <apex:param name="objectType" value="" assignTo="{!clickedobjectType}"/>
+         <apex:param name="documentType" value="documentType" />
+     </apex:actionFunction>
+     </apex:actionRegion>
+     </apex:outputPanel>
+    
+    <apex:outputPanel id="idAttachmentModal" >
+            <apex:actionRegion >
+                <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModal" aria-hidden="true">
+                    <apex:outputPanel layout="block" styleClass="modal-dialog modal-lg" html-ng-controller="ReadOnlyController as ctrl">
+                        <apex:outputPanel layout="block" styleClass="modal-content">
+                            <apex:outputPanel layout="block" styleClass="modal-header">
+                                <h4 class="modal-title">Attachments</h4>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="modal-body">
+                            <s3-file-upload button-text="Select Attachment"
+                                                endpoint_url="{!$Setup.AWS_Config__c.S3_Endpoint_Url__c}"
+                                                bucket-name="{!$Setup.AWS_Config__c.S3_Bucket_Name__c}"
+                                                acl="{!$Setup.AWS_Config__c.S3_Access_Control_Level__c}"
+                                                prefix="{!licenseTransation.Id}/"
+                                                key="{!accessKey}"
+                                                remote-func-params="{!$RemoteAction.EEC_TransactionWizardController.generateMultiplePolicySignature}"
+                                                multiple-enabled="false"
+                                                timestamp-enabled="true"
+                                                keep-files-enabled="false">
+                                        </s3-file-upload>
+                                <apex:outputPanel layout="block">
+                                      <apex:outputText value="Document Name: "/><span class="required">*</span>                                                                
+                                       <apex:inputText value="{!tranDocumentName}" styleClass="form-control" id="idDocumentName"/>
+
+                                       <apex:outputText value="Document Notes: "/>     
+                                       <apex:inputText styleClass="form-control" value="{!comments}" id="idNotes"/>
+                                       
+                                        <button class="md-button md-raised md-eec" ng-click="ctrl.upload()" type="button" >Upload Attachment and Use This Document  </button>  
+                                       
+                                       <button class="md-button md-raised md-eec" ng-click="ctrl.clear()" type="button" >Clear  </button>  
+                                       
+                                  
+                                 <button aria-label="Back" class="md-button md-raised md-eec" data-dismiss="modal" type="button" >Back  </button>  
+                                   
+
+                                      <apex:actionFunction name="uploadAttachment" action="{!uploadAttachment}" reRender="idAttachmentBlock">
+                                          <apex:param name="attachmentbody" value="" id="attachmentbody" /> 
+                                          <apex:param name="clickedId" value="" id="clickedId" />
+                                          <apex:param name="clickedType" value="" id="clickedType"/>
+                                          <apex:param name="documentTypeId" value="" id="documentTypeId"/>
+                                      </apex:actionFunction>                                  
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+            <!--Attachment Modal Section ends here-->
+            </apex:actionRegion>
+        </apex:outputPanel>
+      
+      <apex:actionfunction name="UpdateTransactionAttachments" action="{!saveAllAttachmentsFromJson}" onComplete="saveAttachmentsFromJsonComplete();" reRender="showmsg, fileAttachmentContainer"> 
+        <apex:param name="json" value="" assignTo="{!attachmentsJson}" /> 
+      </apex:actionfunction>    
+        
+      <apex:actionFunction name="UpdateFileDescription" action="{!saveFileDescription}" reRender="showmsg, script-existing-items">
+        <apex:param name="fileToEditId" value="" assignTo="{!fileToEditId}" /> 
+        <apex:param name="fileToEditDescription" value="" assignTo="{!fileToEditDescription}" />
+      </apex:actionFunction>
+      
+      <apex:actionFunction immediate="true" name="doUpdateComments" action="{!doUpdateComments}" reRender="none">
+        <apex:param name="trandocId" value="" assignTo="{!transactionDocumentId}" /> 
+        <apex:param name="trandocComments" value="" assignTo="{!transactionDocumentComment}" />
+      </apex:actionFunction>
+            
+      <apex:actionFunction name="refreshAttachmentsJson" rerender="script-existing-items, fileAttachmentContainer"/>
+        
+      <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+        <apex:commandLink value="Save and Previous" styleClass="md-button md-raised md-eec"
+                        html-layout-padding="true" immediate="true"
+                         action="{!SaveAndPreviousAttachment}" html-role="button"/>  
+        <apex:commandLink value="Save and Next" styleClass="md-button md-raised md-eec"
+                        html-layout-padding="true" immediate="true"  
+                         action="{!SaveAndNextAttachment}" html-role="button"/>
+      </md-content>
+        
+      <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+        <apex:commandButton value="Cancel {!formattedLicenseRecordTypeLabel} Transaction"   immediate="true" action="{!CancelTransaction}" onclick="return confirm('Are you sure to cancel the transaction?');" styleClass="md-button md-raised" style="background: rgb(250,250,250);"/>
+     
+        <apex:commandLink value="Save and Return to Provider" styleClass="md-button md-raised"
+                        html-layout-padding="true" immediate="true"    
+                        action="{!SaveAndReturnAttachment}"  html-role="button"/>   
+      </md-content>
+      
+    </apex:form>
+      
+    <eec-wizard btn-progress-color="#fff" class="col-lg-3" flex="30" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" hide="true" show-gt-md="true">
+      <eec-wz-step ng-repeat="step in wizardElements" title="{{step.label}}" step-img="{{step.icon}}" selected="{{step.selected}}" passed="{{step.icon != 'info_outline'}}"></eec-wz-step>
+    </eec-wizard>  
+  </div>  
+
+  <c:EEC_LightningProcessingWidget />
+
+  <c:EEC_Site_Footer id="siteFooter" /> 
+    
+  <script>
+  
+   var inProgress = false;  
+    
+  var clickedId;
+  var clickedObject;
+  var docTypeId;
+  
+    app.controller('ReadOnlyController', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
+      //$scope.funcId = '';
+      $scope.numUploadComponents = 0;
+      $scope.timesUploadComplete = 0;
+      $scope.bucketName = '{!$Setup.AWS_Config__c.S3_Bucket_Name__c}';
+
+      var ctrl = this;
+      // Call this function to broadcast to the directive to process the upload.
+      this.upload = function() {
+        if(document.getElementById('j_id0:idForm:idDocumentName').value == ''){
+            alert('Please enter Document Name.');
+            return false;
+        }
+        j$('.loading-container').show();
+        $scope.numUploadComponents = jQuery('s3-file-upload').length;
+        // Call all upload directives to process files.
+        $rootScope.$broadcast('upload', {});
+      };
+
+      this.clear = function(clearIndex) {
+        if (!angular.isUndefined(clearIndex)) {
+          $rootScope.$broadcast('clearFiles_' + clearIndex, {});
+        } else {
+          $rootScope.$broadcast('clearFiles',{});
+        }
+        $scope.numUploadComponents = 0;
+        $scope.timesUploadComplete = 0;
+      }
+
+      // Capture Emit event from Directive for result data.
+      $scope.$on('uploadComplete', function(event, data) {
+        console.log('Times Upload Complete => uploadComplete: ' + $scope.timesUploadComplete);
+        $scope.timesUploadComplete++;
+        console.log('Times Upload Complete => uploadComplete [AFTER]: ' + $scope.timesUploadComplete);
+
+        if (angular.isArray(data)) {
+          var json = [];
+
+          for (var i = 0; i < data.length; i++) {
+            if (!data[i].status) {
+              console.log("----> Error: File not successfully uploaded.");
+              break;
+            }
+            console.log(data[i].data);
+            var attachment = data[i].data;
+            // Split the filename to get the prefix.
+            var splitFilename = attachment.key.split('/');
+            // Create the JSON needed for the S3_File__c objects.
+            var file = {
+              "Filename__c": splitFilename[1],
+              "Prefix__c": splitFilename[0],
+              "Content_Type__c": attachment['Content-Type'],
+              "Acl__c": attachment.acl,
+              "Bucket__c": $scope.bucketName
+            };
+
+            if (!angular.isUndefined($scope.exisitingFiles) && $scope.exisitingFiles !== '') {
+              var exisitingFilesJson = JSON.parse($scope.exisitingFiles);
+              // Loop through the results.
+              angular.forEach(exisitingFilesJson, function(value, key) {
+                // Get the short names of the files without the file extensions.
+                var exisitingShortName = value.Filename__c.split('.')[0];
+                var shortName = file.Filename__c.split('.')[0];
+                // If the short name of the file is the same as the existing then set the id for upsert.
+                if (exisitingShortName == shortName) {
+                  file.Id = value.Id;
+                }
+              });
+            }
+            // Push the file into the json object to send.
+            json.push(file);
+          }
+          console.log("Files Uploaded Successfully!");
+          // Call the action function to create the S3 Object entries in Sforce.
+          uploadAttachment(JSON.stringify(json), clickedId,clickedObject,docTypeId);
+          
+          ctrl.clear();
+          document.getElementById('j_id0:idForm:idDocumentName').value = '';
+          document.getElementById('j_id0:idForm:idNotes').value = '';
+          
+          j$('#attachmentModal').modal('hide');
+        } else if ($scope.timesUploadComplete == $scope.numUploadComponents) {
+          console.log("Error: " + data.error);
+
+          if (data.error.indexOf('No files') > -1) {
+            console.log("No files to upload. Continue to next page.");
+              //location.reload(true);
+            //reloadAttachments();
+            angular.element(jQuery('.fileListContainer')).scope().ctrl.clear();
+          }
+        }
+      });
+    }]);
+    
+    function updateComments(transactiondocId, doccomments){
+    	if(transactiondocId != ''){
+    		doUpdateComments(transactiondocId, doccomments);
+    	}
+    }
+  function openAttachment(objectId, objectType,documentTypeId){
+       clickedId = objectId;
+       clickedObject = objectType;
+       docTypeId = documentTypeId;
+       document.getElementById('j_id0:idForm:idDocumentName').value = '';
+       document.getElementById('j_id0:idForm:idNotes').value = new Date(Date.now()).toLocaleString().split(',')[0];
+       
+       doOpenAttachment(objectId, objectType,documentTypeId);
+   }
+        
+    jQuery(function () {
+      jQuery('[data-toggle="tooltip"]').tooltip()
+    });
+    
+    j$( document ).ready(function() {
+        j$('.modal').modal({ backdrop: 'static', keyboard:false,show:false }) 
+        
+        var popupOpen = '{!isPopupOpen}';
+        if(popupOpen == "true"){
+            j$('#attachmentModal').modal('show');
+        }
+    });
+    
+    function openDocument(param, objectId, objectType,documentTypeId){
+        clickedId = objectId;
+        clickedObject = objectType;
+        docTypeId = documentTypeId;
+        j$('#newSC').modal('show');
+    }
+    
+    window.closeModal = function(documentId, documentName){
+        j$('#newSC').modal('hide');
+        selectDocument(documentId, documentName, clickedId, clickedObject, docTypeId);
+    };
+            
+    window.cancelModel = function(){
+        j$('#newSC').modal('hide');
+    };
+    
+    function selectDocument(documentId, documentName, clickedId, clickedObject, docTypeId){
+        doselectDocument(documentId, documentName, clickedId, clickedObject, docTypeId);
+    }
+
+  </script>
+
+  <script>
+  
+      var inProgress = false;
+    
+    var toggleProcessingOverlay = function toggleProcessingOverlay() {
+      if (j$('.lpw-widget').css('display') != 'none') {
+        j$('body').css('height', 'initial');
+        j$('body').css('overflow', 'initial');
+        j$('.lpw-widget').hide();    
+      } else {
+        j$('body').scrollTop(0);
+        j$('body').css('height', '100%');
+        j$('body').css('overflow', 'hidden');
+        j$('.lpw-widget').show();  
+      }
+    }
+
+  </script>  
+
+</body>
+</apex:page>

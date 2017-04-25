@@ -1,0 +1,235 @@
+<apex:component controller="EEC_ContactRoleListCtrl">
+  <style>  
+    .slds {
+      color: rgba(0,0,0,.87);
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif;
+    }
+
+    .slds .slds-table--bordered {
+      border: 1px solid #d8dde6;
+    }
+      
+    .slds .slds-text-heading--label {
+      color: rgba(0,0,0,.87);
+    }
+
+    .eec-header-style {
+      font-size: 14px;
+      text-transform: capitalize;
+      font-weight: bold !important;
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+    }
+
+    .dropdown-input {
+      margin-left: 25px;
+      position: relative;
+      top: 10px;
+    }
+
+    .top-level-label {
+      font-weight: 600;
+      margin-right: 3px;
+      line-height: 20px;
+      color: rgba(0,0,0,0.54);
+    }
+
+    .empty-input {
+      margin-bottom: 30px;
+    }
+
+    button {
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+      font-weight: 500 !important;
+    }
+
+    .card-row-item {
+      margin-bottom: 10px;
+    }
+  </style>
+<apex:attribute type="EEC_ContactRoleInterface" name="ContactRoleInterface" assignTo="{!vif}" description="Interface reference for controller." />
+<apex:attribute type="Boolean" name="isEditible" required="true" description="This will determine if adding a variance is allowed." />
+<apex:attribute type="Boolean" name="isTable" description="This boolean will determine if the view should be a table or cards." />
+<apex:attribute type="Account" name="currentAccount" assignTo="{!mAccount}" description="If this component is used on a non transaction page it requires the account information to obtain the variances." />
+<apex:attribute type="String" name="introText" description="This is the introduction text featured at the top of the Variance List." />
+
+ <apex:actionfunction action="{!addContactRoleToList}" name="addContactRoleToList" rerender="contactrole-list">
+    <apex:param name="contactId" value="" />
+  </apex:actionfunction>
+    <apex:outputpanel rendered="{!isEditible}" layout="block"><h3 class="variance-list-header-title eec-subhead slds-text-heading--medium">Contact Role List</h3></apex:outputpanel>
+    <apex:outputpanel id="contactrole-list" layout="block" styleclass="contactrole-list-container">
+    <apex:outputtext rendered="{!!isEditible && introText == ''}"><p class="variance-header-text">Listed below are the ContactRole attached to the Provider:</p></apex:outputtext>
+    <apex:outputtext rendered="{!introText != ''}"><p class="variance-header-text">{!introText}</p></apex:outputtext>
+    
+    <!-- Card View -->
+    <apex:outputpanel layout="block" rendered="{!ContactRoleListCount && (isTable == null || !isTable)}">
+      <div layout="row" layout-wrap="true">
+        <apex:repeat value="{!ContactList}" var="ContactRoleWrapper">
+          <div class="col-md-6 col-sm-12" style="padding: 0;">
+            <div class="slds-box slds-box--x-small" layout="column" layout-padding="true" layout-margin="true">
+         <div layout="row" layout-wrap="true">
+          <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">First Name</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.FirstName != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.FirstName != null, ContactRoleWrapper.varianceReg.contact__r.FirstName, ContactRoleWrapper.varianceReg.contact__r.FirstName)}</p>
+        </div>
+        <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Last Name</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.LastName != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.LastName != null, ContactRoleWrapper.varianceReg.contact__r.LastName, ContactRoleWrapper.varianceReg.contact__r.LastName)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Mailing Street</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingStreet != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingStreet != null, ContactRoleWrapper.varianceReg.contact__r.MailingStreet, ContactRoleWrapper.varianceReg.contact__r.MailingStreet)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Mailing City</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingCity != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingCity != null, ContactRoleWrapper.varianceReg.contact__r.MailingCity, ContactRoleWrapper.varianceReg.contact__r.MailingCity)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Mailing Postal Code</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode != null, ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode, ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Mailing State</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingState != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingState != null, ContactRoleWrapper.varianceReg.contact__r.MailingState, ContactRoleWrapper.varianceReg.contact__r.MailingState)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Phone</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.Phone != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.Phone != null, ContactRoleWrapper.varianceReg.contact__r.Phone, ContactRoleWrapper.varianceReg.contact__r.Phone)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Email</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.contact__r.Email != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.contact__r.Email != null, ContactRoleWrapper.varianceReg.contact__r.Email, ContactRoleWrapper.varianceReg.contact__r.Email)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">Start Date</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.Start_Date__c != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.Start_Date__c != null, ContactRoleWrapper.varianceReg.Start_Date__c, ContactRoleWrapper.varianceReg.Start_Date__c)}</p>
+        </div>
+                <div class="card-row-item col-md-6 col-sm-12">
+            <p class="top-level-label">End Date</p>
+            <p class="{!IF(ContactRoleWrapper.varianceReg.End_Date__c != null, '', 'empty-input')}">{!IF(ContactRoleWrapper.varianceReg.End_Date__c != null, ContactRoleWrapper.varianceReg.End_Date__c, ContactRoleWrapper.varianceReg.End_Date__c)}</p>
+        </div>
+     </div>
+            </div>
+          </div>
+        </apex:repeat>
+    </div>
+      </apex:outputpanel> 
+      <!-- Table View -->
+    <apex:outputpanel layout="block" rendered="{!ContactRoleListCount && (isTable != null && isTable)}">
+      <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
+        <thead>
+          <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">FirstName</span></th>
+            </tr> 
+          <tr class="slds-text-heading--label"> 
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">LastName</span></th>
+          </tr>
+          <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">MailingStreet</span></th>
+           </tr>
+           <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">MailingCity</span></th>
+          </tr> 
+            <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">MailingPostalCode</span></th>
+          </tr> 
+           <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">MailingState</span></th>
+          </tr> 
+         <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Phone</span></th>
+          </tr> 
+         <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Email</span></th>
+          </tr> 
+         <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Start_Date__c</span></th>
+          </tr> 
+           <tr class="slds-text-heading--label">
+             <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">End_Date__c</span></th>
+          </tr> 
+        </thead>
+       <tbody>
+          <apex:repeat value="{!ContactList}" var="ContactRoleWrapper">
+            <tr class="slds-hint-parent">
+            <th data-label="variance-reg" role="row"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.FirstName != null, ContactRoleWrapper.varianceReg.contact__r.FirstName, ContactRoleWrapper.varianceReg.contact__r.FirstName)}</span></th>
+                 
+             </tr>
+             <tr class="slds-hint-parent">
+              <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.LastName != null, ContactRoleWrapper.varianceReg.contact__r.LastName, ContactRoleWrapper.varianceReg.contact__r.LastName)}</span></td>
+              </tr>
+             <tr class="slds-hint-parent">
+               <td class="slds-cell-wrap" data-label="variance-regulation"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingStreet != null, ContactRoleWrapper.varianceReg.contact__r.MailingStreet, ContactRoleWrapper.varianceReg.contact__r.MailingStreet)}</span></td>
+              </tr>
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingCity != null, ContactRoleWrapper.varianceReg.contact__r.MailingCity, ContactRoleWrapper.varianceReg.contact__r.MailingCity)}</span></td>
+              </tr>
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode != null, ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode, ContactRoleWrapper.varianceReg.contact__r.MailingPostalCode)}</span></td>
+              </tr>
+     
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.MailingState != null, ContactRoleWrapper.varianceReg.contact__r.MailingState, ContactRoleWrapper.varianceReg.contact__r.MailingState)}</span></td>
+              </tr>
+             
+              <tr class="slds-hint-parent">
+              	
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap"> test{!IF(ContactRoleWrapper.varianceReg.contact__r.Phone != null, ContactRoleWrapper.varianceReg.contact__r.Phone, ContactRoleWrapper.varianceReg.contact__r.Phone)}</span></td>
+              </tr>
+             
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.contact__r.Email != null, ContactRoleWrapper.varianceReg.contact__r.Email, ContactRoleWrapper.varianceReg.contact__r.Email)}</span></td>
+              </tr>
+                
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.Start_Date__c != null, ContactRoleWrapper.varianceReg.Start_Date__c, ContactRoleWrapper.varianceReg.Start_Date__c)}</span></td>
+              </tr>
+             
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(ContactRoleWrapper.varianceReg.End_Date__c != null, ContactRoleWrapper.varianceReg.End_Date__c, ContactRoleWrapper.varianceReg.End_Date__c)}</span></td>
+              </tr>
+              <tr class="slds-hint-parent">
+                <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap"></span></td>
+              </tr>
+              <tr class="slds-hint-parent">
+              
+              <td class="slds-cell-wrap">
+                <apex:outputpanel layout="block" rendered="{!ContactRoleWrapper.isNew && isEditible}" html-flex="50" style="text-align: right;">
+                  <apex:commandbutton action="{!removeAddedContactRole}" rerender="variance-list" value="Delete" styleclass="md-button md-eec md-raised">
+                    <apex:param name="wrapperId" value="{!ContactRoleWrapper.wrapperId}" />
+                  </apex:commandbutton>
+                </apex:outputpanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </tbody> 
+      </table>
+        </apex:outputpanel> 
+        <apex:outputpanel rendered="{!!ContactRoleListCount}">
+      <div class="slds-box slds-box--x-small" layout-padding="true" layout-margin="true">There are currently no Contact Role available for the provider.</div>
+    </apex:outputpanel>
+    <apex:outputpanel rendered="{!isEditible}">
+      <div style="width: 100%; margin: 0px -22px; text-transform: uppercase;" layout="row" layout-align="end end">
+        <button id="add-new-variance" type="button" style="text-transform: uppercase;" class="md-button md-eec md-raised">Add New Contact Role</button>
+      </div>
+    </apex:outputpanel>
+    </apex:outputpanel>
+     <script>
+    // Callback function for lookup popups.
+      var handleParentLookup = function(objType, resultId, resultName) {
+        console.log(objType + ' <= Type, ' + resultId + ' <= Result Id, ' + resultName + ' <= Result Name');
+
+        // Send the id to the controller and rerender the list.
+        addContactRoleToList(resultId);
+      }
+
+      // Case Parent lookup popup call.
+      j$('body').on('click', '#add-new-variance', function() {
+        var lookupWindow = null;
+          lookupWindow = window.open(
+            '/apex/EEC_Lookup?sobject=Contact_Role__c',
+            'Lookup',
+            'height=500,width=500'
+          );
+      });
+  </script> 
+</apex:component>

@@ -1,0 +1,7 @@
+Hello,
+
+A reminder was sent to Provider {!Account.Name} for missing Investigation conclusions related to Foster Home 51A or Incident.
+
+Please login to Salesforce and review: {!Account.Link}
+
+LEAD System

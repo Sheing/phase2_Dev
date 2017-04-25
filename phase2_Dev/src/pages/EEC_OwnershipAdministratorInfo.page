@@ -1,0 +1,1371 @@
+<apex:page controller="EEC_TransactionWizardController" docType="HTML-5.0" showheader="false" sidebar="false" standardStylesheets="false" action="{!pullContactRole}">
+    <head>
+ <apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system.min.css')}" />
+
+        <title>EEC : OwnerShip</title>
+        <c:EEC_Header id="pageHeader" />
+        <style>
+         html {
+        font: 100%/1.5 "Salesforce Sans", Arial, sans-serif !important;
+        background: white !important;
+        color: #16325c !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+
+      body {
+        font-size: 0.875rem !important;
+        font-family: "Salesforce Sans", Arial, sans-serif !important;
+        background: transparent !important;
+      }
+
+      .loading-status {
+        line-height: 32px;
+      }
+
+        .loading-status:before {
+          content: " ";
+          width: 30px;
+          height: 60px;
+          float: left;
+          display: block;
+          position: relative;
+          background: url("{!URLFOR($Resource.SLDS0120, 'assets/images/spinners/slds_spinner_brand.gif')}") top center no-repeat;
+          background-size: 100%;
+        }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff')}") format("woff");
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff')}") format("woff");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff')}") format("woff");
+        font-weight: 700;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .slds-container {
+        padding-bottom: 30px;
+        margin-left: 20px;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .button-container {
+        margin-top: 21px;
+        padding-left: 5px;
+      }
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+
+        .requiredInput2 {
+              margin-left: 0px;
+            }
+            
+            .requiredInput1 {
+              margin-left: 0px;
+            }
+            
+        .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+      
+      .sr-item-row {
+        cursor: pointer;
+        padding: 10px;
+      }
+
+        .sr-item-row:hover {
+          background: rgba(225,225,225,0.8);
+          cursor: pointer;
+        }
+
+      .top-level-label {
+        font-weight: 600;
+        margin-right: 3px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+        
+      .inner-label {
+        color: black;
+        font-weight: normal;
+        line-height: initial;
+        white-space: nowrap;
+      }
+      
+      
+      
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {
+        
+        width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .transprovider-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            margin-bottom: 15px;
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+      
+        
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+       .requiredInput2 {
+              margin-left: 0px;
+            }
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        -webkit-appearance: none;
+        border: none;
+        box-shadow: none;
+        background: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: inherit;
+        font-variant: inherit;
+        font-family: inherit;
+        outline: none;
+        letter-spacing: .01em;
+        margin: 3px 0px;
+        white-space: normal;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+      .requiredInput1 {
+              margin-left: 0px;
+            }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      .top-level-label {
+          font-weight: 600;
+          margin-right: 5px;
+          line-height: 20px; 
+          color: rgba(0,0,0,0.54);
+       }
+          
+          
+          
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+      
+      /*New Style*/
+      .transaction-info-row {
+            margin-left: 0px; 
+          }
+      .reasonErrorMessage{
+            display : none;
+          }
+      .visible{
+            display : block;
+         }
+      
+          
+    </style>
+    
+  </head>
+    <body ng-app="eecApp">
+        <c:EEC_Nav_Bar id="navBar"  rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}"/>
+        <div class="transprovider-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="row" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">
+            <md-content style="margin-top: 20px;" ng-show="ctrl.checkForMessages()" layout="row" flex="100" layout-align="center center">   
+                <md-whiteframe class="md-whiteframe-z2 ng-cloak" layout="column" layout-padding="true" flex="75">
+                </md-whiteframe> 
+            </md-content>
+       <apex:form id="ProviderTransactionForm" styleClass="transaction-parsley-form col-lg-8 col-md-8 col-sm-12">
+       <apex:messages id="messages" />
+       
+        <apex:outputPanel style="padding:50px 50px 50px 50px"  styleClass="ng-cloak">
+            <h3 class="md-display-1">Ownership / Administrator Information</h3>
+            <md-divider layout-align="center center"></md-divider>
+            <apex:pageBlock html-layout="column" html-layout-padding="true" id="idPageBlock">
+            <!-- Basic Information -->
+             <div class="base-info" layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true">
+                 <h3 class="md-title" flex="100">Provider / Transaction Information</h3>
+                 
+                 <md-content flex="50" layout="column">
+                     <label class="base-label">Provider Name</label>
+                     <apex:inputText value="{!licenseTransation.Provider__r.Name}" styleClass="form-control" disabled="true" />
+                 </md-content>
+                 
+                 <md-content flex="50" layout="column">
+                  <label class="base-label">Transaction Type</label>
+                  <apex:inputText value="{!LicenseRecordTypeLabel}" id="transactionTypeTA" styleClass="form-control" disabled="true" />
+                </md-content>
+
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Transaction Number</label>
+                  <apex:inputText value="{!licenseTransation.Name}" id="transactionNumberTA" styleClass="form-control" disabled="true" />
+                </md-content>    
+              </div>  
+                <apex:actionFunction name="doselectUmbrella" immediate="true" action="{!doSelectUmbrella}" rerender="umbreall1,umbrellaContainer,idUmbrella,idNewUmbrella">
+                    <apex:param name="umbrellaId" value="" assignTo="{!selectedUmbrellaId}"/>
+                </apex:actionFunction>
+                <apex:outputpanel id="owner" rendered="{!LicenseRecordTypeName !='GSA_License_Change'}" > 
+                      
+                        <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="margin-top: -35px;">
+                            <h3 class="md-title" flex="100">Owner / Corporation</h3>
+                            <apex:actionRegion >
+                            <div class="radio-group">
+                                <div class="requiredBlock"></div>
+                                <label class="base-label">Type of Ownership<span class="required">*</span></label>
+                                <apex:selectradio html-data-mincheck="1" value="{!licenseTransation.Ownership_Type__c}" disabled="{!IF(OR(LicenseRecordTypeName='GSA_New_License',LicenseRecordTypeName='Placement_New_License',LicenseRecordTypeName='Residential_New_License'),false,true)}">
+                                     <apex:selectoptions html-data-parsley-required="true" value="{!typeOfOwnership}">                                     
+                                     </apex:selectoptions>
+                                     <apex:actionSupport event="onchange" rerender="idPageBlock"/>
+                               </apex:selectradio>
+                            </div>
+                            </apex:actionRegion> 
+                        </div>
+                        <!---------------------------------------------------------------------------->
+                        <br/>
+                        <apex:outputPanel >
+                        <apex:outputPanel rendered="{!If(ownerContactRole != null && (licenseTransation.Ownership_Type__c == 'Individual' || licenseTransation.Ownership_Type__c == 'Doing Business As (DBA)' || licenseTransation.Ownership_Type__c == 'Unincorporated' ), true, false)}"> 
+                        <div flex="100" class="form-group">
+                            <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                <h3 class="md-title" flex="100" style="margin-top: 0px;"> Individual Owner  
+                                </h3> 
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.FirstName ==null,false,true)}}">
+                                 <label class="input-label">First Name<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.FirstName}"   html-data-parsley-required="true"  styleClass="form-control" rendered="{!IF(OR(LicenseRecordTypeName='GSA_New_License',LicenseRecordTypeName='Placement_New_License',LicenseRecordTypeName='Residential_New_License'),true,false)}"/>
+                                 <apex:inputText value="{!ownerContactRole.contact.FirstName}"  disabled="true"  id="ownerfirstname" html-data-parsley-required="true"  styleClass="form-control" rendered="{!IF(OR(LicenseRecordTypeName='GSA_New_License',LicenseRecordTypeName='Placement_New_License',LicenseRecordTypeName='Residential_New_License'),false,true)}"/>
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.LastName ==null,false,true)}}">
+                                 <label class="input-label">Last Name<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.LastName}"   html-data-parsley-required="true"  styleClass="form-control" rendered="{!IF(OR(LicenseRecordTypeName='GSA_New_License',LicenseRecordTypeName='Placement_New_License',LicenseRecordTypeName='Residential_New_License'),true,false)}"/>
+                                 <apex:inputText value="{!ownerContactRole.contact.LastName}"  disabled="true"  html-data-parsley-required="true"  styleClass="form-control" rendered="{!IF(OR(LicenseRecordTypeName='GSA_New_License',LicenseRecordTypeName='Placement_New_License',LicenseRecordTypeName='Residential_New_License'),false,true)}"/>
+                            </div>
+                              <apex:outputText rendered="{!(LicenseRecordTypeName == 'Residential_New_License'|| LicenseRecordTypeName == 'Placement_New_License'||LicenseRecordTypeName == 'Placement_Renewal'||LicenseRecordTypeName == 'Residential_License_Renewal'||LicenseRecordTypeName == 'Placement_Move'||LicenseRecordTypeName == 'Residential_Move'||LicenseRecordTypeName == 'R_P_Change_of_Admin_Authority')}">
+                                  <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.Title==null,false,true)}}" >
+                                     <label class="input-label">Title<span class="required">*</span> </label>
+                                     <apex:inputText value="{!ownerContactRole.contact.Title}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                 </div> 
+                             </apex:outputText>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.MailingStreet ==null,false,true)}}">
+                                 <label class="input-label">Street Address<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.MailingStreet}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                <!-- <apex:inputText value="{!ownerContactRole.contact.MailingStreet}"  disabled="true"  html-data-parsley-required="true"  styleClass="form-control" /> -->
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.MailingCity==null,false,true)}}">
+                                 <label class="input-label">City/Town<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.MailingCity}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.MailingPostalCode==null,false,true)}}">
+                                 <label class="input-label">Zip Code<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.MailingPostalCode}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.MailingState==null,false,true)}}">
+                                 <label class="input-label">State<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.MailingState}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                             <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.Phone==null,false,true)}}">
+                                 <label class="input-label">Phone Number<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.Phone}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                              <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.Email==null,false,true)}}">
+                                 <label class="input-label">Email Address<span class="required">*</span></label>
+                                 <apex:inputText value="{!ownerContactRole.contact.Email}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                            <apex:outputPanel rendered="{!(LicenseRecordTypeName == 'GSA_New_License'||LicenseRecordTypeName == 'GSA_Move'||LicenseRecordTypeName == 'GSA_Renewal'||LicenseRecordTypeName == 'GSA_Change_of_Admin_Authority')}">
+                              <div class="radio-group"  ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contact.Holds_FCC_License__c==null,false,true)}}">
+                                 <label class="input-label">Does Owner hold a Family Child Care license?<span class="required">*</span></label>
+                                <apex:selectRadio value="{!ownerContactRole.holdFCCLicense}" html-data-parsley-required="true" >
+                                  <apex:selectoptions value="{!Items}">                                       
+                                  </apex:selectoptions>
+                                </apex:selectRadio>
+                               
+                                
+                            </div>
+                            </apex:outputPanel>
+                            </div>
+                            </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>    
+                        <br/>
+                        <apex:outputPanel id="umbreall1">
+                        <apex:outputPanel id="umbrellaContainer" rendered="{!(licenseTransation.Ownership_Type__c == 'Non-Profit Corp.' || licenseTransation.Ownership_Type__c == 'For Profit Corp.' || licenseTransation.Ownership_Type__c == 'LLC') && (LicenseRecordTypeName !='GSA_License_Change')}">
+                            <apex:outputPanel rendered="{!NOT(userAssociatedtoUmbrella)}"><button id="add-new-document" onClick="openUmbrellaLookup(this);" type="button" class="md-button md-eec md-raised" style="display:{!if(umbrella== null, 'block','none')}">Search / Add Corporation / LLC (Umbrella)</button>
+                            </apex:outputPanel>
+                            <br/>
+                            <apex:outputPanel rendered="{!umbrella != null}" id="idUmbrella">
+                                <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                    <h3 class="md-title" flex="100" style="margin-top: 0px;">Corporation/LLC</h3>
+                                     <div flex="50" ng-class="{'md-input-has-value' : {!IF(umbrella.Name==null,false,true)}}">
+                                         <label class="input-label">Name<span class="required">*</span></label>
+                                         <apex:inputtext styleclass="form-control" id="umbreallName" disabled="true" value="{!umbrella.Name}"/>  
+                                    </div>
+                                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(umbrella.Provider_Address_1__c==null,false,true)}}">
+                                         <label class="input-label">Street Address 1</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!umbrella.Provider_Address_1__c}"/>  
+                                    </div>
+                                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(umbrella.Provider_Address_2__c==null,false,true)}}">
+                                         <label class="input-label">Street Address 2</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!umbrella.Provider_Address_2__c}"/>  
+                                    </div>
+                                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(umbrella.Provider_city_text__c==null,false,true)}}">
+                                         <label class="input-label">City/Town</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!umbrella.Provider_city_text__c}"/>  
+                                    </div>
+                                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(umbrella.Provider_Zip_Code__c==null,false,true)}}">
+                                         <label class="input-label">Zip Code</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!umbrella.Provider_Zip_Code__c}"/>  
+                                    </div>
+                                    <div flex="50" ng-class="{'md-input-has-value' : {!IF(umbrella.State__c==null,false,true)}}">
+                                         <label class="input-label">State</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!umbrella.State__c}"/>  
+                                    </div>   
+                                </div>
+                            </apex:outputPanel>
+                           
+                            <apex:outputPanel rendered="{!umbrella == null && licenseTransation.New_Umbrella_Name__c != null}" id="idNewUmbrella">
+                                <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                    <h3 class="md-title" flex="100" style="margin-top: 0px;">Corporation/LLC</h3>
+                                     <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.New_Umbrella_Name__c==null,false,true)}}">
+                                         <label class="input-label">Name</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true"  value="{!licenseTransation.New_Umbrella_Name__c}"/>
+                                    </div>
+                                    <div flex="50">
+                                         <label class="input-label">Street Address 1</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!licenseTransation.NewUmbrella_Street_Address_1__c}"/>
+                                    </div>  
+                                     <div flex="50">
+                                         <label class="input-label">Street Address 2</label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!licenseTransation.NewUmbrella_Street_Address_2__c}"/>
+                                    </div>                               
+                                    <div flex="50">
+                                         <label class="input-label">City/Town<span class="required">*</span></label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!licenseTransation.NewUmbrella_City__c}"/>  
+                                    </div>
+                                    <div flex="50">
+                                         <label class="input-label">Zip Code<span class="required">*</span></label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!licenseTransation.NewUmbrella_Zip_Code__c}"/>  
+                                    </div>
+                                    <div flex="50">
+                                         <label class="input-label">State<span class="required">*</span></label>
+                                         <apex:inputtext styleclass="form-control" disabled="true" value="{!licenseTransation.NewUmbrella_State__c}"/>  
+                                    </div>   
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        </apex:outputPanel>
+                      <apex:outputPanel rendered="{!licenseTransation.Ownership_Type__c != 'Unincorporated'}">
+                       <h3 class="md-title" flex="100">
+                            <apex:outputText rendered="{!IF(OR(licenseTransation.Ownership_Type__c == 'Partnership',licenseTransation.Ownership_Type__c=='Unincorporated'), true, false)}">Partners</apex:outputText>
+                        </h3>
+                        
+                        <apex:variable var="rowNum" value="{!0}"  />
+                        
+                        <apex:repeat id="partnerContainer" value="{!contactrolelist}" var="rm" rendered="{!AND(contactRoleList != NULL,contactRoleList.size>0,licenseTransation.Ownership_Type__c == 'Partnership')}">
+                          <div class="col-md-6 col-sm-12" style="padding: 0;">
+                            <div class="slds-box slds-box--x-small" layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+                              <div layout="row" layout-wrap="true">
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">First Name<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.FirstName}" html-data-parsley-required="true" styleClass="form-control" rendered="{!IF(rm.IsNew,true,false)}" />
+                                    <apex:inputText value="{!rm.contact.FirstName}"  styleClass="form-control" disabled="true" rendered="{!IF(rm.IsNew,false,true)}"/>
+                                    <apex:variable var="rowNum" value="{!rowNum+1}"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Last Name<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.LastName}" html-data-parsley-required="true"  styleClass="form-control" rendered="{!IF(rm.IsNew,true,false)}" />
+                                    <apex:inputText value="{!rm.contact.LastName}" styleClass="form-control"  disabled="true" rendered="{!IF(rm.IsNew,false,true)}"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Street Address<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.MailingStreet}"  html-data-parsley-required="true" styleClass="form-control"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">City/Town<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.MailingCity}"  html-data-parsley-required="true" styleClass="form-control"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Zip Code<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.MailingPostalCode}"  html-data-parsley-required="true" styleClass="form-control"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">State<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.MailingState}"  html-data-parsley-required="true" styleClass="form-control"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Phone Number<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.Phone}"  html-data-parsley-required="true" styleClass="form-control"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Start Date<span class="required">*</span></p>
+                                  <p>
+                                      <c:noDateLink ><apex:inputField styleClass="form-control"  value="{!rm.contactrole.Start_Date__c}"  html-data-parsley-required="true" html-data-provide="datepicker" onfocus="DatePicker.pickDate(false, this , false);" rendered="{!IF(rm.IsNew,true,false)}"/></c:noDateLink>
+                                    <apex:outputField value="{!rm.contactrole.Start_Date__c}" styleClass="form-control" rendered="{!IF(rm.IsNew,false,true)}"/>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">End Date<span class="required">*</span></p>
+                                  <p>
+                                      <c:noDateLink ><apex:inputField styleClass="form-control" value="{!rm.contactrole.End_Date__c}"  html-data-parsley-required="true" html-data-provide="datepicker"/></c:noDateLink>
+                                  </p>
+                                </div>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Email Address<span class="required">*</span></p>
+                                  <p>
+                                    <apex:inputText value="{!rm.contact.Email}"  html-data-parsley-required="true" styleClass="form-control"/>
+                                  </p>
+                                </div>
+                                <apex:outputPanel rendered="{!(LicenseRecordTypeName == 'GSA_New_License'||LicenseRecordTypeName == 'GSA_Move'||LicenseRecordTypeName == 'GSA_Renewal'||LicenseRecordTypeName == 'GSA_Change_of_Admin_Authority')}">
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label">Does Partner hold a Family Child Care license?<span class="required">*</span></p>
+                                  <p>
+                                    <apex:selectRadio value="{!rm.holdFCCLicense}">
+                                        <apex:selectoptions value="{!Items}">                                       
+                                        </apex:selectoptions>
+                                    </apex:selectRadio>
+                                  </p>
+                                </div>
+                                </apex:outputPanel>
+                                <div class="card-row-item col-md-6 col-sm-12">
+                                  <p class="top-level-label" style="display:{!IF(rm.isNew, 'block', 'none')}">Delete</p>
+                                  <p>
+                                    <apex:commandlink action="{!delcontactRole}"  immediate="true" style="color: #000;" reRender="idPageBlock" rendered="{!rm.isNew}">
+                                        <apex:param value="{!rowNum - 1}" name="index" />
+                                         <i class="material-icons">&#xE872;</i> 
+                                     </apex:commandlink>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </apex:repeat> 
+                        </apex:outputPanel>
+                        </apex:outputPanel>
+                        <div style="clear:both">     
+                     <apex:outputPanel rendered="{!LicenseRecordTypeName !='GSA_License_Change'}">           
+                            <apex:commandLink styleClass="md-button md-raised md-eec" rendered="{!IF(OR(licenseTransation.Ownership_Type__c == 'Partnership'), true, false)}"  rerender="idPageBlock"  value="Add Partner" action="{!addcontactrole}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" immediate="true"/>
+                         </apex:outputPanel>
+                        </div>
+                        
+                        <apex:outputPanel rendered="{!AND(adminHead != null,OR(LicenseRecordTypeName !='GSA_New_License',LicenseRecordTypeName =='Residential_Move'))}"> 
+                            <div flex="100" class="form-group">
+                            <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                <h3 class="md-title" flex="100" style="margin-top: 0px;">  <apex:outputText rendered="{!(CONTAINS(LicenseRecordTypeName,'GSA'))}" >Current Administrative Head or Director of the Program </apex:outputText> 
+                                 <apex:outputText rendered="{!(NOT(CONTAINS(LicenseRecordTypeName,'GSA')))}" >Current Administrative Head or Director of the Provider</apex:outputText> 
+                                </h3>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contact.firstname==null,false,true)}}">
+                                 <label class="input-label">First Name</label>
+                                 <apex:inputText disabled="true" value="{!adminHead.contact.firstname}"   html-data-parsley-required="true"  styleClass="form-control"/>
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contact.lastname==null,false,true)}}">
+                                 <label class="input-label">Last Name</label>
+                                 <apex:inputText value="{!adminHead.contact.lastname}" disabled="true" html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contact.title==null,false,true)}}">
+                                 <label class="input-label">Title<span class="required">*</span></label>
+                                 <apex:inputText value="{!adminHead.contact.title}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contact.Phone==null,false,true)}}">
+                                 <label class="input-label">Phone Number<span class="required">*</span></label>
+                                 <apex:inputText value="{!adminHead.contact.Phone}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contact.Email==null,false,true)}}">
+                                 <label class="input-label">Email Address<span class="required">*</span></label>
+                                 <apex:inputText value="{!adminHead.contact.Email}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contactrole.Start_Date__c==null,false,true)}}">
+                                 <label class="input-label">Start Date</label>
+                                 <c:noDateLink ><apex:outputField styleClass="form-control"  value="{!adminHead.contactrole.Start_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker"/></c:noDateLink>
+                            </div>
+                             <div flex="50" ng-class="{'md-input-has-value' : {!IF(adminHead.contactrole.End_Date__c==null,false,true)}}">
+                                 <label class="input-label">If your Administrative Head / Director changed, please enter the End Date</label>
+                                 
+                                 <c:noDateLink ><apex:InputField styleClass="form-control"  value="{!adminHead.contactrole.End_Date__c}" html-data-provide="datepicker">
+                                     <apex:actionSupport event="onchange"  rerender="administrativerole"/>
+                                     </apex:InputField>
+                                 </c:noDateLink>
+                            </div>
+                           
+                            </div>
+                            </div>
+                             </apex:outputPanel>
+                             
+                            <!---------------------------------------------------------------------------->
+                           <!-- ================================================================================= -->
+                            <!---------------------------------------------------------------------------->
+                            <apex:outputPanel id="administrativerole">
+                            <apex:outputPanel rendered="{!((adminHead == null || adminHead.contactrole.End_Date__c != null) && LicenseRecordTypeName != 'GSA_License_Change')}" >
+                            
+                            <div flex="100" class="form-group">
+                                <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                <h3 class="md-title" flex="100" style="margin-top: 0px;">  <apex:outputText rendered="{!(CONTAINS(LicenseRecordTypeName,'GSA'))}" >Designate Your Administrative Head or Director of the Program </apex:outputText> 
+                                 <apex:outputText rendered="{!(NOT(CONTAINS(LicenseRecordTypeName,'GSA')))}" >Designate Your Administrative Head or Director of the Provider </apex:outputText> 
+                                </h3>
+                                <apex:outputpanel >
+                                <div flex="50">
+                                <label class="input-label">Select<span class="required">*</span></label>
+                                        <apex:actionRegion >
+                                            <apex:selectList styleClass="form-control" value="{!selectedContact}" html-data-parsley-required="true" size="1" multiselect="false" >
+                                                <apex:selectoptions value="{!ContactList}">                                     
+                                                </apex:selectoptions>
+                                                <apex:actionSupport event="onchange" action="{!newAdminHead}" rerender="administrativerole,newAdminContainer" />
+                                            </apex:selectList>
+                                        </apex:actionRegion>
+                                     </div>
+                                 </apex:outputpanel>
+                                 <apex:outputtext > 
+                                  <div flex="50">
+                                   </div>
+                                   </apex:outputtext>
+                             <apex:outputtext rendered="{!selectedContact != null}">             
+                            <div flex="50" style="margin-top: 2px;" ng-class="{'md-input-has-value' : {!IF(administrativehead.contact.firstname==null,false,true)}}">
+                                 <label class="input-label">First Name<span class="required">*</span></label>
+                                  <apex:inputText value="{!administrativehead.contact.firstname}" styleClass="form-control" rendered="{!IF(selectedContact =='New Individual',true,false)}"  html-data-parsley-required="true" />
+                                  <apex:inputText value="{!administrativehead.contact.firstname}" disabled="true" styleClass="form-control" rendered="{!IF(selectedContact =='New Individual',false,true)}"  html-data-parsley-required="true" />
+                           </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(administrativehead.contact.lastname==null,false,true)}}">
+                                 <label class="input-label">Last Name<span class="required">*</span></label>
+                                 <apex:inputText value="{!administrativehead.contact.lastname}"   html-data-parsley-required="true"   rendered="{!IF(selectedContact =='New Individual',true,false)}" styleClass="form-control" />
+                                 <apex:inputText value="{!administrativehead.contact.lastname}" disabled="true"  html-data-parsley-required="true"   rendered="{!IF(selectedContact =='New Individual',false,true)}" styleClass="form-control" />
+                                 <!-- <apex:outputField value="{!administrativehead.contact.lastname}"  disabled="true"  html-data-parsley-required="true"  styleClass="form-control" rendered="{!IF(selectedContact =='New Individual',false,true)}" styleClass="form-control"/> -->
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(administrativehead.contact.title==null,false,true)}}">
+                                 <label class="input-label">Title<span class="required">*</span></label>
+                                 <apex:inputText value="{!administrativehead.contact.title}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                <!-- <apex:inputText value="{!ownerContactRole.contact.MailingStreet}"  disabled="true"  html-data-parsley-required="true"  styleClass="form-control" /> -->
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(administrativehead.contact.Phone==null,false,true)}}">
+                                 <label class="input-label">Phone Number<span class="required">*</span></label>
+                                 <apex:inputText value="{!administrativehead.contact.Phone}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(administrativehead.contact.Email==null,false,true)}}">
+                                 <label class="input-label">Email Address<span class="required">*</span></label>
+                                 <apex:inputText value="{!administrativehead.contact.Email}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>   
+                            <div  class="radio-group">
+                                 <div class="requiredBlock"></div>
+                                 <label class="base-label">Do you want to give her/him access to the Portal?<span class="required">*</span></label>
+                                 <apex:selectRadio html-data-parsley-required="true" value="{!administrativehead.portalAccess}"   >
+                                 <apex:selectoptions value="{!Items}">  
+                                 </apex:selectoptions>
+                                 </apex:selectRadio>
+                            </div> 
+                            
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(administrativehead.contactrole.Start_Date__c==null,false,true)}}">
+                                 <label class="input-label">Start Date<span class="required">*</span></label>
+
+                                 <c:noDateLink ><apex:inputField styleClass="form-control"  value="{!administrativehead.contactrole.Start_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker"/></c:noDateLink>
+                            </div> 
+                             </apex:outputtext>
+                          
+                            </div>
+                            </div>
+                             </apex:outputPanel>
+                             </apex:outputPanel>
+                        <apex:outputPanel rendered="{!AND(adminHead != null,LicenseRecordTypeName !='GSA_New_License')}">
+                           
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel id="boardChairContainer" rendered="{!boardchair != null && (LicenseRecordTypeName == 'GSA_Move'||LicenseRecordTypeName == 'GSA_Renewal'||LicenseRecordTypeName == 'GSA_Change_of_Admin_Authority')}">
+                            <div flex="100" class="form-group">
+                                <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                <h3 class="md-title" flex="100" style="margin-top: 0px;"> Current Board Chair of the Program
+                                </h3> 
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(boardchair.contact.firstname==null,false,true)}}">
+                                 <label class="input-label">First Name</label>
+                                  <apex:inputText value="{!boardchair.contact.firstname}" styleClass="form-control" rendered="{!IF(selectedContact =='New Individual',true,false)}"  html-data-parsley-required="true" /> 
+                                 <apex:inputText value="{!boardchair.contact.firstname}" disabled="true" styleClass="form-control" rendered="{!IF(selectedContact =='New Individual',false,true)}"   html-data-parsley-required="true" /> 
+                            </div>
+                            
+                             <div flex="50" ng-class="{'md-input-has-value' : {!IF(boardchair.contact.lastname==null,false,true)}}">
+                                 <label class="input-label">Last Name</label>
+                                 <apex:inputText value="{!boardchair.contact.lastname}"   html-data-parsley-required="true"   rendered="{!IF(selectedContact =='New Individual',true,false)}" styleClass="form-control" />
+                                 <apex:inputText value="{!boardchair.contact.lastname}"   html-data-parsley-required="true"   rendered="{!IF(selectedContact =='New Individual',false,true)}" disabled="true"  styleClass="form-control" />
+                                 
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(boardchair.contact.title==null,false,true)}}">
+                                 <label class="input-label">Title<span class="required">*</span></label>
+                                 <apex:inputText value="{!boardchair.contact.title}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                 
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(boardchair.contact.Phone==null,false,true)}}">
+                                 <label class="input-label">Phone Number<span class="required">*</span></label>
+                                 <apex:inputText value="{!boardchair.contact.phone}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(boardchair.contact.Email==null,false,true)}}">
+                                 <label class="input-label">Email Address<span class="required">*</span></label>
+                                 <apex:inputText value="{!boardchair.contact.email}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>  
+
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(boardchair.contactrole.Start_Date__c==null,false,true)}}">
+                                 <label class="input-label">Start Date</label>
+
+                                 <c:noDateLink ><apex:outputField styleClass="form-control"  value="{!boardchair.contactrole.Start_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker"/></c:noDateLink>
+                            </div>                              
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(ownerContactRole.contactrole.End_Date__c==null,false,true)}}">
+                                 <label class="input-label">If your Administrative Head / Director changed, please enter the End Date</label>
+                                 <apex:actionRegion >
+                                 <c:noDateLink ><apex:InputField styleClass="form-control"  value="{!boardchair.contactrole.End_Date__c}" html-data-provide="datepicker">
+                                 
+                                 <apex:actionSupport event="onchange" rerender="designatedboardContainer" action="{!udateDesignatedAdmin}"/>
+                                 </apex:inputField>
+                                 </c:noDateLink>
+                                 </apex:actionRegion> 
+                            </div> 
+                          
+                            </div>
+                            </div>
+                             </apex:outputPanel>
+                             
+                        <apex:outputpanel id="designatedboardContainer">
+                            <apex:outputPanel rendered="{!(boardchair == null || boardchair.contactrole.End_Date__c != null) && (LicenseRecordTypeName == 'GSA_New_License'||LicenseRecordTypeName == 'GSA_Move'||LicenseRecordTypeName == 'GSA_Renewal'||LicenseRecordTypeName == 'GSA_Change_of_Admin_Authority')}">
+                                <div flex="100" class="form-group">
+                                <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                <h3 class="md-title" flex="100" style="margin-top: 0px;">Designate Your Board Chair</h3> 
+                                <apex:outputpanel >
+                                    <div flex="50">
+                                    <label class="input-label" style="width:100%;">Select<span class="required">*</span></label>
+                                    <apex:actionRegion >
+                                            <apex:selectList styleClass="form-control" value="{!selectedBoardContact}" html-data-parsley-required="true" size="1" multiselect="false">
+                                                <apex:selectoptions value="{!ContactList}">                                     
+                                                </apex:selectoptions>
+                                                <apex:actionSupport event="onchange" action="{!newBoardHead}" rerender="boardChairContainer,designatedboardContainer"/>
+                                            </apex:selectList>
+                                        </apex:actionRegion>
+                                    </div>
+                               </apex:outputPanel>
+                                <div flex="50">
+                                </div>
+                            <apex:outputtext rendered="{!selectedBoardContact != null}">     
+                            <div flex="50" style="margin-top: 2px;" ng-class="{'md-input-has-value' : {!IF(designateboard.contact.firstname==null,false,true)}}">
+                                 <label class="input-label">First Name<span class="required">*</span></label>
+                                 <apex:inputText value="{!designateboard.contact.firstname}" rendered="{!IF(selectedBoardContact =='New Individual',true,false)}"   html-data-parsley-required="true"  styleClass="form-control" />
+                                 <apex:inputText value="{!designateboard.contact.firstname}" rendered="{!IF(selectedBoardContact =='New Individual',false,true)}" disabled="true"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div> 
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(designateboard.contact.lastname==null,false,true)}}">
+                                 <label class="input-label">Last Name<span class="required">*</span></label>
+                                 <apex:inputText value="{!designateboard.contact.lastname}" rendered="{!IF(selectedBoardContact =='New Individual',true,false)}"    html-data-parsley-required="true"  styleClass="form-control" />
+                                 <apex:inputText value="{!designateboard.contact.lastname}" rendered="{!IF(selectedBoardContact =='New Individual',false,true)}" disabled="true"  html-data-parsley-required="true"  styleClass="form-control" />
+                            </div> 
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(designateboard.contact.title==null,false,true)}}">
+                                 <label class="input-label">Title<span class="required">*</span></label>
+                                 <apex:inputText value="{!designateboard.contact.title}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(designateboard.contact.Phone==null,false,true)}}">
+                                 <label class="input-label">Phone Number<span class="required">*</span></label>
+                                 <apex:inputText value="{!designateboard.contact.phone}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(designateboard.contact.Email==null,false,true)}}">
+                                 <label class="input-label">Email Address<span class="required">*</span></label>
+                                 <apex:inputText value="{!designateboard.contact.email}"   html-data-parsley-required="true"  styleClass="form-control" />
+                            </div>  
+
+                            <div flex="50" ng-class="{'md-input-has-value' : {!IF(designateboard.contactrole.Start_Date__c==null,false,true)}}">
+                                 <label class="input-label">Start Date<span class="required">*</span></label>
+                                 <c:noDateLink ><apex:InputField styleClass="form-control"  value="{!designateboard.contactrole.Start_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker"/></c:noDateLink>
+                            </div>
+                             </apex:outputtext>   
+                                </div>
+                                </div>
+                            </apex:outputPanel>                            
+                        </apex:outputPanel>
+                    
+                         <apex:outputPanel id="AdminIndividual" rendered="{!LicenseRecordTypeName !='GSA_License_Change'}">
+                                <h3 class="md-title" flex="100">Administrators / Designated Individuals</h3>
+                                <apex:outputText rendered="{!IF(contactAdminRoleList.size==0,true,false)}">
+                                    <div  class="radio-group">
+                                        <label class="input-label" style="font-weight: bold;">Do you want to name a designated individual(s) to be the primary contact for EEC Licensors or do you have a site coordinator?<span class="required">*</span></label>
+                                        <apex:selectRadio html-data-mincheck="1" value="{!havesiteCordinator}" html-data-parsley-required="true" style="margin-left:0px;width:40%;font-style:normal;font-weight:normal;">
+                                            <apex:selectoptions html-data-parsley-required="true" value="{!Items}">                                       
+                                            </apex:selectoptions>
+                                            <apex:actionSupport event="onchange" rerender="admintable,AdminIndividual"/>
+                                        </apex:selectRadio>
+                                    </div>
+                                </apex:outputtext>                                 
+                                <apex:outputPanel id="admintable">
+                                    <apex:variable var="rowNumAdmin" value="{!0}"  />
+                                    <div flex="100" class="form-group">
+                                    <div layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true" style="overflow: visible;">
+                                    <apex:repeat id="admintableContainer" value="{!contactAdminRoleList}" var="rm" rendered="{!OR(AND(contactAdminRoleList != NULL,contactAdminRoleList.size>0),havesiteCordinator == 'Yes')}">
+                                        <apex:variable var="rowNumAdmin" value="{!rowNumAdmin+1}"/>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contact.FirstName==null,false,true)}}">
+                                             <label class="input-label">First Name</label>
+                                             <apex:inputField value="{!rm.contact.FirstName}" html-data-parsley-required="true" styleClass="form-control" rendered="{!IF(rm.IsNew,true,false)}"  />
+                                             <apex:inputText value="{!rm.contact.FirstName}" html-data-parsley-required="true" styleClass="form-control"  disabled="true" rendered="{!IF(rm.IsNew,false,true)}" />
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contact.LastName==null,false,true)}}">
+                                             <label class="input-label">Last Name</label>
+                                             <apex:inputField value="{!rm.contact.LastName}" html-data-parsley-required="true" styleClass="form-control" rendered="{!IF(rm.IsNew,true,false)}"  />
+                                             <apex:inputText value="{!rm.contact.LastName}" html-data-parsley-required="true" styleClass="form-control"  disabled="true" rendered="{!IF(rm.IsNew,false,true)}" />
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contactrole.Role__c==null,false,true)}}">
+                                             <label class="input-label">Role</label>
+                                             <apex:inputField style="width:333px" value="{!rm.contactrole.Role__c}" html-data-parsley-required="true" styleClass="form-control" rendered="{!IF(rm.IsNew,true,false)}"  />
+                                             <apex:inputText value="{!rm.contactrole.Role__c}" html-data-parsley-required="true" styleClass="form-control"  disabled="true" rendered="{!IF(rm.IsNew,false,true)}" />
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contact.Phone==null,false,true)}}">
+                                             <label class="input-label">Phone Number<span class="required">*</span></label>
+                                             <apex:inputField value="{!rm.contact.Phone}" html-data-parsley-required="true" styleClass="form-control"/>                                             
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contact.Email==null,false,true)}}">
+                                             <label class="input-label">Email Address<span class="required">*</span></label>
+                                             <apex:inputField value="{!rm.contact.Email}" html-data-parsley-required="true" styleClass="form-control"  />                                             
+                                        </div>
+                                        <apex:outputtext id="gsa" rendered="{!CONTAINS(LicenseRecordTypeName,'GSA')}">
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contactrole.Schedule_Administrative_Hours__c==null,false,true)}}">
+                                             <label class="input-label">Schedule Administrative Hours (approximate number hours per week)<span class="required">*</span></label>
+                                             <apex:inputField value="{!rm.contactrole.Schedule_Administrative_Hours__c}" html-data-parsley-required="true" styleClass="form-control"   />                                             
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contactrole.Schedule_Teaching_Hours__c==null,false,true)}}">
+                                             <label class="input-label">Schedule Teaching Hours (approximate number hours per week)<span class="required">*</span></label>
+                                             <apex:inputField value="{!rm.contactrole.Schedule_Teaching_Hours__c}" html-data-parsley-required="true" styleClass="form-control"   />                                             
+                                        </div>
+                                        </apex:outputtext>
+                                        <div class="radio-group" flex="50">                                            
+                                            <label class="input-label" style="font-weight: bold;">Do you want to give her/him access to the Portal?<span class="required">*</span></label>
+                                            <apex:selectradio value="{!rm.contactrole.Portal_Access__c}" style="width:30%">
+                                                 <apex:selectoptions value="{!Items}">                                     
+                                                 </apex:selectoptions>
+                                           </apex:selectradio>
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contactrole.Start_Date__c==null,false,true)}}">
+                                             <label class="input-label">Start Date<span class="required">*</span></label>
+                                             <div>
+                                             <apex:outputField styleClass="form-control"  value="{!rm.contactrole.Start_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker" rendered="{!IF(rm.IsNew,false,true)}"/>
+                                             </div>
+                                             <c:noDateLink ><apex:inputField styleClass="form-control"   value="{!rm.contactrole.Start_Date__c}"  html-data-parsley-required="true" html-data-provide="datepicker" rendered="{!IF(rm.IsNew,true,false)}"/></c:noDateLink>
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contactrole.End_Date__c==null,false,true)}}">
+                                             <label class="input-label">End Date</label>
+                                             <c:noDateLink ><apex:inputField styleClass="form-control"  value="{!rm.contactrole.End_Date__c}" html-data-provide="datepicker"/></c:noDateLink>
+                                        </div>
+                                        <div flex="50" ng-class="{'md-input-has-value' : {!IF(rm.contactrole.End_Date__c==null,true,true)}}">
+                                             <apex:commandlink action="{!deladmincontactRole}" value="Delete" styleClass="md-button md-eec md-raised" immediate="true" reRender="admintable,AdminIndividual" rendered="{!rm.isNew}">
+                                                    <apex:param value="{!rowNumAdmin - 1}" name="index" />
+                                             </apex:commandlink>
+                                        </div>
+                                        <div flex="50"/>                                        
+                                        <hr/>
+                                    </apex:repeat>
+                                    </div>
+                                    </div>
+                                    <br/>
+                                    </apex:outputPanel>
+                                    <div flex="100">
+                                        <apex:commandLink styleClass="md-button md-raised md-eec" rendered="{!OR(AND(contactAdminRoleList != NULL,contactAdminRoleList.size>0),havesiteCordinator == 'Yes')}" rerender="AdminIndividual,admintable" value="Add Individual" action="{!addadmincontactrole}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" immediate="true"/>
+                                    </div>
+                        </apex:outputPanel>
+                    </apex:pageBlock>
+                </apex:outputPanel> 
+                
+                <div class="row">
+                    <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+                        <apex:commandLink styleClass="md-button md-raised md-eec" value="Save and Previous" onclick="if(!form.validate()){return false;}" action="{!SaveAndPreviousOwnership}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                        <apex:commandLink styleClass="md-button md-raised md-eec" value="Save and Next" onclick="if(!form.validate()){return false;}" action="{!SaveAndNextOwnership}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                        
+                    </md-content>
+                    <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+                        <apex:commandLink styleClass="md-button md-raised"   immediate="true" action="{!CancelTransaction}" value="Cancel {!formattedLicenseRecordTypeLabel} Transaction"  onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                        <apex:commandLink styleClass="md-button md-raised" onclick="if(!form.validate() || !validateReasonLeaving()){addMargin(); return false;}" value="{!saveAndReturnLabel}" action="{!SaveAndReturnOwnership}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                    </md-content>  
+                </div>
+            
+            <apex:actionFunction action="{!SaveAndNextOwnership}" name="SaveNext"/>
+            <apex:actionFunction action="{!SaveAndPreviousOwnership}" name="SavePrevious" oncomplete="addMargin();">
+            	<apex:param name="previousPage" assignTo="{!previousPageName}" value=""/>
+            </apex:actionFunction>
+            
+       <apex:outputPanel id="idAttachmentModal" >
+                    <apex:actionRegion >
+                        <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModal" aria-hidden="true">
+                            <apex:outputPanel layout="block" styleClass="modal-dialog modal-lg">
+                                <apex:outputPanel layout="block" styleClass="modal-content">
+                                    <apex:outputPanel layout="block" styleClass="modal-header">
+                                        <h2 class="modal-title">Search / Add Umbrella</h2>
+                                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                            <span aria-hidden="true" class="fa fa-close modalCloseIcon"></span>
+                                        </button>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="block" styleClass="modal-body">
+                                         <div class="slds-form--inline" role="group">
+         
+            <div class="slds-form-element">
+                    <div class="slds-form-element ">
+                        <label  class="slds-form-element__label" for="case-status">Umbrella Name</label>
+                        <div class="slds-size--2-of-2">
+                          <apex:inputtext id="umbrellaName" value="{!umbrellaName}" styleclass="slds-input"/>
+                        </div>
+                    </div>
+            </div>
+            <div class="slds-form-element">
+                <div class="slds-form-element">            
+                        <label class="slds-form-element__label" for="case-status">City</label>
+                        <div class="slds-size--2-of-2">
+                          <apex:inputtext id="cityName" value="{!cityName}" styleclass="slds-input"/>
+                        </div>  
+                </div>
+            </div>
+         
+            <div class="slds-form-element">
+                <apex:commandbutton action="{!query}" styleclass="search-button-submit slds-button slds-button--neutral" value="Search" rerender="result-container" status="searchStatus">
+                </apex:commandbutton>
+            </div>
+        </div>
+              
+              <apex:outputpanel id="result-container" style="margin-top: 20px; width: 100%;" layout="block">
+                <apex:outputpanel layout="block" id="Umbrellalist" rendered="{!queryResults != null && queryResults.size > 0}">
+                       
+             <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                  <tr class="slds-text-title--caps">
+                    <th scope="col" class="slds-truncate"><span >Umbrella Name</span></th>
+                    <th scope="col" class="slds-truncate"><span >Street Address</span></th>
+                    <th scope="col" class="slds-truncate"><span >City/Town</span></th>
+                    <th scope="col" class="slds-truncate"><span >Zip Code</span></th>
+                    <th scope="col" class="slds-truncate"><span >State</span></th>
+                    <th scope="col" class="slds-truncate"><span >Select</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <apex:repeat value="{!queryResults}" var="obj">
+                    <tr class="slds-hint-parent">
+                      <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Name}"/></span></td>
+                      <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Provider_Address_1__c}"/></span></td>
+                      <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Provider_city_text__c}"/></span></td>              
+                      <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Provider_Zip_Code__c}"/></span></td>
+                      <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.State__c}"/></span></td>
+                      <td class="slds-truncate">
+                         <apex:outputpanel layout="block" html-flex="50" style="text-align: right;" styleClass="card-row-item">
+                          <apex:commandbutton rerender="Documentlist" onClick="closeModal('{!obj.Id}');" value="Select" styleclass="slds-button">
+                            <apex:param name="documentId" assignTo="{!umbrellaId}" value="{!obj.Id}" />
+                          </apex:commandbutton>
+                        </apex:outputpanel>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </tbody>
+              </table>
+                </apex:outputpanel>
+                <apex:outputPanel rendered="{!queryResults.size == 0 && errorMessage != ''}">
+                  <div class="slds-box slds-box-small">  
+                    <p>{!errorMessage}</p>  
+                  </div>
+                </apex:outputPanel>
+              </apex:outputpanel>
+              
+                <apex:pageBlock html-layout="column" html-layout-padding="true" id="newUmbrellaContainer">
+                    <apex:pageBlocksection title="New Umbrella" columns="1">
+                        <apex:pageBlockSectionItem >
+                            <apex:inputCheckBox value="{!isNewUmbrella}" id="newUmbrella" selected="false" >
+                                <apex:actionSupport event="onclick" rerender="newUmbrellaContainer"/>
+                            </apex:inputCheckBox>
+                            <apex:outputLabel styleClass="top-level-label" value="My Corporation / LLC is new to the Department of Education (check if true)" for="newUmbrella" />
+                            
+                        </apex:pageBlockSectionItem>
+                        </apex:pageBlocksection>
+                        <apex:outputPanel >
+                        <apex:outputPanel rendered="{!isNewUmbrella}">
+                        <div class="slds-form--horizontal" style="padding-top: 20px;">
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Name" for="accountName" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.New_Umbrella_Name__c}" id="accountName" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Business Name" for="businessName" ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField value="{!licenseTransation.New_Umbrella_Business_Name__c}" id="businessName" styleClass="slds-input"/>
+                            </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Place of Incorporation" for="placeofincorporation" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Place_of_Incorporation__c}" id="placeofincorporation" styleClass="slds-input"/>
+                            </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Date of Incorporation" for="dateofincorporation" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Date_of_Incorporation__c}" id="dateofincorporation" styleClass="slds-input"/>
+                            </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Street Address 1" for="streetAddress1" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Street_Address_1__c}" id="streetAddress1" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Street Address 2" for="streetAddress2" ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField value="{!licenseTransation.NewUmbrella_Street_Address_2__c}" id="streetAddress2" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="State" for="state"><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                 <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_State__c}" id="state" styleClass="slds-input">
+                                     <apex:actionSupport event="onchange"
+                                        action="{!doGetCity}"
+                                        rerender="newUmbrellaContainer">
+                                        <apex:param name="stateName" value="{!selectedStateName}" id="stateName" />
+                                     </apex:actionSupport>
+                                 </apex:inputField>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="City" for="city" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                 <apex:selectList styleClass="slds-input" html-data-parsley-required="true" value="{!newCityName}" id="city" multiSelect="false" size="1">
+                                    <apex:selectOptions value="{!listCity}"/>
+                                </apex:selectList>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Zip Code" for="zip" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Zip_Code__c}" id="zip" styleClass="slds-input"/>
+                            </div>
+                            
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Phone Number" for="Phone " ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Phone__c}" id="phone" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Alternate Phone Number" for="alternatephone" ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField value="{!licenseTransation.NewUmbrella_Alternate_Phone__c}" id="alternatephone" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Fax Number" for="fax" ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField value="{!licenseTransation.NewUmbrella_Fax__c}" id="fax" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Email address" for="email" ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField value="{!licenseTransation.NewUmbrella_Email__c}" id="email" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Director First Name" for="firstName" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Director_First_Name__c}" id="firstName" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Director Last Name" for="lastName" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Director_Last_Name__c}" id="lastName" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Director Title" for="title" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Director_Title__c}" id="title" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Director Phone Number" for="cphone" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Director_Phone__c}" id="cphone" styleClass="slds-input"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Director Email Address" for="cemail" ><span class="required">*</span></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:inputField html-data-parsley-required="true" value="{!licenseTransation.NewUmbrella_Director_Email__c}" id="cemail" styleClass="slds-input"/>
+                            </div> 
+                            </div> 
+                              
+                                                         
+                    <apex:commandButton styleclass="search-button-submit slds-button slds-button--neutral"  value="Save and Continue with this entity"  onclick="umbrella(); return false;" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                    <apex:actionFunction action="{!addUmbrella}" name="doSelectUmbrella" oncomplete="closeModal('');"/>
+                    
+                    </div>
+                    </apex:outputPanel>
+                    </apex:outputPanel>
+                    
+                    
+                </apex:pageBlock>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </div>
+                    <!--Attachment Modal Section ends here-->
+                    </apex:actionRegion>
+        </apex:outputPanel>
+                             
+        <c:EEC_Site_Footer id="siteFooter" />
+            </apex:form>
+        
+        <eec-wizard btn-progress-color="#fff" class="col-lg-3" flex="30" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" hide="true" show-gt-md="true">
+            <c:EEC_Navigation current="Ownership and Administrator information"
+                                                 recordTypeDeveloperName="{!LicenseRecordTypeName}"
+                                                 providerRecordType="{!providerRecordType}"> 
+           </c:EEC_Navigation>
+        </eec-wizard>
+        </div>
+                 
+        <!-- -->
+                                                 
+      
+                    
+        <script>
+        function addMargin(){
+            j$(".required-input").addClass("required-input-with-error");
+        }
+        
+        function umbrella(){        
+            doSelectUmbrella();
+        }
+         
+        
+        function validateReasonLeaving(){
+            var reasonLeavingRow = j$(".val-row"); 
+            var flag = 0;  
+            reasonLeavingRow.each(function(i) {
+                var endDate = j$(this).find(".end-date");
+                var reasonLeaving = j$(this).find(".reason-leaving"); 
+                if(endDate.val().length != 0 && reasonLeaving.val().length == 0){
+                    j$(this).find(".reasonErrorMessage").addClass("visible");
+                    flag = 1;
+                }
+                if(reasonLeaving.val().length > 0 && j$(this).find(".reasonErrorMessage").hasClass(".visible")){
+                    j$(this).find(".reasonErrorMessage").removeClass("visible");  
+                }
+                
+            });
+            if(flag == 1){return false;}  
+            return true;  
+        }
+        
+        var form = j$(".transaction-parsley-form").parsley({
+            errorsWrapper: '<div class="parsley-errors-list"></div>',
+            errorTemplate: '<p class="errorMsg"></p>'    
+        });
+        jQuery(window).load(function() {
+            _.each(jQuery('[id*=lookup'), function(value,key) { 
+                jQuery(value).off('click'); 
+                jQuery(value).attr('href', '');
+                jQuery(value).css('text-decoration', 'none');
+                jQuery(value).css('cursor', 'not-allowed');
+                jQuery(value).css('color', 'black');
+                jQuery(value).hover(function() {
+                    jQuery(this).css('color', 'black');
+                    jQuery(this).css('cursor', 'not-allowed');  
+                    jQuery(this).css('text-decoration', 'none');
+                });
+            }); 
+        });
+        app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+            // Instance of controller.
+            var tranCtrl = this;
+            // Controller level variables.
+            tranCtrl.funcId = null;
+            tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", 'Involvement & Professional Experience');
+            tranCtrl.selected = [];
+            
+            // Function to check for messages available due to errors.
+            tranCtrl.checkForMessages = function() {
+                // TODO: Switch this to use Angular and now jQuery.            
+                var ele = jQuery('[id*="showmsg"]');
+                if (ele.children().length > 0) {
+                    return true;   
+                }
+                return false;
+            }; 
+        }]);
+        
+        j$( document ).ready(function() {
+            j$('.modal').modal({ backdrop: 'static', keyboard:false,show:false }) 
+        });
+        
+        function openUmbrellaLookup(param){
+            j$('#attachmentModal').modal('show');
+        }
+        
+        window.closeModal = function(umbrellaId){
+            j$('#attachmentModal').modal('hide');
+            selectUmbrella(umbrellaId);
+        };
+        
+        window.cancelModel = function(){
+            j$('#attachmentModal').modal('hide');
+        };
+        
+        function selectUmbrella(umbrellaId){
+            doselectUmbrella(umbrellaId);
+        }
+        function doNavigate(previousPage, nextPage){
+            if(nextPage != ''){
+                if(!form.validate()){
+                    return false;
+                }
+                else{
+                    SaveNext();
+                }
+            }
+            else if(previousPage != ''){
+                if(!form.validate()){
+                    return false;
+                }
+                else{
+                    SavePrevious(previousPage);
+                }
+            }
+        }
+        </script>
+    </body>  
+</apex:page>

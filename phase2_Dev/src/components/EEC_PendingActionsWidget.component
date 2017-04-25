@@ -1,0 +1,17 @@
+<apex:component >
+    
+    <apex:attribute type="Integer" name="noncomplianceCount" description="Cpount of non-compliance" />
+    
+    <div class="panel-header">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        <span><label>PENDING ACTIONS</label></span>
+    </div>
+    
+    <div>
+        <apex:outputPanel rendered="{!noncomplianceCount > 0}">
+	        <ul>
+	        	<a href="/EEC_PortalNonCompliancePage"><li>There are at least {!noncomplianceCount} visits and/or investigations with noncompliance issues that require your review.</li></a>
+	        </ul>
+        </apex:outputPanel>
+    </div>
+</apex:component>

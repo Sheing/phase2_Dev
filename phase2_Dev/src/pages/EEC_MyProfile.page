@@ -1,0 +1,82 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" controller="EEC_MyProfileController">
+  <head>
+    <title>EEC : My Profile</title>
+    <c:EEC_Header id="pageHeader" />
+    <script>
+
+    </script>
+    <style>
+      md-divider {
+        margin-bottom: 5px;
+      }
+
+      md-divider {
+        display: block;
+        border-top-width: 1px;
+        border-top-style: solid;
+        margin: 0;
+      }
+
+      md-divider {
+        border-top-color: rgba(0,0,0,0.12);
+      }
+
+      .contact-container {
+        margin-top: 50px;
+        margin-bottom: 120px;
+      }
+
+      section, .contact-buttons {
+        margin-top: 20px;
+      }
+
+      .md-button.md-raised.md-eec, .md-button.md-raised.md-eec {
+        color: rgb(250,250,250);
+        background-color: #853F3F;
+      }
+
+      a.md-button, .md-button {
+        border-radius: 3px;
+      }
+
+      md-divider {
+        margin-bottom: 5px;
+      }
+
+      .md-subhead {
+        margin-left: 20px;
+      }
+
+      .md-button {
+        margin-right: 0px;
+        margin-left: 0px;
+      }
+
+      .contact-information, .contact-address {
+        margin-left: 20px;
+        margin-right: 17px;
+      }
+    </style>
+  </head>
+  <body>
+    <c:EEC_Nav_Bar id="navBar" />
+
+    <div class="container">
+      <br />
+        <div class="contact-container" >
+          <div class="contact-information" >
+            <span class="backBtn"><i class="fa fa-arrow-circle-o-left" />&nbsp;<a href="/EEC_PortalLandingPage_2" style="color:#853F3F;">Back to Home Page</a></span>
+            <div class="">
+              <div class="">
+                <h3 class="md-display-1 pull-left">My Profile</h3>
+              </div>
+            </div>
+
+            <c:UserManagement pageparams="{!pageParamsList}" />
+          </div>
+        </div>
+    </div>
+
+    <c:EEC_Site_Footer id="siteFooter" />
+  </body>
+</apex:page>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_ID</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.ProviderType__c</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.VisitItemToolAssignment__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.VisitItemDomain__c</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.IsRandomItem__c</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.RandomItemDomain__c</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.Description__c</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.Guidance__c</field>
+    </columns>
+    <columns>
+        <field>VisitItemsStaging__c.VisitItemRegulation__c</field>
+    </columns>
+    <filter>
+        <criteriaItems>
+            <column>VisitItemsStaging__c.VisitItemToolAssignment__c</column>
+            <operator>equals</operator>
+            <value>Small Group Enhanced Monitoring Tool</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>Small Group Enhanced Monitoring Tool</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$VisitItemsStaging__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>CUST_NAME</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,20 @@
+<apex:page standardController="Inspection__c">
+  <h1>Please Wait</h1>
+    Redirecting ....
+  <apex:includeScript value="/soap/ajax/32.0/apex.js"/> 
+  <apex:includeScript value="/canvas/sdk/js/publisher.js" />  
+  <script>
+    if ( (typeof window.sforce != 'undefined') && (window.sforce!=null) ) {
+      if({!Inspection__c.Offline_Lock__c }){
+      	alert('This visit is being used in the offline visit app and is locked. Go to the offline visit app and upload the visit before selecting this action');
+        Sfdc.canvas.publisher.publish({ name : "publisher.close", payload : { refresh:"true" }});
+        sforce.one.navigateToSObject('{!Inspection__c.Id}','detail');
+      }
+      else  
+      	sforce.one.navigateToURL('/apex/EEC_VisitModeTabletVersion?id={!Inspection__c.id}');
+    }
+    else {
+      alert('An error has occured tryig to execute your command');
+    }
+ </script>
+</apex:page>

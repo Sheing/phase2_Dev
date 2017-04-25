@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <fields>
+        <fullName>Contact_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>GSA_Renewal_Participant__r.Name_text__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GSA_Renewal_Participant__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>If checked, it means that it&apos;s the latest information available for this provider</description>
+        <externalId>false</externalId>
+        <label>GSA Renewal Participant</label>
+        <lookupFilter>
+            <active>true</active>
+            <booleanFilter>1 AND 2</booleanFilter>
+            <filterItems>
+                <field>Contact.Account.License_Status__c</field>
+                <operation>equals</operation>
+                <value>Licensed</value>
+            </filterItems>
+            <filterItems>
+                <field>Contact.Account.Is_GSA__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Provider Meeting Participants</relationshipLabel>
+        <relationshipName>Provider_Meeting_Participants</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GSA_Renewal_Provider__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>For Renewal meeting, provider the participant belongs to. This field will be filled automatically.</description>
+        <externalId>false</externalId>
+        <label>GSA Renewal Provider</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Provider Meeting Participants</relationshipLabel>
+        <relationshipName>Provider_Meeting_Participants</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Meeting_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>Provider_Meeting__r.Meeting_Region__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Meeting Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Meeting_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( Provider_Meeting__r.Meeting_Type__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Meeting Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Participation_Status__c</fullName>
+        <description>Status of the registration / participation</description>
+        <externalId>false</externalId>
+        <label>Participation Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Registered</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Attended</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Missed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Potential_Provider_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Potential_Provider__r.Name_Text__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Potential Provider Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Potential_Provider__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>For PPM meeting, potential provider that is registered / attended to this meeting</description>
+        <externalId>false</externalId>
+        <label>Potential Provider</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipLabel>Provider Meeting Participants</relationshipLabel>
+        <relationshipName>Provider_Meeting_Participants</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Provider_Meeting__c</fullName>
+        <description>Meeting the participant is registered / attended to</description>
+        <externalId>false</externalId>
+        <label>Provider Meeting</label>
+        <referenceTo>Provider_Meeting__c</referenceTo>
+        <relationshipLabel>Provider Meeting Participants</relationshipLabel>
+        <relationshipName>Provider_Meeting_Participants</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Provider_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>GSA_Renewal_Provider__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Provider Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scheduled_Start_Time__c</fullName>
+        <externalId>false</externalId>
+        <formula>Provider_Meeting__r.Scheduled_Start__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Scheduled Start Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <label>Provider Meeting Participant</label>
+    <nameField>
+        <displayFormat>PMA-{0000000}</displayFormat>
+        <label>Provider Meeting Participant No.</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Provider Meeting Participants</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>GSA_Renewal_Provider_Mandatory</fullName>
+        <active>true</active>
+        <description>Must be filled if Provider Meeting.Type contains &quot;Renewal&quot;</description>
+        <errorConditionFormula>ISPICKVAL( Provider_Meeting__r.Meeting_Type__c , &apos;Renewal (GSA)&apos;)    &amp;&amp; 
+ ISBLANK(  GSA_Renewal_Participant__c  )</errorConditionFormula>
+        <errorDisplayField>GSA_Renewal_Participant__c</errorDisplayField>
+        <errorMessage>Mandatory if Provider Meeting.Type contains &quot;Renewal&quot;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Meeting_type_matches_provider_type</fullName>
+        <active>true</active>
+        <errorConditionFormula>OR(
+AND(
+  Potential_Provider__r.Lead_Record_Type_Hidden__c = &apos;Potential Provider GSA&apos;
+  , TEXT(Provider_Meeting__r.Meeting_Type__c) &lt;&gt; &apos;PPM (GSA)&apos;),
+AND(
+  Potential_Provider__r.Lead_Record_Type_Hidden__c = &apos;Potential Provider FCC&apos;
+  , TEXT(Provider_Meeting__r.Meeting_Type__c) &lt;&gt; &apos;PPM (FCC)&apos;)
+)</errorConditionFormula>
+        <errorMessage>Potential provider type does not match the provider meeting type.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Potential_Provider_is_Mandatory</fullName>
+        <active>true</active>
+        <description>Must be filled if Provider Meeting.Type contains &quot;PPM&quot;</description>
+        <errorConditionFormula>IF( 
+AND( 
+ OR(
+ TEXT(  Provider_Meeting__r.Meeting_Type__c ) = &quot;PPM (FCC)&quot;,
+ TEXT(  Provider_Meeting__r.Meeting_Type__c ) = &quot;PPM (GSA)&quot;), 
+
+LEN(   Potential_Provider__c   ) = 0), True, False)</errorConditionFormula>
+        <errorDisplayField>Potential_Provider__c</errorDisplayField>
+        <errorMessage>Mandatory if Provider Meeting.Type contains &quot;PPM&quot;</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Mark_As_Attended</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Mark As Attended</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/32.0/connection.js&quot;)}
+var ids = {!GETRECORDIDS($ObjectType.Provider_Meeting_Participant__c)};
+var records = [];
+var record;
+if(ids.length &gt;0) {
+    
+while(ids.length) {
+    record = new sforce.SObject(&quot;Provider_Meeting_Participant__c&quot;);
+    record.id = ids.pop();
+    record.Participation_Status__c = &quot;Attended&quot;;
+    records.push(record);
+}
+result = sforce.connection.update(records);
+
+if (result[0].getBoolean( &quot;success&quot; )) {
+    location.reload(true);     
+} else { 
+  alert(result[0].get(&quot;errors&quot;)); 
+}
+}
+else{
+   alert(&quot;Please select at least one record before using this functionality.&quot;);
+}</url>
+    </webLinks>
+</CustomObject>

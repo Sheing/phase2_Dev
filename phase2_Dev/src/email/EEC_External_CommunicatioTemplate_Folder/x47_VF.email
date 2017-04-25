@@ -1,0 +1,52 @@
+<messaging:emailTemplate subject="Department of Early Education and Care - Licensing Transaction Successfully Submitted" recipientType="User" relatedToType="Licensing_Transaction__c">
+
+
+<messaging:HTMLEmailBody >
+<img src="{!$Resource.EEC_header}"/>
+
+
+<p>Dear {!relatedTo.Provider__r.name},</p>
+
+<p>The submission of your {!relatedTo.RecordType.name} was successful. Your transaction ID is: {!relatedTo.Name}</p> 
+
+<p>You will receive shortly additional emails with instructions in order to complete:</p>
+<p><li>Your tax certification statement and</li>
+<li>Applicable background record check forms for you and your household members / persons regularly on premise during care hours.</li></p>
+<p>EEC cannot process your application until we have received your signed Tax Certification Statement.</p> 
+
+<p>Additionally, EEC cannot process your application until we have received the applicable application fee ({!relatedTo.Associated_Fee__c}): fee schedule. Your fee cannot be processed electronically and therefore must be submitted by mail (see instructions). Please send your payment to:</p>
+
+<p>{!relatedTo.Provider__r.Region_Address__c}</p>
+  
+<p>Once your payment and tax certification forms are received, your application will be processed.  You may follow the progress of your application through your provider portal: Link to provider portal</p>
+
+<p>You may contact your licensor {!relatedTo.Assigned_To__r.name} by phone at {!relatedTo.Assigned_To_Phone__c} or by email at {!relatedTo.Assigned_User_Email__c} with any questions or concerns related to this matter.</p> 
+
+<p>Sincerely,</p>
+
+<p>The Department of Early Education and Care.</p>
+
+<p style="margin-left: 6.5em;">{!relatedTo.Provider__r.Region_Address__c}<br/>Phone: {!relatedTo.Provider__r.Region_Phone__c} - Fax: {!relatedTo.Provider__r.Region_Fax__c}<br/>Email: {!relatedTo.Provider__r.Region_Email__c}<br/>www.mass.gov/eec</p>
+
+<apex:image id="logoF" value="{!$Resource.EEC_Footer}"/>
+</messaging:HTMlEmailBody>
+<messaging:attachment renderas="pdf" filename="{!relatedto.name}">
+<html>
+<h1><center><b><u>FCC Application Payment Instructions</u></b></center></h1>
+<br/>
+<h2><center><b><u>FCC INSTRUCCIONES PARA EL PAGO DE SU SOLICITUD</u></b></center></h2>
+<br/>
+<p><center><b>Please return your completed application and check or money order<br></br> made out to: The <u>“Commonwealth Of Mass.”</u></b></center></p>
+<br/>
+<p><center><b>Favor de enviar su solicitud completa con un cheque o giro postal a <br></br> nombre del: <u>“Commonwealth of Mass”.</u></b></center></p>
+<br/>
+<center><apex:image id="pdf" value="{!$Resource.EEC_Pdf}"/></center>
+<p style="margin-left: 6.5em;"> <b>Mail to</b><br/>
+<b>Favor de enviar su solicitud a:</b><br/><center><b>Department of Early Education and Care</b><br/><b>{!relatedTo.Provider__r.Region_Address__c}</b></center></p>
+<pstyle="margin-left: 6.5em;"><b>If you have questions, call: {!relatedTo.Provider__r.Region_Phone__c}</b><br/><b>Si tiene alguna pregunta, por favor llame a la oficina de su region.</b></p>
+<p><center>Please retain this information for future reference.<br/>
+  Por favor guarde esta información como referencia.
+</center></p>
+</html>
+</messaging:attachment>
+</messaging:emailTemplate>

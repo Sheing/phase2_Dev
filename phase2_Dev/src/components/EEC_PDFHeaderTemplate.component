@@ -1,0 +1,17 @@
+<apex:component >
+    <apex:attribute name="providerRegion" description="Account for the inspection" type="Region__c" required="true"/>
+    
+    <div id="header">
+        <center>
+            <div style="font-size: 16pt"><b>The Commonwealth of Massachusetts</b></div>
+            <div style="font-size: 16pt"><b>Department of Early Education and Care</b></div>   
+            <div style="font-size: 12pt">
+                <span class="{!IF(providerRegion.Street__c != '','','not-visible')}">{! providerRegion.Street__c },</span> 
+                <span class="{!IF(providerRegion.City__c != '','','not-visible')}">{! providerRegion.City__c },</span> 
+                <span class="{!IF(providerRegion.State__c != '','','not-visible')}">{! providerRegion.State__c },</span> 
+                {!providerRegion.Zip__c}
+            </div>
+        </center>
+    </div>
+    <hr />
+</apex:component>

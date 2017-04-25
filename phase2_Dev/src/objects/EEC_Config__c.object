@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>A custom setting containing EEC configuration.</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>DS_PowerForm_FccBrcConsentFormLessThan18__c</fullName>
+        <externalId>false</externalId>
+        <label>DS_PowerForm_FccBrcConsentFormLessThan18</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DS_PowerForm_FccBrcConsentFormLicensee__c</fullName>
+        <externalId>false</externalId>
+        <label>DS_PowerForm_FccBrcConsentFormLicensee</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DS_PowerForm_FccBrcConsentFormMoreThan18__c</fullName>
+        <externalId>false</externalId>
+        <label>DS_PowerForm_FccBrcConsentFormMoreThan18</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DS_PowerForm_FccTaxCertificationStatemen__c</fullName>
+        <externalId>false</externalId>
+        <label>DS_PowerForm_FccTaxCertificationStatemen</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DS_PowerForm_GSA_RP_TaxCertification__c</fullName>
+        <externalId>false</externalId>
+        <label>DS PowerForm GSA RP TaxCertification</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DS_PowerForm_RandPFacilityandTransCheckl__c</fullName>
+        <externalId>false</externalId>
+        <label>DS_PowerForm_RandPFacilityandTransCheckl</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DocuSign_Url__c</fullName>
+        <externalId>false</externalId>
+        <label>DocuSign Url</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Portal_Url__c</fullName>
+        <externalId>false</externalId>
+        <label>Portal Url</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Salesforce_Base_URL__c</fullName>
+        <externalId>false</externalId>
+        <label>Salesforce Base URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Secure_Param_Key__c</fullName>
+        <defaultValue>&quot;&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Secure Param Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>googleMapsApiKey__c</fullName>
+        <description>API key for google geocoding</description>
+        <externalId>false</externalId>
+        <label>googleMapsApiKey</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>EEC Config</label>
+    <visibility>Protected</visibility>
+</CustomObject>

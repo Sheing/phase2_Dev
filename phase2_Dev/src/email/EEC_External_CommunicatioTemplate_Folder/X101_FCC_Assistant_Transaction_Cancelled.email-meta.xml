@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>FCC Assistant Transaction Cancelled</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>EEC_Letterhead</letterhead>
+    <name>101 - FCC Assistant Transaction Cancelled</name>
+    <style>freeForm</style>
+    <subject>Department of Early Education and Care - Transaction Cancelled</subject>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,2 @@
+<apex:page standardController="Provider_Meeting__c" extensions="EEC_PPMAttachmentCertificatePDF" action="{! savePDF }">
+</apex:page>

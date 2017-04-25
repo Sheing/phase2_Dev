@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object is to capture additional information like licenses held, other applications, admin/criminal actions, investigations etc for a provider during a licensing transactions.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <fields>
+        <fullName>Address_of_Licensing_authority__c</fullName>
+        <externalId>false</externalId>
+        <label>Address of Licensing authority</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Address_of_court__c</fullName>
+        <description>Address of court or administrative body for administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Address of court/administrative body</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Caption__c</fullName>
+        <description>Caption of administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Caption</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disposition__c</fullName>
+        <description>Disposition of administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Disposition</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Docket_Number__c</fullName>
+        <description>Docket number of administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Docket Number</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Number__c</fullName>
+        <description>License number of out of State child caring related licenses held by the applicant.</description>
+        <externalId>false</externalId>
+        <label>License Number</label>
+        <length>56</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Licensing_Transaction__c</fullName>
+        <description>Look up relation to the licensing transaction during which the additional information is added.</description>
+        <externalId>false</externalId>
+        <label>Licensing Transaction</label>
+        <referenceTo>Licensing_Transaction__c</referenceTo>
+        <relationshipLabel>Additional Information</relationshipLabel>
+        <relationshipName>Additional_Information</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Name_Admin_civil_criminal_action__c</fullName>
+        <description>Name of administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Name</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_of_Applicant__c</fullName>
+        <description>Name of applicant on the out of State child caring related license applications in process.</description>
+        <externalId>false</externalId>
+        <label>Name of Applicant</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_of_Licensee__c</fullName>
+        <description>Name of licensee on out of State child caring related licenses held by the applicant.</description>
+        <externalId>false</externalId>
+        <label>Name of Licensee</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_of_Licensing_Authority__c</fullName>
+        <description>Name of licensing authority for out of State child caring related license applications in process.</description>
+        <externalId>false</externalId>
+        <label>Name of Licensing Authority</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_of_Person_Agency_Investigated__c</fullName>
+        <description>Name of person/agency investigated related to the applicant or its officers been the subject of state or federal investigations with respect to the provision of child care services during the five years prior to the date of application</description>
+        <externalId>false</externalId>
+        <label>Name of Person/Agency Investigated</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_of_court_or_administrative_body__c</fullName>
+        <description>Name of court or administrative body for administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Name of court or administrative body</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Nature_of_Investigation__c</fullName>
+        <description>Nature of investigation for the applicant or its officers been the subject of state or federal investigations with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Nature of Investigation</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Nature_of_Proceedings__c</fullName>
+        <description>Nature of proceedings for administrative, civil or criminal action brought against applicant or its officers with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>Nature of Proceedings</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone_No_of_Licensing_Authority__c</fullName>
+        <description>Phone # of licensing authority for out of State child caring related license applications in process.</description>
+        <externalId>false</externalId>
+        <label>Phone No. of Licensing Authority</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Provider__c</fullName>
+        <description>Provider record to which the additional information is related.</description>
+        <externalId>false</externalId>
+        <label>Provider</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Additional Information</relationshipLabel>
+        <relationshipName>Additional_Information</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>State_Country_Issuing_the_License__c</fullName>
+        <description>State/country issuing the out of State child caring related licenses held by the applicant.</description>
+        <externalId>false</externalId>
+        <label>State/Country Issuing the License</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>State_Country_of_Applicant__c</fullName>
+        <description>State/country of applicant for out of State child caring related license applications in process.</description>
+        <externalId>false</externalId>
+        <label>State/Country of Applicant</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>State_and_or_Federal_Agency__c</fullName>
+        <description>State/federal agency which is investigating the applicant or its officers been the subject of state or federal investigations with respect to the provision of child care services during the five years prior to the date of application.</description>
+        <externalId>false</externalId>
+        <label>State and/or Federal Agency</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status_of_Application__c</fullName>
+        <externalId>false</externalId>
+        <label>Status of Application</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type_of_License__c</fullName>
+        <description>Type of license of the out of State child caring related licenses held by the applicant.</description>
+        <externalId>false</externalId>
+        <label>Type of License</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Additional Information</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>AdditionalInfo-{000000}</displayFormat>
+        <label>Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Additional Information</pluralLabel>
+    <recordTypes>
+        <fullName>Admin_civil_criminal_action_detail</fullName>
+        <active>true</active>
+        <description>Admin/civil/criminal action details for the applicant.</description>
+        <label>Admin/civil/criminal action detail</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Other_License_Applications</fullName>
+        <active>true</active>
+        <description>Other license application i progress for the applicant.</description>
+        <label>Other License Applications</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Other_Licenses_Held</fullName>
+        <active>true</active>
+        <description>Details od other licenses held by the applicant.</description>
+        <label>Other Licenses Held</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>State_federal_investigation_detail</fullName>
+        <active>true</active>
+        <description>State/federal investigation detail for the license applicant.</description>
+        <label>State/federal investigation detail</label>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

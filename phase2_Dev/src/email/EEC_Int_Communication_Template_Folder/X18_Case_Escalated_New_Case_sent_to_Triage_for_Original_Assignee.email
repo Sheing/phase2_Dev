@@ -1,0 +1,8 @@
+Hello,
+
+Case {!Case.Name} associated to Provider {!Case.Provider_Name_For_Email_Merge__c} has been sent to Triage and requires your review.
+
+Please log in to Salesforce and review the case: {!Case.Link}.
+
+
+LEAD System

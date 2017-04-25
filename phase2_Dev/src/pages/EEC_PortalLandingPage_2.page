@@ -1,0 +1,227 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0"
+           controller="EEC_PortalLandingController" standardstylesheets="false"
+           action="{!actionMethod}">
+    <head>
+        <title>EEC</title>
+        <c:EEC_HomePageStyles />
+    
+        <style>
+            body {
+                height : 100%; 
+            }
+            .page-header{
+            	margin: 20px 0 20px;
+            }
+            .page-header h2{
+            	font-size: 26px;
+            }
+            @media (min-width: 1200px){
+                .container {
+                    width: 100%;
+                }
+                .container > .navbar-header{
+                    margin-left: 9%;
+                }
+            }
+            @media (max-width: 1199px){
+                .link-desc{
+                    display : none;
+                }
+            }
+            .brand{
+                display : none;
+            } 
+            .navbar-fixed-bottom{
+                position : relative;
+            } 
+            .container{
+                display: flex;
+            }
+            .welcome-message{
+                margin-bottom : 20px;
+            }
+            .left-panel{
+                margin-right: 10px;
+                background-color: #eaeaea;
+                margin-top: -20px;
+                padding-left: 0;
+                padding-right: 0;
+                padding-top : 30px;
+                min-height : 680px;
+            }
+            
+            .left-panel-item{
+                margin-top : 15px;
+                background-color: #f6f6f6;
+                padding-left: 20px;
+                padding-top : 10px;
+                padding-bottom : 10px;
+                padding-right : 0;
+                height : 90px;
+            }
+            .header-img{
+                margin-bottom : 10px;
+                text-align : center;
+                padding-left : 40%;
+                margin-top: -8px;
+                padding-top: 12%;
+                height : 78px;
+            }
+            .left-panel-item i{
+                color : #6b2225;
+                font-size: 30px;
+                padding-right: 20px;
+                margin-top: 10px;
+            }
+            .left-panel a{
+                color : #000; 
+            }
+            .left-panel-item .icon-wrapper{
+                margin-right : 10px;
+            }
+            .link-desc{
+                font-size : 10px;
+            }
+            .left-panel-profile{
+                padding-left: 10%;
+                padding-right: 10%;
+            }
+            .left-panel-profile hr{
+                border-top: 2px solid #7a7a7a;
+                margin-bottom: 10px;
+            }
+            .left-panel-profile .left-panel-profile-cont{
+                padding-left : 35%;
+                margin-bottom: 20px;
+                color : inherit;
+            }
+            .left-panel-profile-cont a{
+                color : inherit;
+            }
+            .resources{
+                min-height : 50px;
+                background-color : #7a7a7a;
+                padding: 10px 20px 20px 20px;
+            }
+            .link-cont{
+                margin-top: 12px;
+                font-size : 16px;
+            }
+            .leftpanel-tooltip i{
+                font-size : 0.8em;
+            }
+            @media (max-width: 1200px){
+                .link-cont{
+                    font-size : 0.8em;
+                }
+                .left-panel-item i{
+                    font-size: 20px;
+                }
+                .leftpanel-tooltip i{
+                    font-size : 0.8em;
+                }
+            }
+            @media (max-width: 675px){
+                .header-img {
+                    margin-top: -30px;
+                    padding-top: 38px;
+                    padding-left : 15%;
+                }
+            }
+            @media (max-width: 415px){
+                .page-header h2{
+                    font-size : 1em;
+                }
+                .item-content{
+                    font-size : 1em;
+                }
+            }
+        </style>
+        <script>
+            
+        </script>
+    </head>
+    <body>
+        <c:EEC_Nav_Bar_2 id="navBar" />
+        <apex:form >
+            <div class="container container-fluid row">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xsm-12 left-panel">
+                    <div class="header-img left-panel-item">
+                         <img class="pull-left" style="max-width:70px;" src="{!URLFOR($Resource.EEC_Bootstrap,'EEC_Bootstrap/img/mass_gov.png')}"/>
+                    </div>
+                    <apex:repeat value="{! lstMenuItems }" var="item">
+                        <c:EEC_LeftPanel_Widget name="{! item.name }" 
+                                                description="{! item.description }" 
+                                                icon="{! item.icon }" 
+                                                destination="{! item.destination }"/>
+                    </apex:repeat>
+                    <!--<div class="left-panel-profile">
+                        <hr/>
+                        <div class="left-panel-profile-cont">
+                            <apex:commandLink action="{!gotoPersonalPage}">
+                                <i class="fa fa-cog"></i>
+                                My Profile
+                            </apex:commandLink>
+                        </div>    
+                    </div>-->
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-9 col-xsm-12 main-content row">
+                    <header class="page-header text-center">
+                      <h2>Executive Office of Education - Early Education and Care</h2>
+                      <p class="lead">EEC Provider Licensing Portal</p>
+                    </header>
+                    <div class="welcome-message">
+                        <c:EEC_Welcome_Widget welcomeMessage="{! leadConfiguration.Portal_Home_Welcome__c }"/>
+                    </div>
+                    <apex:outputPanel rendered="{!!accessUmbrellaFlag}">
+                        <div class="license-info col-lg-7 col-md-7 col-sm-12">
+                            <c:EEC_ProviderInfo_Widget name="{! acc.Name }"
+                                                       licenseStatus="{! acc.License_Status__c }"
+                                                       status="{! acc.Provider_Status__c }"
+                                                       isFccAssistant="{! isFccAssistant }"/><br/>
+                            <apex:outputPanel rendered="{!acc.License_Status__c == 'Licensed'}">       
+                            <c:EEC_ProviderLicensing_Widget licenseType="{! acc.License_Type__c }" 
+                                                            capacity="{! acc.Capacity__c }"
+                                                            issueDate="{! acc.Last_Issue_Date__c }"
+                                                            expDate="{! acc.Renewal_date__c }"
+                                                            remDays="{! remainingDays }"
+                                                            certified="{! acc.Certified_As__c }"
+                                                            isFccAssistant="{! isFccAssistant }"/><br/>
+                            </apex:outputPanel>
+                            <c:EEC_LicensingTransactionWidget draftLT="{! providerDraftLT }"
+                                                              inProgressLT="{! providerInProgressLT }"
+                                                              processedLT="{! providerProcessedLT }"
+                                                              providerRecordType="{!acc.Recordtype.Name}"></c:EEC_LicensingTransactionWidget>
+                        </div>
+                        <div class="news col-lg-5 col-md-5 col-sm-12">
+                            <apex:outputPanel rendered="{!leadConfiguration.Portal_Home_Latest_News__c != null}">
+                            <c:EEC_LatestNews news="{! leadConfiguration.Portal_Home_Latest_News__c }"/>
+                            </apex:outputPanel>
+                            <c:EEC_PendingActionsWidget noncomplianceCount="{!visititems.size + noncompitems.size}"></c:EEC_PendingActionsWidget>
+                        </div>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!accessUmbrellaFlag}">
+                       <apex:repeat value="{! providerslist }" var="pro" >   
+                        <c:EEC_UmbrellaProviders_Widget name="{! pro.Name }"
+                                                        status="{! pro.Provider_Status__c }"
+                                                        phone="{! pro.Phone }"
+                                                        city="{! pro.Provider_city_text__c }"
+                                                        destination="/EEC_PortalProviderPage?member={!secureIdMap[pro.Id]}"></c:EEC_UmbrellaProviders_Widget>
+                      </apex:repeat>    
+                    </apex:outputPanel>
+                </div>
+            </div>
+            <apex:outputPanel rendered="{!!accessUmbrellaFlag}">
+            <div class="resources">
+                <div>
+                  <h2>Resources</h2><hr />
+                  <apex:outputtext value="{!leadConfiguration.Portal_Home_Useful_Links__c}" escape="false" />
+                </div>    
+            </div>
+            </apex:outputPanel>    
+            <div>
+                <c:EEC_Site_Footer id="siteFooter" />
+            </div>
+        </apex:form>
+    </body>    
+</apex:page>

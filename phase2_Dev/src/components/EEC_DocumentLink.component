@@ -1,0 +1,7 @@
+<apex:component controller="DocumentLibraryCtrl">
+    <apex:attribute name="document" description="The document we need a link to" type="Document__c" />
+    <apex:commandlink action="{!generateS3Link}" target="_blank">
+        <apex:param name="origFile" value="{!document.Name}" assignto="{!origFile}" />
+        <i class="fa fa-search"></i>
+    </apex:commandlink>
+</apex:component>

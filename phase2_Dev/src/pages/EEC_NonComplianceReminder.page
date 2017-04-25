@@ -1,0 +1,8 @@
+<apex:page standardController="Non_Compliant__c">
+    <script>
+    	if({!Non_Compliant__c.Correction_Plan_Status__c != 'Legacy Non-compliance'} && {!Non_Compliant__c.Regulation_Count__c == 0}){
+        	alert('Please click on the New Non-Compliant Item Regulation button at the bottom of the page to add the Associated Regulations.');
+        }
+    </script>
+    <!--<apex:outputLabel value="REMINDER : Please add the asscoiated regulations after you finish saving. The Asscociated Regulations section is located at the bottom."></apex:outputLabel>-->
+</apex:page>

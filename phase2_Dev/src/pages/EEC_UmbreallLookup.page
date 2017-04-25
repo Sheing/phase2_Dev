@@ -1,0 +1,312 @@
+<apex:page controller="EEC_UmbrellaLookupController" applyhtmltag="false" applybodytag="false" showheader="false" sidebar="false" standardstylesheets="false" readonly="false">
+  <html lang="en" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Umbrella Lookup</title>
+
+    <!-- Lightning Styles -->
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system.min.css')}" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <style>
+      html {
+        font: 100%/1.5 "Salesforce Sans", Arial, sans-serif !important;
+        background: white !important;
+        color: #16325c !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+
+      body {
+        font-size: 0.875rem !important;
+        font-family: "Salesforce Sans", Arial, sans-serif !important;
+        background: transparent !important;
+      }
+
+      .loading-status {
+        line-height: 32px;
+      }
+
+        .loading-status:before {
+          content: " ";
+          width: 30px;
+          height: 60px;
+          float: left;
+          display: block;
+          position: relative;
+          background: url("{!URLFOR($Resource.SLDS0120, 'assets/images/spinners/slds_spinner_brand.gif')}") top center no-repeat;
+          background-size: 100%;
+        }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff')}") format("woff");
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff')}") format("woff");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff')}") format("woff");
+        font-weight: 700;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .slds-container {
+        padding-bottom: 30px;
+        margin-left: 20px;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .button-container {
+        margin-top: 21px;
+        padding-left: 5px;
+      }
+
+      .sr-item-row {
+        cursor: pointer;
+        padding: 10px;
+      }
+
+        .sr-item-row:hover {
+          background: rgba(225,225,225,0.8);
+          cursor: pointer;
+        }
+
+      .top-level-label {
+        font-weight: 600;
+        margin-right: 3px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+        
+      .inner-label {
+        color: black;
+        font-weight: normal;
+        line-height: initial;
+        white-space: nowrap;
+      }
+    </style>
+
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/svg4everybody/2.0.0/svg4everybody.min.js" />
+  </head>
+  <body class="slds-container">
+    <apex:actionstatus id="searchStatus">
+      <apex:facet name="start">
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+          &nbsp;
+        </div>
+        <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; top: 45%; left:35%">
+          <div style="display: inline-block; padding: 15px; background-color: #fff; border-radius:5px; width: 170px; height:60px; text-align:center">
+            <!--<img src="/img/loading32.gif"/>-->
+            <p class="loading-status"><b>Please Wait...</b></p>
+          </div>
+        </div>
+      </apex:facet>
+    </apex:actionstatus>
+    <apex:form styleclass="slds-grid slds-wrap" id="idLookup">
+    
+    <div class="slds-form--inline" role="group">
+ 
+    <div class="slds-form-element">
+            <div class="slds-form-element ">
+                <label  class="slds-form-element" for="case-status">Search</label>
+                <div class="slds-size--2-of-2">
+                  <apex:inputtext id="umbrellaName" value="{!umbrellaName}" styleclass="slds-input"/>
+                </div>
+            </div>
+    </div>
+    <div class="slds-form-element">
+        <div class="slds-form-element">            
+                <label class="slds-form-element__label" for="case-status">City</label>
+                <div class="slds-size--2-of-2">
+                  <apex:inputtext id="cityName" value="{!cityName}" styleclass="slds-input"/>
+                </div>  
+        </div>
+    </div>
+ 
+    <div class="slds-form-element">
+        <apex:commandbutton action="{!query}" styleclass="search-button-submit slds-button slds-button--neutral" value="Search" rerender="result-container" status="searchStatus">
+        </apex:commandbutton>
+    </div>
+</div>
+      
+      <apex:outputpanel id="result-container" style="margin-top: 20px; width: 100%;" layout="block">
+        <apex:outputpanel layout="block" id="Umbrellalist" rendered="{!queryResults != null && queryResults.size > 0}">
+               
+     <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+          <tr class="slds-text-title--caps">
+            <th scope="col" class="slds-truncate"><span >Umbrella Name</span></th>
+            <th scope="col" class="slds-truncate"><span >Street Address</span></th>
+            <th scope="col" class="slds-truncate"><span >City/Town</span></th>
+            <th scope="col" class="slds-truncate"><span >Zip Code</span></th>
+            <th scope="col" class="slds-truncate"><span >State</span></th>
+            <th scope="col" class="slds-truncate"><span >Select</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <apex:repeat value="{!queryResults}" var="obj">
+            <tr class="slds-hint-parent">
+              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Name}"/></span></td>
+              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Provider_Address_1__c}"/></span></td>
+              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Provider_city_text__c}"/></span></td>              
+              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Provider_Zip_Code__c}"/></span></td>
+              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.State__c}"/></span></td>
+              <td class="slds-truncate">
+                 <apex:outputpanel layout="block" html-flex="50" style="text-align: right;" styleClass="card-row-item">
+                  <apex:commandbutton rerender="Documentlist" onClick="window.parent.closeModal('{!obj.Id}');" value="Select" styleclass="slds-button">
+                    <apex:param name="documentId" assignTo="{!umbrellaId}" value="{!obj.Id}" />
+                  </apex:commandbutton>
+                </apex:outputpanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </tbody>
+      </table>
+        </apex:outputpanel>
+        <apex:outputPanel rendered="{!queryResults.size == 0 && errorMessage != ''}">
+          <div class="slds-box slds-box-small">  
+            <p>{!errorMessage}</p>  
+          </div>
+        </apex:outputPanel>
+      </apex:outputpanel>
+      
+      <apex:pageBlock html-layout="column" html-layout-padding="true" id="newUmbrellaContainer">
+                        <apex:pageBlocksection title="New Umbrella" columns="1">
+                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+                                <apex:outputLabel styleClass="top-level-label" value="My Corporation / LLC is new to the Department of Education" for="progName" />
+                                <apex:inputCheckBox value="{!isNewUmbrella}" id="newUmbrella">
+                                	<apex:actionSupport event="onclick" rerender="idLookup"/>
+                                </apex:inputCheckBox>
+                            </apex:pageBlockSectionItem>
+                            </apex:pageBlocksection>
+                            <apex:outputpanel id="newUmbrellaC">
+                            <apex:pageBlocksection columns="1" rendered="{!isNewUmbrella == true}">
+                            	<apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Name" for="accountName" />
+	                                <apex:inputField value="{!licensingTransaction.New_Umbrella_Name__c}" id="accountName" />
+	                            </apex:pageBlockSectionItem> 
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Business Name" for="businessName" />
+	                                <apex:inputField value="{!licensingTransaction.New_Umbrella_Business_Name__c}" id="businessName" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Place of Incorporation" for="placeofincorporation" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Place_of_Incorporation__c}" id="placeofincorporation" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Date of Incorporation" for="dateofincorporation" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Date_of_Incorporation__c}" id="dateofincorporation" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Street Address 1" for="streetAddress1" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Street_Address_1__c}" id="streetAddress1" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Street Address 2" for="streetAddress2" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Street_Address_2__c}" id="streetAddress2" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="State" for="state" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_State__c}" id="state" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="City" for="city" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_City__c}" id="city" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Zip Code" for="zip" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Zip_Code__c}" id="zip" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Phone" for="phone" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Phone__c}" id="phone" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Alternate Phone" for="alternatephone" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Alternate_Phone__c}" id="alternatephone" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Fax" for="fax" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Fax__c}" id="fax" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Provider Email" for="email" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Email__c}" id="email" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Director First Name" for="firstName" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Director_First_Name__c}" id="firstName" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Director Last Name" for="lastName" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Director_Last_Name__c}" id="lastName" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Director Title" for="title" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Director_Title__c}" id="title" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Director Phone Number" for="cphone" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Director_Phone__c}" id="cphone" />
+	                            </apex:pageBlockSectionItem>
+	                            <apex:pageBlockSectionItem dataStyle="padding-left: 20px;">
+	                                <apex:outputLabel styleClass="top-level-label" value="Director Email Address" for="cemail" />
+	                                <apex:inputField value="{!licensingTransaction.NewUmbrella_Director_Email__c}" id="cemail" />
+	                            </apex:pageBlockSectionItem>
+                        <apex:commandLink styleClass="md-button md-raised md-eec" value="Save and Continue with this entity" oncomplete="window.parent.closeModal('');" action="{!addUmbrella}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                        </apex:pageBlocksection>
+                        </apex:outputpanel>
+                        
+                        </apex:pageBlock>
+    </apex:form>
+    <!--<c:console311_scripts datatableenabled="false" datatablesettings="" />-->
+    <apex:includescript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+    <apex:includescript value="/lightning/lightning.out.js" />
+
+    <script>
+    	jQuery(".search-input").keypress(function(e) {
+          if(e.keyCode == 13) {
+            jQuery('.search-button-submit').click();
+            e.preventDefault();
+          }    
+        });
+    </script>
+  </body>
+</html>
+</apex:page>

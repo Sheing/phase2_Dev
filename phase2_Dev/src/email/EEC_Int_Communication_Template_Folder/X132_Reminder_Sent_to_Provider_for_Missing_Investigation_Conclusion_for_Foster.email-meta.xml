@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>132 - Reminder Sent to Provider for Missing Investigation Conclusion for Foster</name>
+    <style>none</style>
+    <subject>Reminder Sent to Provider for Missing Investigation Conclusion for Foster Home 51A or Incident</subject>
+    <type>text</type>
+</EmailTemplate>

@@ -1,0 +1,1586 @@
+<apex:page controller="EEC_ViewGSALicenseTransactionController" doctype="html-5.0" showheader="false" sidebar="false" standardstylesheets="false">
+  <head>
+    <title>EEC : View Transaction</title>
+    <c:EEC_Header id="pageHeader" />
+    <style>
+      .md-button.md-raised.md-eec, .md-button.md-raised.md-eec {
+        color: rgb(250,250,250);
+        background-color: #853F3F;
+      }
+
+        .md-button.md-raised.md-eec:hover, .md-button.md-raised.md-eec:hover {
+          color: rgb(250,250,250);
+          background-color: #703E3E;
+        }
+
+      .md-button.md-raised, .md-button.md-raised {
+        background-color: #f7f7f7;
+      }
+
+      .md-button span {
+        padding: 6px;
+      }
+
+      .top-level-label, .assistant-header-text {
+        font-weight: 600;
+        margin-right: 5px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+
+      input[type="radio"], input[type="checkbox"] {
+        margin: 4px 7px 0;
+      }
+
+      .command-button-container {
+        position: relative;
+        top: -2px;
+      }
+
+      .commandBtn {
+        margin: -1px 0px -2px;
+      }
+
+      .transaction-info-row {
+        margin-left: 0px;
+      }
+
+      .eec-subhead {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-left: 0px;
+      }
+
+      .form-control {
+        color: rgba(0,0,0,.87);
+      }
+
+      .navigation-buttons {
+        overflow: visible;
+      }
+
+      .not-visible {
+        display: none;
+      }
+
+      textarea {
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-bottom: 2px;
+        font-weight: normal;
+      }
+
+      .requiredInput {
+        margin-left: 30px;
+      }
+
+      .desc-panel {
+        margin-left: 15px;
+        width: 80%;
+      }
+
+      .background-form-container {
+        margin-bottom: 20px;
+      }
+
+      thead {
+        background-color: #f5f5f5;
+        font-size: 16px;
+        color: inherit;
+      }
+
+      .desc-answer {
+        margin-bottom: 15px;
+      }
+
+      .ques {
+        margin-bottom: 10px;
+      }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+      }
+
+      .col-lg-8 {
+        padding-left: 0px;
+      }
+
+      .table {
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+      }
+
+      #check-box-tables > .table > tbody > tr > td {
+        border-top: 0px;
+        border-bottom: 0px;
+      }
+
+      #check-box-tables > .table {
+        border-left: 0px;
+        border-right: 0px;
+        border-right: 0px;
+      }
+
+      .panel-title {
+        font-weight: 500;
+      }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .household-form-container {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .navigation-buttons .md-button {
+          width: 98%;
+        }
+
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+
+
+        .add-button-container {
+          padding-right: 0;
+          width: 100%;
+        }
+      }
+
+      .attachment-item {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+
+        .attachment-item p {
+          float: left;
+          margin-right: 15px;
+          align-self: center;
+        }
+
+          .attachment-item p:first-child {
+            flex: 2;
+          }
+          .table, tr, td {
+            border: none;
+            }
+    </style>
+    <script>
+    </script>
+  </head>
+  <body ng-app="eecApp">
+      <c:EEC_Nav_Bar id="navBar" />
+      <apex:messages id="showmsg" styleClass="error-container" style="color: #FF0000; font-weight: bold;"/>
+      <div class="main-content-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">    
+         <apex:form id="ownerShipAdminForm" styleClass="transaction-parsley-form involvment-form">
+        <h3 class="md-display-1">View Transaction</h3>
+          <md-divider class="ng-cloak" layout-align="center center"></md-divider>
+          <div class="transaction-info">
+            <div class="panel panel-default "> 
+            <div class="panel-heading">
+           <h3 class="panel-title">
+                    Transaction Information 
+              </h3>
+            </div>
+             <div class="panel-body">
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label">Provider Name: </p>
+              <apex:outputtext value="{!licenseTransation.Provider__r.Name}" />
+            </md-content>
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label">Transaction Type: </p>
+              <apex:outputtext value="{!LicenseRecordTypeLabel}" />
+            </md-content>
+            <md-content class="transaction-info-row"  layout="row">
+              <p class="md-subhead top-level-label">Transaction Number:</p>
+              <apex:outputtext value="{!licenseTransation.Name}" />
+            </md-content>
+          </div>
+          </div>
+          </div>
+           <div class="panel panel-default" style="min-width:1024px;">
+           <div class="panel-heading">
+              <h3 class="panel-title"> Program Information </h3>
+           </div>
+            <div class="panel-body">
+             <apex:outputpanel id="progname">
+                 <apex:outputtext styleclass="top-level-label" value="Program Name:" />
+                  <apex:outputtext value="{!licenseTransation.Provider__r.Name}" />
+             </apex:outputpanel>
+                    
+           <div>
+                <apex:outputpanel id="transactionTypeTA" rendered="{!(LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name')}">
+                    <apex:outputtext styleclass="top-level-label" value="Do you already hold a Dept. of Public Health Summer Camp Permit?" />
+                    <apex:selectradio value="{!licenseTransation.Provider__r.Summer_Camp_Permit__c}" disabled="true">
+                    <apex:selectoptions value="{!pickitems}" />
+                   
+                    </apex:selectradio>
+                </apex:outputpanel>
+            </div>
+               <div>
+                <apex:outputpanel id="CampPermitIssueDate" rendered="{!((LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name') && licenseTransation.Provider__r.Summer_Camp_Permit__c == 'Yes')}">
+                    <apex:outputLabel styleclass="top-level-label" value="Camp Permit Issue Date" />
+                    <apex:outputField value="{!licenseTransation.Provider__r.Camp_Permit_Issue_Date__c}"  />
+                </apex:outputpanel>
+            </div>
+              <div>
+                <apex:outputpanel id="GroupType" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name')}">
+                    <apex:outputtext styleclass="top-level-label" value="Will your group be a small group (<=10) or a large group (>10)" />
+                    <apex:selectradio value="{!licenseTransation.Group_Type__c}" disabled="true">
+                    
+                     <apex:selectOption itemValue="Small Group (<=10)" itemLabel="Small Group (<=10)" />
+                    <apex:selectOption itemValue="Large Group (>10)" itemLabel="Large Group (>10)"/>
+                    
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+                 
+              
+           </div>
+          </div>
+              <div class="panel panel-default ">
+           <div class="panel-heading">
+              <h3 class="panel-title"> Current Address </h3>
+           </div>
+            <div class="panel-body">
+              <div>
+             <apex:outputpanel id="street1">
+                <apex:outputLabel styleClass="top-level-label" value="Street Address 1:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Provider_Address_1__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="street2">
+                <apex:outputLabel styleClass="top-level-label" value="Street Address 2:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Provider_Address_2__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="citytown">
+                <apex:outputLabel styleClass="top-level-label" value="City/Town:" />                                    
+               <apex:outputText value="{!licenseTransation.Provider__r.Provider_City__r.Name}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="zipcode">
+                <apex:outputLabel styleClass="top-level-label" value="Zip Code:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Provider_Zip_Code__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+              <apex:outputpanel id="state">
+                <apex:outputLabel styleClass="top-level-label" value="State:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.State__c}" />
+                </apex:outputpanel>
+                </div>
+            </div>
+            </div>             
+            <apex:outputpanel id="progcontracwet" rendered="{!(LicenseRecordTypeName == 'GSA_Move')}">
+            <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+              New Address
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="newadd1" >
+                <apex:outputLabel styleClass="top-level-label" value="New Street Address 1:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.New_Street_Address_1__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="newadd2" >
+                <apex:outputLabel styleClass="top-level-label" value="New Street Address 2:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.New_Street_Address_2__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="newcitytown" >
+                <apex:outputLabel styleClass="top-level-label" value="New City/Town:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.New_City__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="newzipcode" >
+                <apex:outputLabel styleClass="top-level-label" value="New Zip Code:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.New_Zip_Code__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="movingdate" >
+                <apex:outputLabel styleClass="top-level-label" value="Moving Date:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Moving_Date__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="datecare" >
+                <apex:outputLabel styleClass="top-level-label" value="Date Care Resumes:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Date_Care_Resumes__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="newaddphnnum">
+                <apex:outputLabel styleClass="top-level-label" value="New Address Phone Number:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.New_Address_Phone_Number__c}" />
+                </apex:outputpanel>
+                </div>
+             </div>
+            </div>
+            </apex:outputpanel>
+               <apex:outputpanel id="mmailadd" rendered="{!((licenseTransation.Provider__r.ShippingStreet!= null || licenseTransation.Provider__r.ShippingCity!= null || licenseTransation.Provider__r.ShippingPostalCode!= null || licenseTransation.Provider__r.ShippingState!= null) && LicenseRecordTypeName != 'Close_Prior_Expiration')}"> 
+            <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+             Mailing Address
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="mailadd" rendered="{!licenseTransation.Provider__r.ShippingStreet!= null}" >                 
+                <apex:outputLabel styleClass="top-level-label" value="Mailing Address:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.ShippingStreet}" />
+                </apex:outputpanel>                
+                </div>                
+                <div>                
+             <apex:outputpanel id="mailcity" rendered="{!licenseTransation.Provider__r.ShippingCity!= null}" >
+                <apex:outputLabel styleClass="top-level-label" value="Mailing City/Town:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.ShippingCity}" />
+                </apex:outputpanel>                
+                </div>                
+                <div>             
+             <apex:outputpanel id="mailzipcode" rendered="{!licenseTransation.Provider__r.ShippingPostalCode!= null}">
+                <apex:outputLabel styleClass="top-level-label" value="Mailing Zip Code:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.ShippingPostalCode}" />
+                </apex:outputpanel>                
+                </div>                
+                <div>             
+             <apex:outputpanel id="mailstate" rendered="{!licenseTransation.Provider__r.ShippingState!= null}">
+                <apex:outputLabel styleClass="top-level-label" value="Mailing State:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.ShippingState}" />
+                </apex:outputpanel>
+               </div>           
+             </div>
+            </div>
+             </apex:outputpanel>
+              <apex:outputpanel id="progcontracwewt" rendered="{!(LicenseRecordTypeName != 'Close_Prior_Expiration')}">
+               <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+             Contact Information
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="phnnum">
+                <apex:outputLabel styleClass="top-level-label" value="Phone Number:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Phone}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+              <apex:outputpanel id="altphnum" rendered="{! (LicenseRecordTypeName != 'Placement_New_License' && LicenseRecordTypeName != 'Placement_Renewal' && LicenseRecordTypeName != 'Placement_Move'  && LicenseRecordTypeName  != 'Placement_Change_in_License'  && LicenseRecordTypeName  != 'R_P_Change_of_Admin_Authority' && LicenseRecordTypeName  != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Alternate Phone Number:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Alternate_Phone__c}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="fax">
+                <apex:outputLabel styleClass="top-level-label" value="Fax Number:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Fax}" />
+                </apex:outputpanel>
+                </div>                
+                <div>
+             <apex:outputpanel id="email">
+                <apex:outputLabel styleClass="top-level-label" value="Email address:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Provider_Email__c}" />
+                </apex:outputpanel>
+                </div>
+           </div>
+            </div>
+             </apex:outputpanel>
+            <apex:outputpanel id="panel" rendered="{!(LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">
+            <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+             Ownership
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="ownership">
+                <apex:outputLabel styleClass="top-level-label" value="Type of Ownership:" />                                    
+              <apex:selectradio value="{!licenseTransation.Ownership_Type__c}" disabled="true">
+                                        <apex:selectoptions value="{!typeOfOwnership}" >                                     
+                                        </apex:selectoptions>                                      
+                                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+                </div>
+                </div>
+                 </apex:outputpanel>                 
+                  <apex:outputpanel id="pansel" rendered="{!(licenseTransation.Ownership_Type__c ='Individual' || licenseTransation.Ownership_Type__c ='Doing Business As (DBA)') && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">
+                 <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+             Individual Owner
+              </h3>
+            </div>
+             <div class="panel-body">           
+                <div id="no-more-tables">        
+                   
+                             
+               <table class="table  table-condensed cf">                  
+                    <tr>
+                      <td class="top-level-label col-md-2">First Name: </td>
+                      <td><apex:outputField value="{!individualOwner.Contact__r.FirstName}"/></td>
+                      <td class="top-level-label col-md-2">Last Name:</td>
+                      <td><apex:outputField value="{!individualOwner.Contact__r.lastname}"/></td>
+                      </tr>
+                      <tr>
+                      <td class="top-level-label col-md-2">Street Address:</td>
+                       <td><apex:outputField value="{!individualOwner.Contact__r.MailingStreet}"/></td>
+                      <td class="top-level-label col-md-2">City/Town:</td>
+                      <td><apex:outputField value="{!individualOwner.Contact__r.MailingCity}"/></td>
+                      </tr>                    
+                    <tr>
+                      <td class="top-level-label col-md-2">Zip Code:</td>
+                      <td><apex:outputField value="{!individualOwner.Contact__r.MailingPostalCode}"/></td>
+                      <td class="top-level-label col-md-2">State:</td>
+                     <td><apex:outputField value="{!individualOwner.Contact__r.MailingState}"/></td>
+                      </tr>
+                      <tr>
+                      <td class="top-level-label col-md-2">Phone Number:</td>
+                       <td><apex:outputField value="{!individualOwner.Contact__r.Phone}"/></td>
+                      <td class="top-level-label col-md-2">Email Address:</td>
+                       <td ><apex:outputField value="{!individualOwner.Contact__r.Email}"/></td>
+                    </tr> 
+                     <tr>
+                     <td class="top-level-label col-md-2">Does Owner hold a Family Child Care license?  </td>
+                     <td>
+                        <apex:selectradio value="{!individualOwner.contact__r.Holds_FCC_License__c}" disabled="true">
+                        <apex:selectoptions value="{!items}" /> 
+                    </apex:selectradio> </td>
+                 </tr>
+                  </table>               
+                 </div>
+                  </div> 
+                  </div>
+                 
+                  
+                   
+                  </apex:outputpanel>
+          <apex:outputpanel id="partner" layout="block" rendered="{!(licenseTransation.Ownership_Type__c="Partnership" && listPartner.size>0) && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Partners
+              </h3>
+             </div> 
+                <div layout="row" layout-wrap="true">
+                <apex:repeat value="{!listPartner}" var="partner"> 
+                    <div class="col-md-6 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                        <div layout="card-block row" layout-wrap="true">                        
+                           
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">First Name: </span>
+                                {!partner.contact__r.FirstName}
+                            </div>         
+                                              
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span  class="top-level-label">Last Name: </span>
+                                {!partner.contact__r.LastName}
+                            </div>                            
+                           <div class="card-row-item col-md-6 col-sm-12">
+                                <span  class="top-level-label">Street Address: </span>
+                                {!partner.contact__r.MailingStreet}
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span  class="top-level-label">City/Town: </span>
+                                {!partner.contact__r.MailingCity}
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span  class="top-level-label">Zip Code: </span>
+                                {!partner.contact__r.MailingPostalCode}
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span  class="top-level-label">State: </span>
+                                {!partner.contact__r.MailingState}
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span  class="top-level-label">Phone Number: </span>
+                                {!partner.contact__r.Phone}
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Email Address: </span>
+                                {!partner.contact__r.Email}
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Start Date: 
+                                <c:EEC_DateFormat date="{!IF(partner.Start_Date__c != null, partner.Start_Date__c, '')}" style="{!IF(partner.Start_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat> </span>
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">End Date : 
+                                <c:EEC_DateFormat date="{!IF(partner.End_Date__c != null, partner.End_Date__c, '')}" style="{!IF(partner.End_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat> </span>
+                            </div> 
+                          <!--    <div class="card-row-item col-md-6 col-sm-6">
+                             
+                                <p class="top-level-label">Does Partner hold a Family Child Care license?</p> 
+                                <apex:selectradio value="{!partner.contact__r.Holds_FCC_License__c}" disabled="true" >
+                                    <apex:selectoptions value="{!items}" /> 
+                                </apex:selectradio> 
+                            </div> -->
+                            
+                            <span class="top-level-label" style="padding-left:14px"> Does Partner hold a Family Child Care license?: </span>
+                                <apex:selectradio value="{!partner.contact__r.Holds_FCC_License__c}" disabled="true">
+                                <apex:selectoptions value="{!items}" /> 
+                                </apex:selectradio> 
+                             
+                        </div>
+                        </div>
+                    </div>
+                </apex:repeat>  
+              </div>            
+          </div>  
+            </apex:outputpanel> 
+             <apex:outputpanel id="copllc" rendered="{!(licenseTransation.Ownership_Type__c == 'Non-Profit Corp.' || licenseTransation.Ownership_Type__c == 'For Profit Corp.' || licenseTransation.Ownership_Type__c == 'LLC') && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">       
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Corportation / LLC
+              </h3>
+            </div>
+             <div class="panel-body">            
+             <div>             
+             <apex:outputpanel id="copllcname">
+                <apex:outputLabel styleClass="top-level-label" value="Name:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Umbrella__r.Name}" />
+                </apex:outputpanel>
+                </div>
+                <div>
+                <apex:outputpanel id="copllcstradd">
+                <apex:outputLabel styleClass="top-level-label" value="Street Address:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Umbrella__r.Provider_Address_1__c}" />
+                </apex:outputpanel>
+                </div>
+                <div>
+                <apex:outputpanel id="copllccity">
+                <apex:outputLabel styleClass="top-level-label" value="City/Town:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Umbrella__r.Provider_City__c}" />
+                </apex:outputpanel>
+                </div>
+                <div>
+                <apex:outputpanel id="copllczip">
+                <apex:outputLabel styleClass="top-level-label" value="Zip Code:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Umbrella__r.Provider_Zip_Code__c}" />
+                </apex:outputpanel>
+                </div>
+                <div>
+                 <apex:outputpanel id="copllcstate">
+                <apex:outputLabel styleClass="top-level-label" value="State:" />  
+                 <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Umbrella__r.State__c}" />  
+                </apex:outputpanel>
+                </div>
+               </div>
+            </div>
+               </apex:outputpanel> 
+                  <apex:outputpanel id="past" rendered="{!pastAdmin!= NULL && (LicenseRecordTypeName == 'GSA_Renewal' || LicenseRecordTypeName == 'GSA_Move' || LicenseRecordTypeName == 'GSA_Change_of_Admin_Authority'|| LicenseRecordTypeName == 'GSA_License_Change' )}">
+                <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+            Past Administrative Head or Director of the Program
+              </h3>
+            </div>
+             <div class="panel-body">           
+                <div id="no-more-tables">
+                <apex:outputpanel id="pastadmin" >
+                <table class="table  table-condensed cf">
+                    <tr>
+                      <td class="top-level-label  col-md-2">First Name:</td>
+                      <td ><p class="{!IF(pastAdmin.contact__r.FirstName != null, '', 'empty-input')}">{!IF(pastAdmin.contact__r.FirstName != null, pastAdmin.contact__r.FirstName, pastAdmin.contact__r.FirstName)}</p></td>
+                      <td class="top-level-label  col-md-2">Last Name:</td>
+                      <td><p class="{!IF(pastAdmin.contact__r.LastName != null, '', 'empty-input')}">{!IF(pastAdmin.contact__r.LastName != null, pastAdmin.contact__r.LastName, pastAdmin.contact__r.LastName)}</p></td>
+                      </tr>
+                     <tr>
+                      <td class="top-level-label  col-md-2">Title:</td>
+                      <td ><p class="{!IF(pastAdmin.contact__r.Title != null, '', 'empty-input')}">{!IF(pastAdmin.contact__r.Title != null, pastAdmin.contact__r.Title, pastAdmin.contact__r.Title)}</p></td>
+                      <td class="top-level-label  col-md-2">Phone Number:</td>
+                      <td ><p class="{!IF(pastAdmin.contact__r.Phone != null, '', 'empty-input')}">{!IF(pastAdmin.contact__r.Phone != null, pastAdmin.contact__r.Phone, pastAdmin.contact__r.Phone)}</p></td>
+                      </tr>                   
+                      <tr>                      
+                      <td class="top-level-label  col-md-2">Email Address:</td>
+                      <td ><p class="{!IF(pastAdmin.contact__r.Email != null, '', 'empty-input')}">{!IF(pastAdmin.contact__r.Email != null, pastAdmin.contact__r.Email, pastAdmin.contact__r.Email)}</p></td>
+                      <td class="top-level-label  col-md-2">Start Date:</td>
+                      <td ><apex:outputField value="{!pastAdmin.Start_Date__c}" /></td> 
+                    </tr>
+                    <tr>                      
+                      <td class="top-level-label">End Date:</td>
+                      <td ><apex:outputField value="{!pastAdmin.End_Date__c }" /></td>
+                    </tr>                  
+                  </table>
+                  </apex:outputpanel>
+                  </div>
+                  </div>
+                  </div>
+                  </apex:outputpanel>                  
+               <apex:outputpanel id="panelout" rendered="{!currentAdmin != null && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change' || LicenseRecordTypeName == 'GSA_License_Change')}" >
+                  <div class="panel panel-default " >
+            <div class="panel-heading"> 
+              <h3 class="panel-title">
+            Current Administrative Head or Director of the Program
+              </h3>
+            </div>
+             <div class="panel-body">           
+                <div id="no-more-tables">
+                <apex:outputpanel id="curradmin" >
+                <table class="table  table-condensed cf">                  
+                    <tr>
+                      <td class="top-level-label  col-md-2">First Name:</td>
+                      <td ><p class="{!IF(currentAdmin.contact__r.FirstName != null, '', 'empty-input')}">{!IF(currentAdmin.contact__r.FirstName != null, currentAdmin.contact__r.FirstName, currentAdmin.contact__r.FirstName)}</p></td>
+                      <td class="top-level-label  col-md-2">Last Name:</td>
+                      <td ><p class="{!IF(currentAdmin.contact__r.LastName != null, '', 'empty-input')}">{!IF(currentAdmin.contact__r.LastName != null, currentAdmin.contact__r.LastName, currentAdmin.contact__r.LastName)}</p></td>
+                      </tr>
+                     <tr>
+                      <td class="top-level-label  col-md-2">Title:</td>
+                      <td ><p class="{!IF(currentAdmin.contact__r.Title != null, '', 'empty-input')}">{!IF(currentAdmin.contact__r.Title != null, currentAdmin.contact__r.Title, currentAdmin.contact__r.Title)}</p></td>
+                      <td class="top-level-label  col-md-2">Phone Number:</td>
+                      <td ><p class="{!IF(currentAdmin.contact__r.Phone != null, '', 'empty-input')}">{!IF(currentAdmin.contact__r.Phone != null, currentAdmin.contact__r.Phone, currentAdmin.contact__r.Phone)}</p></td>
+                      </tr>
+                      <tr>                      
+                      <td class="top-level-label  col-md-2">Email Address:</td>
+                      <td ><p class="{!IF(currentAdmin.contact__r.Email != null, '', 'empty-input')}">{!IF(currentAdmin.contact__r.Email != null, currentAdmin.contact__r.Email, currentAdmin.contact__r.Email)}</p></td>
+                      <td class="top-level-label  col-md-2">Start Date:</td>
+                      <td ><apex:outputField value="{!currentAdmin.Start_Date__c }"  /></td>
+                    </tr> 
+                  </table>
+                  </apex:outputpanel>
+                  </div>
+                  </div>
+                  </div>                  
+                  </apex:outputpanel>
+                   <apex:outputpanel id="board" rendered="{!pastBoardChair != null && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">   
+            <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                 Past Board Chair of the Program
+              </h3>
+            </div>
+             <div class="panel-body">           
+                <div id="no-more-tables">
+                <apex:outputpanel layout="block">
+                <table class="table  table-condensed cf">
+                  <tr>
+                      <td class="top-level-label col-md-2">First Name:</td>
+                     <td ><apex:outputField value="{!pastBoardChair .contact__r.firstname}" id="pboardfisrtname" /></td>
+                      <td class="top-level-label col-md-2">Last Name:</td>
+                      <td ><apex:outputField value="{!pastBoardChair .contact__r.lastname}" id="pboardlastname" /></td>
+                   </tr>
+                   <tr>
+                      <td class="top-level-label col-md-2">Title:</td>
+                      <td ><apex:outputField value="{!pastBoardChair .contact__r.title}" id="pboardtitle" /></td>
+                      <td class="top-level-label col-md-2">Phone Number:</td>
+                     <td ><apex:outputField value="{!pastBoardChair .contact__r.phone}" id="pboardphone" /></td>
+                    </tr>
+                    <tr>
+                      <td class="top-level-label col-md-2">Email Address:</td>
+                     <td ><apex:outputField value="{!pastBoardChair.contact__r.email}" id="pboardemail" /></td>
+                      <td class="top-level-label col-md-2">Start Date:</td>
+                     <td ><apex:outputField value="{!pastBoardChair.Start_Date__c}" id="pboardstartdate"  /></td>
+                   </tr>
+                    <tr>
+                      <td class="top-level-label col-md-2">End Date:</td>
+                     <td ><apex:outputField value="{!pastBoardChair.End_Date__c}" id="pboardenddate"  /></td>
+                   </tr>
+                  </table>
+                  </apex:outputpanel>
+                  </div>
+                  </div>
+                  </div>
+                  </apex:outputpanel>
+                   <apex:outputpanel id="curr" rendered="{!currentBoardChair!= null && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">    
+            <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                    Current Board Chair of the Program
+              </h3>
+            </div>
+             <div class="panel-body">           
+                <div id="no-more-tables">
+                <apex:outputpanel layout="block" >
+                <table class="table  table-condensed cf">
+                   <tr>
+                      <td class="top-level-label col-md-2">First Name:</td>
+                      <td ><apex:outputField value="{!currentBoardChair.contact__r.firstname}" id="boardfisrtname" /></td>
+                    
+                      <td class="top-level-label col-md-2">Last Name:</td>
+                      <td ><apex:outputField value="{!currentBoardChair.contact__r.lastname}" id="boardlastname" /></td>
+                   </tr>
+                   <tr>
+                      <td class="top-level-label col-md-2">Title:</td>
+                      <td ><apex:outputField value="{!currentBoardChair.contact__r.title}" id="boardtitle" /></td>
+                      <td class="top-level-label col-md-2">Phone Number:</td>
+                      <td ><apex:outputField value="{!currentBoardChair.contact__r.phone}" id="boardphone" /></td>
+                    </tr>
+                   <tr>
+                      <td class="top-level-label col-md-2">Email Address:</td>
+                      <td ><apex:outputField value="{!currentBoardChair.contact__r.email}" id="boardemail" /></td>
+                      <td class="top-level-label col-md-2">Start Date:</td>
+                      <td ><apex:outputField value="{!currentBoardChair.Start_Date__c}" id="boardstartdate"  /></td>
+                   </tr>
+                 </table>
+                 </apex:outputpanel>
+               </div>
+            </div>
+           </div>
+           </apex:outputpanel>
+            <apex:outputpanel id="administrator" layout="block" rendered="{!listAdministrator.size>0 && (LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}" >
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Administrators / Designated Individuals
+              </h3>
+             </div> 
+                <div layout="row" layout-wrap="true">
+                <apex:repeat value="{!listAdministrator}" var="admin"> 
+                    <div class="col-md-6 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                        <div layout="card-block row" layout-wrap="true">
+                        
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">First Name: </span>
+                                {!IF(admin.contact__r.FirstName != null, admin.contact__r.FirstName, admin.contact__r.FirstName)} 
+                            </div> 
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Last Name: </span>
+                               {!IF(admin.contact__r.LastName != null, admin.contact__r.LastName, admin.contact__r.LastName)}
+                            </div>
+                           <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Role: </span>
+                                {!IF(admin.Role__c!= null, admin.Role__c, admin.Role__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Phone Number:</span>
+                                {!IF(admin.contact__r.Phone != null, admin.contact__r.Phone, admin.contact__r.Phone)}
+                            </div>
+                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Email Address:</span>
+                                {!IF(admin.contact__r.Email != null, admin.contact__r.Email, admin.contact__r.Email)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Schedule Administrative Hours (approximate number hours per week):</span>
+                                {!IF(admin.Schedule_Administrative_Hours__c!= null, admin.Schedule_Administrative_Hours__c, admin.Schedule_Administrative_Hours__c)}
+                            </div>
+                              <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Schedule Teaching Hours  (approximate number hours per week):</span>
+                                {!IF(admin.Schedule_Teaching_Hours__c != null, admin.Schedule_Teaching_Hours__c, admin.Schedule_Teaching_Hours__c)}
+                            </div>
+                             <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Do you want to give her/him access to the Portal?</span>
+                                <apex:selectradio value="{!admin.contact__r.Holds_FCC_License__c}" disabled="true">
+                                    <apex:selectoptions value="{!items}" />
+                                </apex:selectradio> 
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Start Date</span>
+                                <c:EEC_DateFormat date="{!IF(admin.Start_Date__c != null, admin.Start_Date__c, '')}" style="{!IF(admin.Start_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                            </div>                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">End Date</span>
+                                <c:EEC_DateFormat date="{!IF(admin.End_Date__c != null, admin.End_Date__c, '')}" style="{!IF(admin.End_Date__c != null, '', 'margin-bottom: 25px;')}"></c:EEC_DateFormat>
+                            </div>                              
+                        </div>
+                        </div>
+                    </div>
+                </apex:repeat>  
+              </div>            
+          </div>  
+           </apex:outputPanel>
+           <apex:outputpanel id="administratorrb" layout="block" rendered="{!(LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Administrative Responsiblity - Business Management / Record Keeping
+              </h3>
+             </div> 
+                <div layout="row" layout-wrap="true">
+                 
+                    <div class="col-md-12 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                        <div layout="card-block row" layout-wrap="true">
+                        
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Account/books Responsible Name: </span>
+                                {!IF(licenseTransation.Accounts_Responsible__c!= null, licenseTransation.Accounts_Responsible__c, licenseTransation.Accounts_Responsible__c)} 
+                            </div> 
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Records Responsible Name: </span>
+                               {!IF(licenseTransation.Records_Responsible__c!= null, licenseTransation.Records_Responsible__c, licenseTransation.Records_Responsible__c)}
+                            </div>
+                           <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Personnel records Responsible Name: </span>
+                                {!IF(licenseTransation.Personnel_Records_Responsible__c!= null, licenseTransation.Personnel_Records_Responsible__c, licenseTransation.Personnel_Records_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Children’s records Responsible Name:</span>
+                                {!IF(licenseTransation.Children_Records_Responsible__c!= null, licenseTransation.Children_Records_Responsible__c, licenseTransation.Children_Records_Responsible__c)}
+                            </div>
+                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Financial documentation Responsible Name:</span>
+                                {!IF(licenseTransation.Financial_Documentation_Responsible__c!= null, licenseTransation.Financial_Documentation_Responsible__c, licenseTransation.Financial_Documentation_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Staff schedules Responsible Name:</span>
+                                {!IF(licenseTransation.Staff_Schedule_Responsible__c!= null, licenseTransation.Staff_Schedule_Responsible__c, licenseTransation.Staff_Schedule_Responsible__c)}
+                            </div>
+                                                            
+                        </div>
+                        </div>
+                    </div>
+                 
+              </div>            
+          </div>  
+           </apex:outputPanel>
+           <apex:outputpanel id="administratorwrb" layout="block" rendered="{!(LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Administrative Responsiblity - Development and Maintenance of Programming
+              </h3>
+             </div> 
+                <div layout="row" layout-wrap="true">
+                
+                    <div class="col-md-12 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                        <div layout="card-block row" layout-wrap="true">
+                        
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Early childhood education program Responsible Name: </span>
+                                {!IF(licenseTransation.ECE_program_Responsible__c!= null, licenseTransation.ECE_program_Responsible__c, licenseTransation.ECE_program_Responsible__c)} 
+                            </div> 
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Kindergarten Responsible Name: </span>
+                               {!IF(licenseTransation.Kindergarten_Responsible__c!= null, licenseTransation.Kindergarten_Responsible__c, licenseTransation.Kindergarten_Responsible__c)}
+                            </div>
+                           <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">School age Responsible Name: </span>
+                                {!IF(licenseTransation.School_age_Responsible__c!= null, licenseTransation.School_age_Responsible__c, licenseTransation.School_age_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Services for children w/disabilities Responsible Name:</span>
+                                {!IF(licenseTransation.Services_4_Disable_children_Responsible__c!= null, licenseTransation.Services_4_Disable_children_Responsible__c, licenseTransation.Services_4_Disable_children_Responsible__c)}
+                            </div>
+                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Daily activities Responsible Name:</span>
+                                {!IF(licenseTransation.Daily_activities_Responsible__c!= null, licenseTransation.Daily_activities_Responsible__c, licenseTransation.Daily_activities_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Equipment Responsible Name:</span>
+                                {!IF(licenseTransation.Equipment_Responsible__c!= null, licenseTransation.Equipment_Responsible__c, licenseTransation.Equipment_Responsible__c)}
+                            </div>
+                                                            
+                        </div>
+                        </div>
+                    </div>
+                 
+              </div>            
+          </div>  
+           </apex:outputPanel>
+           <apex:outputpanel id="administrdatorwrb" layout="block" rendered="{!(LicenseRecordTypeName != 'Close_Prior_Expiration' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' && LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'GSA_License_Change')}">
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Administrative Responsiblity - Other Responsibility
+              </h3>
+             </div> 
+                <div layout="row" layout-wrap="true">
+                
+                    <div class="col-md-12 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                        <div layout="card-block row" layout-wrap="true">
+                        
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Staff Development Responsible Name: </span>
+                                {!IF(licenseTransation.Staff_Development_Responsible__c!= null, licenseTransation.Staff_Development_Responsible__c, licenseTransation.Staff_Development_Responsible__c)} 
+                            </div> 
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Staff Training Responsible Name: </span>
+                               {!IF(licenseTransation.Staff_Training_Responsible__c!= null, licenseTransation.Staff_Training_Responsible__c, licenseTransation.Staff_Training_Responsible__c)}
+                            </div>
+                           <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Staff Orientation Responsible Name: </span>
+                                {!IF(licenseTransation.Staff_Orientation_Responsible__c!= null, licenseTransation.Staff_Orientation_Responsible__c, licenseTransation.Staff_Orientation_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Staff Supervision Responsible Name:</span>
+                                {!IF(licenseTransation.Staff_Supervision_Responsible__c!= null, licenseTransation.Staff_Supervision_Responsible__c, licenseTransation.Staff_Supervision_Responsible__c)}
+                            </div>
+                            
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Parent Involvement Responsible Name:</span>
+                                {!IF(licenseTransation.Parent_Involvement_Responsible__c!= null, licenseTransation.Parent_Involvement_Responsible__c, licenseTransation.Parent_Involvement_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Social Services Responsible Name:</span>
+                                {!IF(licenseTransation.Social_Services_Responsible__c!= null, licenseTransation.Social_Services_Responsible__c, licenseTransation.Social_Services_Responsible__c)}
+                            </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                <span class="top-level-label">Infant/Toddler Program Responsible Name, if applicable (must be Lead Teacher Qualified):</span>
+                                {!IF(licenseTransation.Infant_Toddler_Program_Responsible__c!= null, licenseTransation.Infant_Toddler_Program_Responsible__c, licenseTransation.Infant_Toddler_Program_Responsible__c)}
+                            </div>
+                                                            
+                        </div>
+                        </div>
+                    </div>
+                
+              </div>            
+          </div>  
+           </apex:outputPanel>
+            <apex:outputpanel id="CurrentTotal" rendered="{!(LicenseRecordTypeName == 'GSA_Renewal'||LicenseRecordTypeName == 'GSA_License_Change' || LicenseRecordTypeName == 'GSA_Move'||LicenseRecordTypeName == 'Change_of_Provider_Name' || LicenseRecordTypeName == 'Re_issuance_of_License_Cert')}">
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Current Capacity
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             
+                <apex:outputLabel styleClass="top-level-label" value="Current Total Capacity:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Provider__r.Capacity__c}" />
+              
+             </div>
+            </div>
+            </div>
+            </apex:outputpanel>
+            
+             <apex:outputpanel id="totallic"  rendered="{!(LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration')}" >
+          <div class="panel panel-default ">
+            <div class="panel-heading">
+           <h3 class="panel-title">
+                    Total License Capacity Requested    
+              </h3>
+            </div>
+             <div class="panel-body"> 
+             <div>
+             
+             <apex:outputpanel id="SmallGroup" rendered="{!(licenseTransation.Provider__r.Recordtype.Name =='Small Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' ) }">
+                <apex:outputLabel styleClass="top-level-label" value="Capacity For:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Small_Group_Capacity__c}" />
+             </apex:outputpanel>
+             <div>
+                <apex:outputpanel id="InfantCapacit" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration'  )}">
+                <apex:outputLabel styleClass="top-level-label" value="Infant (birth - 15 mos.):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Infant_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="InfantToddl" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Infant / Toddler (birth - 2yrs. 9 mos.):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Infant_Toddler_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="ToddlerCapaci" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Toddler (15 mos. - 33 mos.):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Toddler_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="Preschty" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Toddler / Preschool (15 mos. - K):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Toddler_Preschool_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="Preschoodf" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Preschool (2 yrs. 9 mos - K):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Preschool_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="acitdd" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Preschool / SA (2 yrs. 9 mos. - 8 yrs.):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Preschool_SA_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="Kinderg" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="Kindergarten:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Kindergarten_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+                <div>
+                <apex:outputpanel id="abc" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration' )}">
+                <apex:outputLabel styleClass="top-level-label" value="School Age (5 yrs. - 14 yrs.):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.School_Age_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="AgeGroup" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group') && (LicenseRecordTypeName != 'GSA_Change_of_Admin_Authority' && LicenseRecordTypeName != 'Close_Prior_Expiration'  )}">
+                <apex:outputLabel styleClass="top-level-label" value="Multi-Age Group (birth - 14 yrs.):" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Multi_Age_Group_Capacity__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="LicenseCapacity" rendered="{!(licenseTransation.Provider__r.Recordtype.Name=='Large Group' && (LicenseRecordTypeName != 'Change_of_Provider_Name' && LicenseRecordTypeName != 'Re_issuance_of_License_Cert'  ))}">
+                <apex:outputLabel styleClass="top-level-label" value="Total License Capacity Requested:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Total_License_Capacity_Requested__c}" />
+                </apex:outputpanel>
+               </div>
+             </div>
+            </div>
+         </div>
+         </apex:outputpanel>
+         
+          <apex:outputpanel id="age" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Age Limit Requested
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="MinimumAge" >
+                <apex:outputLabel styleClass="top-level-label" value="Minimum Age - Years:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Minimum_Age_Limit_Requested_Years__c}" />
+               </apex:outputpanel>
+              <div>
+                <apex:outputpanel id="MinimumAgeMonths" >
+                <apex:outputLabel styleClass="top-level-label" value="Minimum Age - Months:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Minimum_Age_Limit_Requested_Months__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="MaximumAgeYears" >
+                <apex:outputLabel styleClass="top-level-label" value="Maximum Age - Years:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Maximum_Age_Limit_Requested_Years__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="MaximumAges" >
+                <apex:outputLabel styleClass="top-level-label" value="Maximum Age - Months:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Maximum_Age_Limit_Requested_Months__c}" />
+                </apex:outputpanel>
+               </div>
+            </div>
+           </div>
+         </div>
+         </apex:outputpanel>
+          <apex:outputpanel id="otype" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Operation Type
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="Operation" >
+                <apex:outputLabel styleClass="top-level-label" value="Operation Type:" />     
+                 <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Operation_Type__c}" />
+              </apex:outputpanel>
+              <div>
+                <apex:outputpanel id="Fromsd"  rendered="{!(licenseTransation.Operation_Type__c = 'School Year')}">
+                <apex:outputLabel styleClass="top-level-label" value="From:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Operation_Start_Month__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="OperationEndMonthc"  rendered="{!licenseTransation.Operation_Type__c = 'School Year'}">
+                <apex:outputLabel styleClass="top-level-label" value="To:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Operation_End_Month__c}" />
+                </apex:outputpanel> 
+               </div>
+               </div>
+               </div>
+               </div>  
+               </apex:outputpanel>
+               
+                <apex:outputpanel id="operiod" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}">       
+           <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Operation Period - Full Day Program
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="AvailableDays" >
+               <apex:outputLabel styleClass="top-level-label" value="Available Days:" />                                    
+               <!-- <apex:inputcheckbox styleclass="top-level-label" value="{!licenseTransation.Available_Days_Full_day_program__c}" selected="true" disabled="true" rendered="{!licenseTransation.Available_Days_Full_day_program__c != NULL}"/>
+               <apex:inputcheckbox styleclass="top-level-label" value="{!licenseTransation.Available_Days_Full_day_program__c}" selected="false" disabled="true" rendered="{!licenseTransation.Available_Days_Full_day_program__c == NULL}"/> -->
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Available_Days_Full_day_program__c}" />
+               </apex:outputpanel>
+              <div>
+                <apex:outputpanel id="StartTime"  rendered="{!licenseTransation.Available_Days_Full_day_program__c != NULL }">
+                <apex:outputLabel styleClass="top-level-label" value="From:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Start_Time_Full_day_program__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="EndTime" rendered="{!licenseTransation.Available_Days_Full_day_program__c != NULL}">
+                <apex:outputLabel styleClass="top-level-label" value="To:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.End_Time_Full_day_program__c}" />
+                </apex:outputpanel>
+               </div>
+               </div>
+               </div>
+               </div>
+               </apex:outputpanel>
+               <apex:outputpanel id="halfday" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+              <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Operation Period - Half Day Morning Program
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="AvailablegDays" >
+                <apex:outputLabel styleClass="top-level-label" value="Available Days:" />   
+                <!-- <apex:inputcheckbox styleclass="top-level-label" value="{!licenseTransation.Available_Days_Morning_program__c}" selected="true" disabled="true" rendered="{!licenseTransation.Available_Days_Morning_program__c!= NULL}"/>
+                <apex:inputcheckbox styleclass="top-level-label" value="{!licenseTransation.Available_Days_Morning_program__c}" selected="false" disabled="true" rendered="{!licenseTransation.Available_Days_Morning_program__c== NULL}"/> -->
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Available_Days_Morning_program__c}" />
+               </apex:outputpanel>
+              <div>
+                <apex:outputpanel id="StartgfgTime" rendered="{!(licenseTransation.Available_Days_Morning_program__c != NULL)}">
+                <apex:outputLabel styleClass="top-level-label" value="From:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Start_Time_Morning_program__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="EnduiTime" rendered="{!licenseTransation.Available_Days_Morning_program__c != NULL}">
+                <apex:outputLabel styleClass="top-level-label" value="To:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.End_Time_Morning_program__c}" />
+                </apex:outputpanel>
+               </div>
+             </div>
+            </div>
+           </div>
+           </apex:outputpanel>
+           <apex:outputpanel id="afternoon" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+             <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Operation Period - Half Day Afternoon Program
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="AvailablegDaysAf" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority')}">
+                <apex:outputLabel styleClass="top-level-label" value="Available Days:" />  
+                 <!-- <apex:inputcheckbox styleclass="top-level-label" value="{!licenseTransation.Available_Days_Afternoon_program__c}" selected="true" disabled="true" rendered="{!licenseTransation.Available_Days_Afternoon_program__c!= NULL}"/>
+                 <apex:inputcheckbox styleclass="top-level-label" value="{!licenseTransation.Available_Days_Afternoon_program__c}" selected="false" disabled="true" rendered="{!licenseTransation.Available_Days_Afternoon_program__c== NULL}"/> -->
+                 <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Available_Days_Afternoon_program__c}" />
+               </apex:outputpanel>
+               <div>
+                <apex:outputpanel id="StartgfgTimeAf"  rendered="{!licenseTransation.Available_Days_Afternoon_program__c != NULL}">
+                <apex:outputLabel styleClass="top-level-label" value="From:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Start_Time_Afternoon_program__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="EnduiTimeAf" rendered="{!licenseTransation.Available_Days_Afternoon_program__c != NULL}">
+                <apex:outputLabel styleClass="top-level-label" value="To:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.End_Time_Afternoon_program__c}" />
+                </apex:outputpanel>
+               </div>
+            </div>
+          </div>
+        </div>
+        </apex:outputpanel>
+        
+         <apex:outputpanel id="extendeddays" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+          <div class="panel panel-default ">
+          <div class="panel-heading">
+              <h3 class="panel-title">
+                Operation Period - Extended Days
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="ExtenfdedDays" >
+                <apex:outputLabel styleClass="top-level-label" value="Do you provide Extended Days option?:" />                                    
+               
+               <apex:selectradio value="{!licenseTransation.Provide_Extended_Days1__c}" disabled="true">
+                <apex:selectoptions value="{!Pickitems}" />
+                 </apex:selectradio>
+               </apex:outputpanel>
+               <div>
+                <apex:outputpanel id="AvailabledDays" rendered="{!(licenseTransation.Provide_Extended_Days1__c == 'Yes')}">
+                <apex:outputLabel styleClass="top-level-label" value="Available Days:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Extended_Days_Available__c}" />
+                </apex:outputpanel>
+               </div>
+             </div>
+           </div>
+         </div> 
+         </apex:outputpanel> 
+         <apex:outputpanel id="otherservice" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+            <div class="panel panel-default ">
+            <div class="panel-heading">   
+              <h3 class="panel-title">
+                Other Service Provided
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="ServiceProvided">
+                <apex:outputLabel styleClass="top-level-label" value="Drop-In Service Provided?:" />                                    
+              
+                 <apex:selectradio value="{!licenseTransation.Drop_in_Service1__c}" disabled="true">
+                        <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+               </apex:outputpanel>
+              <div>
+                <apex:outputpanel id="EveningsService">
+                <apex:outputLabel styleClass="top-level-label" value="Evenings Service Provided?:" />                                    
+               
+                   <apex:selectradio value="{!licenseTransation.Evenings_Service1__c}" disabled="true">
+                        <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+                <div>
+                <apex:outputpanel id="provideSummer">
+                <apex:outputLabel styleClass="top-level-label" value="Will you provide Summer Camp Service?:" />                                    
+                
+                 <apex:selectradio value="{!licenseTransation.Summer_Camp_Service1__c}" disabled="true">
+                        <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="cafeteria">
+                <apex:outputLabel styleClass="top-level-label" value="Do you have a cafeteria that will be used during program hours?:" />                                    
+                
+                  <apex:selectradio value="{!licenseTransation.Cafeteria_Used_During_Program_Hours1__c}" disabled="true">
+                        <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="gymfacility">
+                <apex:outputLabel styleClass="top-level-label" value="Do you have gym facility that will be used during program hours?:" />                                    
+              
+                
+                  <apex:selectradio value="{!licenseTransation.Gym_Facility_Used_During_Program_Hours1__c}" disabled="true">
+                            <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+             </div>
+           </div>
+         </div>
+         </apex:outputpanel>
+         
+          <apex:outputpanel id="indor" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+          <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Indoor Space / Building Details
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="SquareFootage">
+                <apex:outputLabel styleClass="top-level-label" value="Indoor Square Footage Used For The Operations:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Indoor_Square_Footage__c}" />
+               </apex:outputpanel>
+              <div>
+                <apex:outputpanel id="toilets" >
+                <apex:outputLabel styleClass="top-level-label" value="Number of toilets:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Number_of_toilets_c__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="sinks" >
+                <apex:outputLabel styleClass="top-level-label" value="Number of sinks:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Number_of_sinks__c}" />
+                </apex:outputpanel>
+              </div>
+              <div>
+                <apex:outputpanel id="LeadPaint" >
+                <apex:outputLabel styleClass="top-level-label" value="Lead Paint: Constructed post 1978:" />                                    
+               
+                  <apex:selectradio value="{!licenseTransation.Lead_Paint_Compliance__c}" disabled="true">
+                            <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="DetailedInspection" >
+                <apex:outputLabel styleClass="top-level-label" value="Lead Paint: Detailed Inspection:" />                                    
+              
+                  <apex:selectradio value="{!licenseTransation.Lead_Paint_Detailed_Inspection__c}" disabled="true">
+                            <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+           </div>
+        </div>
+      </div>
+      </apex:outputpanel>
+      
+      <apex:outputpanel id="ass" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+         <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Associated Inspections
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="BuildingCapacity" >
+                <apex:outputLabel styleClass="top-level-label" value="Maximum Building Capacity as mentioned during Building Inspection :" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Building_Inspection_Max_Capacity__c}" />
+             </apex:outputpanel>
+             </div>
+             <div>
+                <apex:outputpanel id="Buildinginspection" >
+                <apex:outputLabel styleClass="top-level-label" value="Building inspection expiration Date:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Building_inspection_expiration_Date__c}" />
+                </apex:outputpanel>
+              </div>
+              <div>
+                <apex:outputpanel id="BuildingCodes" >
+                <apex:outputLabel styleClass="top-level-label" value="Building Codes:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Building_Codes_c__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="HealthInspection" >
+                <apex:outputLabel styleClass="top-level-label" value="Health Inspection Expiration Date:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Health_Inspection_Expiration_Date__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="FireInspection" >
+                <apex:outputLabel styleClass="top-level-label" value="Fire Inspection Issue Date:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Fire_Inspection_Issue_date__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="IntegratedPest" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority')}">
+                <apex:outputLabel styleClass="top-level-label" value="Integrated Pest Management Date:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Integrated_Pest_Management_Date__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="drinkingwater" >
+                <apex:outputLabel styleClass="top-level-label" value="Is the drinking water in your home from:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Drinking_Water_Source__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="WellWater" >
+                <apex:outputLabel styleClass="top-level-label" value="Well Water Test date:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Well_Water_Test_date__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="publicWater" >
+                <apex:outputLabel styleClass="top-level-label" value="PWS (Public Water Source) Number:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.PWS_Public_Water_Source_Number__c}" />
+                </apex:outputpanel>
+               </div>
+            </div>
+           </div>
+           </apex:outputpanel>
+           
+           <apex:outputpanel id="outdoor" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+          <div class="panel panel-default ">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Outdoor Play Area and Transportation
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="OutdoorSquare" >
+                <apex:outputLabel styleClass="top-level-label" value="Outdoor Square Footage Used For The Operations :" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Outdoor_Square_footage__c}" />
+              </apex:outputpanel>
+             <div>
+                <apex:outputpanel id="Poolavailable" >
+                 <apex:outputLabel styleClass="top-level-label" value="Do you have a pool that will be used during program hours? :" />  
+             
+                        
+            <apex:selectradio value="{!licenseTransation.Pool_available_during_program_hours1__c}" disabled="true">
+                            <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="Poolroof" >
+                <apex:outputLabel styleClass="top-level-label" value="Latest Pool roof inspection date:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Pool_roof_inspection_date__c}" />
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="offsiteoutdoor" >
+                <apex:outputLabel styleClass="top-level-label" value="Are you using an offsite outdoor play location?:" />                                    
+               
+                 <apex:selectradio value="{!licenseTransation.Offsite_outdoor_play_location1__c}" disabled="true">
+                            <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="Commuteto" >
+                <apex:outputLabel styleClass="top-level-label" value="How do you go there?:" />                                   
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Commute_to_offsite_play_location__c}" />
+                </apex:outputpanel>
+               </div>
+               <div>
+                <apex:outputpanel id="providetransportation" rendered="{!(licenseTransation.Available_Days_Full_day_program__c != NULL)}">
+                <apex:outputLabel styleClass="top-level-label" value="Do you provide transportation?:" />                                    
+                
+                <apex:selectradio value="{!licenseTransation.Transportation_provided1__c}" disabled="true">
+                            <apex:selectoptions value="{!pickitems}" />
+                    </apex:selectradio>
+                </apex:outputpanel>
+               </div>
+              <div>
+                <apex:outputpanel id="ApprovedAdditional">
+                <apex:outputLabel styleClass="top-level-label" value="Are you requesting the approval of any other additional space?:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Other_Approved_Additional_Space__c}" />
+                </apex:outputpanel>
+               </div>
+            </div>
+           </div>
+         </div>
+        </apex:outputpanel> 
+        
+         <apex:outputpanel id="compliance" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}"> 
+         <div class="panel panel-default ">
+         <div class="panel-heading">
+              <h3 class="panel-title">
+                Compliance with Americans with Disabilities Act (ADA) requirements
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="IndoorADA" >
+                <apex:outputLabel styleClass="top-level-label" value="Indoor :" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Indoor_ADA_Compliant__c}" />
+             </apex:outputpanel>
+                  </div>
+               <div>
+                <apex:outputpanel id="OutdoorADA" >
+                <apex:outputLabel styleClass="top-level-label" value="Outdoor / Playground:" />                                    
+                <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Outdoor_ADA_Compliant__c}" />
+                </apex:outputpanel>
+               </div>
+               </div>
+               </div>
+               </apex:outputpanel>
+               <apex:outputpanel id="complddiance" rendered="{!(LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert')}"> 
+               <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Technical Assistance
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="TechnicalAssistance">
+                <apex:outputLabel styleClass="top-level-label" value="If you have concerns, questions, or would like information about regulations or policy issues, or other topics that affect your child care, please list below. This will assist you in preparing for your application process and enable your licensor to bring or send you resource materials, if available:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Technical_Assistance__c}" />
+               </apex:outputpanel>
+             </div>
+          </div>
+      </div>
+       </apex:outputpanel>
+       <apex:outputpanel id="compddiance" rendered="{!(LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert')}">
+        <div class="panel panel-default">
+        <div class="panel-heading">
+              <h3 class="panel-title">
+                Transaction Special Requests / Comments
+              </h3>
+            </div>
+             <div class="panel-body">
+             <div>
+             <apex:outputpanel id="Technicalrequest">
+                <apex:outputLabel styleClass="top-level-label" value="If you have any special requests or comments associated with this transaction, please list below:" />                                    
+               <apex:outputField styleclass="top-level-label" value="{!licenseTransation.Transaction_Special_Requests_Comments__c}" />
+              </apex:outputpanel>
+               </div>
+             </div>
+         </div>
+          </apex:outputpanel>
+          <apex:outputpanel id="varasincereq" rendered="{!(LicenseRecordTypeName !='GSA_Change_of_Admin_Authority' && LicenseRecordTypeName !='Close_Prior_Expiration' && LicenseRecordTypeName !='Change_of_Provider_Name' && LicenseRecordTypeName !='Re_issuance_of_License_Cert' )}">
+                <div class="panel panel-default ">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+                Variance Request
+              </h3>
+             </div> 
+             <div class="panel-body">
+              <div layout="row" layout-wrap="true">
+                <apex:repeat value="{!licenseTransation.Variance_on_Regulations__r}" var="varian">
+                    <div class="col-md-12 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;">
+                        <div layout="card-block row" layout-wrap="true">
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Regulation Number</p>
+                                <p class="{!IF(varian.Associated_Regulation__r.Regulation_Number__c != null, '', 'empty-input')}">{!IF(varian.Associated_Regulation__r.Regulation_Number__c  != null, varian.Associated_Regulation__r.Regulation_Number__c , varian.Associated_Regulation__r.Regulation_Number__c )}</p>
+                            </div>
+                            
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Regulation Article</p>
+                                <p class="{!IF(varian.Associated_Regulation__r.Article__c != null, '', 'empty-input')}">{!IF(varian.Associated_Regulation__r.Article__c  != null, varian.Associated_Regulation__r.Article__c , varian.Associated_Regulation__r.Article__c )}</p>
+                            </div>                          
+                            
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Describe your understanding of the regulation and the intent of the regulation</p>
+                                <p class="{!IF(varian.Provider_Understanding_of_Regulation__c != null, '', 'empty-input')}">{!IF(varian.Provider_Understanding_of_Regulation__c  != null, varian.Provider_Understanding_of_Regulation__c , varian.Provider_Understanding_of_Regulation__c )}</p>
+                            </div>
+                            
+                            <div class="card-row-item col-md-3 col-sm-12">
+                                <p class="top-level-label">Describe your alternative method of compliance. Be specific, explaining how your method meets the regulation.</p>
+                                <p class="{!IF(varian.Provider_Alternative_Method_to_Comply__c != null, '', 'empty-input')}">{!IF(varian.Provider_Alternative_Method_to_Comply__c  != null, varian.Provider_Alternative_Method_to_Comply__c , varian.Provider_Alternative_Method_to_Comply__c )}</p>
+                            </div>
+                 </div>
+                 </div>
+                 </div>
+             </apex:repeat>
+             </div>
+             </div>
+             </div>
+            </apex:outputpanel>
+            
+            
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="Back" action="{!backInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" />
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="Edit" action="{!editInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!licenseTransation.Status__c=='To Submit'}" />
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="View Associated Attachments" action="{!viewInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!Contains(licenseTransation.Status__c,'Closed')}" />
+            <apex:commandlink styleclass="md-button md-raised md-eec" value="View / Update Associated Attachments" action="{!viewInstruction}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!!Contains(licenseTransation.Status__c,'Closed') && !Contains(licenseTransation.Status__c,'Cancelled') && licenseTransation.Status__c !='To Submit'}" />
+          </md-content>
+          <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink styleclass="md-button md-raised" action="{!CancelTransaction}" value="Cancel Transaction" immediate="true" onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rendered="{!licenseTransation.Status__c=='To Submit'}" />
+          </md-content>
+                   </apex:form> 
+       </div>          
+              </body>
+    <script>
+      app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.funcId = null;
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", "Review & Submission");
+        tranCtrl.selected = [];
+      }]);
+    </script>
+
+</apex:page>

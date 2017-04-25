@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Transaction Fee Schedule</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Transaction Fee Schedules</value>
+    </caseValues>
+    <fields>
+        <label><!-- Current --></label>
+        <name>Current__c</name>
+    </fields>
+    <fields>
+        <help><!-- Effect date of this fee --></help>
+        <label><!-- Effect Date --></label>
+        <name>Effect_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Expiration date of this fee (when it&apos;s not applicable anymore) --></help>
+        <label><!-- Expiration Date --></label>
+        <name>Expiration_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Amount of the fee to apply --></help>
+        <label><!-- Fee Amount --></label>
+        <name>Fee_Amount__c</name>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply if the number of placement is inferior to this number. Keep this field blank if this fee does not depend of the number of placements. Only apply to Adoption Agency --></help>
+        <label><!-- Number of Placements Higher Limit --></label>
+        <name>Number_of_Placements_Higher_Limit__c</name>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply if the number of placement is superior to this number. Keep this field blank if this fee does not depend of the number of placements. Only apply to Adoption Agency --></help>
+        <label><!-- Number of Placements Lower Limit --></label>
+        <name>Number_of_Placements_Lower_Limit__c</name>
+    </fields>
+    <fields>
+        <help><!-- This fee will only apply if the capacity requested is &gt; than the current capacity. Only work for R&amp;P and GSA. --></help>
+        <label><!-- Only On Capacity Increase --></label>
+        <name>Only_On_Capacity_Increase__c</name>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply only if the provider type associated with this transaction is the one selected. Keep this field blank if this fee does not depend of the type of provider --></help>
+        <label><!-- Provider Type --></label>
+        <name>Provider_Type__c</name>
+        <picklistValues>
+            <masterLabel>Adoption Agency</masterLabel>
+            <translation><!-- Adoption Agency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>FCC Assistant</masterLabel>
+            <translation><!-- FCC Assistant --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Family Child Care</masterLabel>
+            <translation><!-- Family Child Care --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Foster Care Agency</masterLabel>
+            <translation><!-- Foster Care Agency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Group Care</masterLabel>
+            <translation><!-- Group Care --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Large Group</masterLabel>
+            <translation><!-- Large Group --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Small Group</masterLabel>
+            <translation><!-- Small Group --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Temporary Shelter</masterLabel>
+            <translation><!-- Temporary Shelter --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Type of transaction this fee apply to --></help>
+        <label><!-- Related Transaction Type --></label>
+        <name>Related_Transaction_Type__c</name>
+        <relationshipLabel><!-- Transaction Fee Schedules --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply if the capacity requested is inferior to this number (field Total License Capacity Requested, Requested capacity for R&amp;P). Keep this field blank if this fee does not depend of the capacity requested. --></help>
+        <label><!-- Requested Capacity Higher Limit --></label>
+        <name>Requested_Capacity_Higher_Limit__c</name>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply if the capacity requested is superior to this number (field Total License Capacity Requested for GSA, Requested capacity for R&amp;P). Keep this field blank if this fee does not depend of the capacity requested. --></help>
+        <label><!-- Requested Capacity Lower Limit --></label>
+        <name>Requested_Capacity_Lower_Limit__c</name>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply only if the license requested is the one selected. Keep this field blank if this fee does not depend of the license requested --></help>
+        <label><!-- Requested License --></label>
+        <name>Requested_License__c</name>
+        <picklistValues>
+            <masterLabel>Certified Family Child Care Assistant (10)</masterLabel>
+            <translation><!-- Certified Family Child Care Assistant (10) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Certified Family Child Care Assistant (6)</masterLabel>
+            <translation><!-- Certified Family Child Care Assistant (6) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Certified Family Child Care Assistant (8)</masterLabel>
+            <translation><!-- Certified Family Child Care Assistant (8) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Regular Assistant</masterLabel>
+            <translation><!-- Regular Assistant --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- This fee will apply only if the current type of license of the Provider is the one selected here. Keep this field blank if this fee does not depend of the type of license --></help>
+        <label><!-- Type of License --></label>
+        <name>Type_of_License__c</name>
+        <picklistValues>
+            <masterLabel>Delegated</masterLabel>
+            <translation><!-- Delegated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Enhanced Regular</masterLabel>
+            <translation><!-- Enhanced Regular --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Exempt</masterLabel>
+            <translation><!-- Exempt --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>First Prov. for Public Approval</masterLabel>
+            <translation><!-- First Prov. for Public Approval --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>First Provisional</masterLabel>
+            <translation><!-- First Provisional --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Probationary</masterLabel>
+            <translation><!-- Probationary --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Provisional</masterLabel>
+            <translation><!-- Provisional --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Public Approval</masterLabel>
+            <translation><!-- Public Approval --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Regular</masterLabel>
+            <translation><!-- Regular --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Regular Approval</masterLabel>
+            <translation><!-- Regular Approval --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Regular Public Approval</masterLabel>
+            <translation><!-- Regular Public Approval --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Second Prov. for Public Approval</masterLabel>
+            <translation><!-- Second Prov. for Public Approval --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Second Provisional</masterLabel>
+            <translation><!-- Second Provisional --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Waive this fee if the agency is informed this number of day before moving date. Ex: if 15 is set, this fee will be waived if moving date is in more than 15 days. Keep this field blank if this fee does not depend on moving date --></help>
+        <label><!-- &quot;Waived if Informed Before&quot; Nb of Days --></label>
+        <name>Waived_if_Informed_Before_Nb_of_Days__c</name>
+    </fields>
+    <fields>
+        <help><!-- Waive this fee if the provider is state funded or a public company. The provider must have &quot;Public Approval&quot; checked to have the fee waived --></help>
+        <label><!-- Waived if State Funded / Public Company --></label>
+        <name>Waived_if_State_Funded_Public_Company__c</name>
+    </fields>
+    <layouts>
+        <layout>Transaction Fee Schedule Layout</layout>
+        <sections>
+            <label><!-- Conditions To Apply This Fee --></label>
+            <section>Conditions To Apply This Fee</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fee amount --></label>
+            <section>Fee amount</section>
+        </sections>
+        <sections>
+            <label><!-- Fee schedule --></label>
+            <section>Fee schedule</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Expiration Date Must be &gt; Effect Date --></errorMessage>
+        <name>Expiration_date_GreaterThan_Effect_Date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Fee amount must be &gt;= 0 --></errorMessage>
+        <name>Fee_amount_must_be_greater_than_0</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If &quot;Number of Placements Lower Limit&quot; is filled, then &quot;Number of Placements Higher limit&quot; is required. --></errorMessage>
+        <name>Number_of_Placements_HigheLimit_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If &quot;Number of Placements Higher Limit&quot; is filled, then &quot;Number of Placements Lower limit&quot; is required. --></errorMessage>
+        <name>Number_of_Placements_LowerLimit_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If &quot;Requested Capacity Lower Limit&quot; is filled, then &quot;Requested Capacity Higher Limit&quot; is mandatory --></errorMessage>
+        <name>Requested_Capacity_HigherLimit_mandatory</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If &quot;Requested Capacity Higher Limit&quot; is filled, then &quot;Requested Capacity Lower Limit&quot; is mandatory --></errorMessage>
+        <name>Requested_Capacity_Lower_Limit_not_empty</name>
+    </validationRules>
+</CustomObjectTranslation>

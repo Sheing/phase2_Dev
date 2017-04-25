@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Step Process Rule</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Step Process Rules</value>
+    </caseValues>
+    <fields>
+        <help><!-- The rule will only be checked if active flag is checked. If unchecked, the rule will be ignored --></help>
+        <label><!-- Active --></label>
+        <name>Active__c</name>
+    </fields>
+    <fields>
+        <label><!-- Associated Transaction Field --></label>
+        <name>Associated_Transaction_Field__c</name>
+    </fields>
+    <fields>
+        <help><!-- Step this process rule needs to be checked for --></help>
+        <label><!-- Associated Transaction Step --></label>
+        <name>Associated_Transaction_Step__c</name>
+        <relationshipLabel><!-- Associated Transaction Step --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Rank this rule should be displayed (will determine in which order items appear in the fields) --></help>
+        <label><!-- Rule Ranking --></label>
+        <name>Rule_Ranking__c</name>
+    </fields>
+    <fields>
+        <help><!-- Standard Process Rule that needs to be checked for the selected step --></help>
+        <label><!-- Standard Process Rule --></label>
+        <name>Standard_Process_Rule__c</name>
+        <relationshipLabel><!-- Associated Tranasction step --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Step Process Rule Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Transaction Process Rule --></label>
+            <section>Transaction Process Rule</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

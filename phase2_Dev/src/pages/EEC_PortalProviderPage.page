@@ -1,0 +1,2613 @@
+<apex:page showheader="false" standardstylesheets="false" sidebar="false" controller="EEC_PortalMyProviderPageController">
+  <head>
+    <title>EEC : Portal Provider Page</title>
+    <c:EEC_Header id="pageHeader" />
+    <script>
+        j$(document).ready(function(){
+            j$("[id*=fccState]").prop("disabled",false);
+            j$('form').bind('submit', function () {
+                j$(this).find(':disabled').removeAttr('disabled');
+            });
+        });
+        function changeState(state){
+            var regExp = /\(([^)]+)\)/;
+            var st = regExp.exec(j$("select option[value = '" + state.value + "']").text());
+            j$("[id*=fccState]").val(st);
+        }
+    </script>
+    <style type="text/css">
+      .form-label {
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      thead {
+        background-color: #f5f5f5;
+      }
+
+      .header-button {
+        margin-right: 3px;
+      }
+
+      .not-visible {
+        display: none;
+      }
+
+      .form-group {
+        width: 100%;
+      }
+
+      .btn-group {
+        margin-bottom: 100px;
+      }
+       .top-level-label {
+                font-weight: 600;
+                margin-right: 5px;
+                line-height: 20px; 
+                color: rgba(0,0,0,0.54);
+              }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .table {
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+      }
+       .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        .radio-group label{
+        font-weight : normal;  
+      }
+
+      .licensing-table > thead:first-child > tr:first-child > th {
+        width: 135.43px;
+      }
+
+      .table-group-one .table > thead:first-child > tr:first-child > th {
+        width: 135.43px;
+      }
+
+      .table-group-two .table > thead:first-child > tr:first-child > th {
+        width: 189.6px;
+      }
+
+      .provider-container {
+        margin-bottom: 100px;
+      }
+
+      @media only screen and (max-width: 800px) {
+        .right-group {
+          padding-right: 3px;
+          width: 100%;
+        }
+      }
+
+      @media only screen and (max-width: 959px) and (min-width: 0px) {
+        .navigation-buttons input, a {
+          font-size: 12px;
+        }
+      }
+
+      md-card {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <c:EEC_Nav_Bar id="navBar" />
+    <div class="container">
+      <apex:form >
+        <div class="provider-container" layout="row" layout-margin="true" layout-padding="true" layout-align="center center" flex="100">
+          <div class="provider-information" layout="column" flex="90" flex-sm="90">
+            <apex:outputpanel rendered="{!errorMsg != null}">
+              <h2>{!errorMsg}</h2>
+            </apex:outputpanel>
+            <apex:outputpanel id="userDetail">
+              <br />
+              <apex:outputpanel rendered="{!account.Recordtype.Name = 'FCC Assistant' && isEdit}">
+                <h2 class="pull-left col-lg-4">Assistant</h2>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!account.Recordtype.Name = 'FCC Assistant' && !isEdit}">
+                <h2 class="pull-left col-lg-4">{!account.Recordtype.Name} Detail</h2>
+              </apex:outputpanel>
+              <apex:outputpanel rendered="{!account.Recordtype.Name != 'FCC Assistant'}">
+                <h2 class="pull-left col-lg-4" style="width:100%">{!account.Recordtype.Name} Provider</h2>
+              </apex:outputpanel>
+              <br /><br /><br /><br />
+              <div class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <div class="right-group md-button">
+                  <apex:commandbutton action="{!edit}" styleclass="md-button md-raised md-eec header-button" rendered="{!!isEdit && profileName != 'Community Standard User without transactions for EEC'}" value="{!$Label.site.edit}" id="editButton" />
+                </div>
+                <div class="right-group pull-right md-button {!IF((account.Recordtype.Name = 'Group Care' || account.Recordtype.Name = 'Temporary Shelter') && account.Use_Physical_Restraints__c = true && isEdit == false && account.Recordtype.Name != 'FCC Assistant', '', 'not-visible')}">
+                  <apex:commandbutton html-layout-fill="true" styleclass="md-button md-raised md-eec" value="Submit New Quarterly Restraint Report" action="{!resReport}"></apex:commandbutton>
+                </div>
+                <div class="right-group pull-right md-button {!IF(!isEdit && account.Recordtype.Name != 'FCC Assistant', '' ,'not-visible')}">
+                  <apex:commandbutton html-layout-fill="true" styleclass="md-button md-raised md-eec" value="Submit New Incident / Injury" action="{!subInc}"></apex:commandbutton>
+                </div>
+                <div class="right-group pull-right md-button {!IF(!isEdit, '' ,'not-visible')}">
+                  <apex:commandbutton action="{!noncomp}" styleclass="md-button md-raised md-eec header-button" rendered="{!!isEdit && account.Recordtype.Name != 'FCC Assistant'}" value="Fill Non-Compliance Corrective Actions" id="noncompButton" />
+                </div>
+                <div class="right-group pull-right md-button {!IF(!isEdit, '' ,'not-visible')}">
+                  <apex:outputpanel styleclass="right-group">
+                    <apex:commandbutton action="{!trxIntro}" styleclass="md-button md-raised md-eec header-button" rendered="{!!isEdit && profileName != 'Community Standard User without transactions for EEC'}" value="New Licensing Transaction" id="licenseButton" />
+                  </apex:outputpanel>
+                </div>
+              </div>
+              <br />
+              <apex:pageblock id="editUserDetail" rendered="{!isEdit}">
+                <apex:pagemessages />
+                <section class="contact-information">
+                  <apex:outputpanel rendered="{!account.Recordtype.Name != 'FCC Assistant'}">
+                    <h4 class="md-title">Provider Information</h4>
+                  </apex:outputpanel>
+                  <apex:outputpanel rendered="{!account.Recordtype.Name = 'FCC Assistant'}">
+                    <h4 class="md-title">Assistant Information</h4>
+                  </apex:outputpanel>
+                  <md-divider></md-divider><br />
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <p flex-sm="80" flex="90"><strong>Name: </strong>{!account.name}</p>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <p flex-sm="80" flex="90"><strong>Type:</strong> {!account.Recordtype.Name}</p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                <section class="contact-information">
+                  <h4 class="md-title">Contact Information</h4>
+                  <md-divider></md-divider><br />
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Phone : </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.Phone}" />
+                        </div>
+                      </div>
+                      <div class="md-subhead {!IF((account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant' || account.Recordtype.Name = 'Adoption Agency'|| account.Recordtype.Name = 'Foster Care Agency' || account.Recordtype.Name ='Group Care'|| account.Recordtype.Name = 'Large Group' || account.Recordtype.Name ='Small Group'|| account.Recordtype.Name ='Temporary Shelter'), '', 'not-visible')}" layout="row">
+                        <div class="form-group">
+                          <label>Alternate Phone : </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.Alternate_Phone__c}" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row"> 
+                        <div class="form-group">
+                          <label>Fax : </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.fax}" />
+                        </div>
+                      </div>
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Email : </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.Provider_Email__c}" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                <section class="contact-information">
+                  <h4 class="md-title">Main Address Information</h4>
+                  <md-divider></md-divider><br />
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Street Address 1 :&nbsp;</label>
+                          <apex:outputpanel rendered="{!account.Recordtype.Name = 'FCC Assistant'}">
+                            <apex:inputfield styleclass="form-control" value="{!account.Provider_Address_1__c}" label="Contact Name" />
+                          </apex:outputpanel>
+                          <apex:outputpanel rendered="{!account.Recordtype.Name != 'FCC Assistant'}">
+                            <apex:outputfield styleclass="form-control" value="{!account.Provider_Address_1__c}" label="Contact Name" />
+                          </apex:outputpanel>
+                        </div>
+                      </div>
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Street Address 2 :&nbsp;</label>
+                          <apex:inputfield styleclass="form-control" rendered="{!account.Recordtype.Name = 'FCC Assistant'}" value="{!account.Provider_Address_2__c}" label="Contact Name" />
+                          <apex:outputfield styleclass="form-control" rendered="{!account.Recordtype.Name != 'FCC Assistant'}" value="{!account.Provider_Address_2__c}" label="Contact Name" />
+                        </div>
+                      </div>
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>City :&nbsp;</label>
+                          <apex:outputtext value="{!account.Provider_City__r.Name}" rendered="{!account.Recordtype.Name != 'FCC Assistant'}" label="Contact Name" />
+                          <apex:selectlist onchange="changeState(this);" rendered="{!account.Recordtype.Name == 'FCC Assistant'}" styleclass="form-control" id="maCityPicklist" value="{!account.Provider_City__c}" size="1" html-data-parsley-required="true">
+                            <apex:selectOptions value="{!maCityList.0}"/> 
+                            <apex:selectOptions value="{!maCityList.1}"/> 
+                            <apex:selectOptions value="{!maCityList.2}"/>
+                          </apex:selectlist>  
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>State :&nbsp;</label>
+                          <apex:inputfield id="fccState" styleclass="form-control"  rendered="{!account.Recordtype.Name = 'FCC Assistant'}" value="{!account.State__c}" />
+                          <apex:outputfield styleclass="form-control" rendered="{!account.Recordtype.Name != 'FCC Assistant'}" value="{!account.State__c}" />
+                        </div>
+                      </div>
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Zip Code :&nbsp;</label>
+                          <apex:inputfield styleclass="form-control" rendered="{!account.Recordtype.Name = 'FCC Assistant'}" value="{!account.Provider_Zip_Code__c}" label="Contact Name" />
+                          <apex:outputfield styleclass="form-control" rendered="{!account.Recordtype.Name != 'FCC Assistant'}" value="{!account.Provider_Zip_Code__c}" label="Contact Name" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                <section class="contact-information">
+                  <h4 class="md-title">Mailing Address Information</h4>
+                  <md-divider></md-divider><br />
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Street Address </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.ShippingStreet}" label="Contact Name" style="min-height:65px;" />
+                        </div>
+                      </div>
+                      <div class="md-subhead" layout="row" style="min-height: 98px;">
+                        <div class="form-group">
+                          <label>City </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.ShippingCity}" label="Contact Name" />
+                        </div>
+                      </div>  
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>State </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.ShippingState}" label="Contact Name" />
+                        </div>
+                      </div>
+                      <div class="md-subhead" layout="row">
+                        <div class="form-group">
+                          <label>Zip Code </label>
+                          <apex:inputfield styleclass="form-control" value="{!account.ShippingPostalCode}" label="Contact Name" />
+                        </div>
+                      </div>  
+                    </div>
+                  </div> 
+                </section>  
+                               
+                   
+                <apex:outputpanel rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant' , true,false)}">
+                  <section class="program-information">
+                    <h4 class="md-title">Program Information</h4>
+                    <md-divider></md-divider><br />
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="md-subhead" layout="row">
+                          <div class="form-group">
+                            <label>Language</label>
+                            <apex:inputfield styleclass="form-control" value="{!account.Language__c}" label="Language" />
+                          </div>
+                        </div>
+                        <div class="md-subhead" layout="row">
+                          <div class="form-group">
+                            <label>Preferred Communication Language</label>
+                            <apex:inputfield styleclass="form-control" value="{!account.Preferred_Language__c}" label="Preferred Language" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="md-subhead" layout="row"> 
+                          <div class="radio-group"  flex="70">
+                            <label>Can you communicate in English?</label>
+                          <!--  <apex:inputfield styleclass="form-control" value="{!account.Can_Communicate_in_English__c}" label="Communicate in English" /> -->
+                             <apex:selectradio value="{!account.Can_Communicate_in_English__c}" styleclass="top-level-label" style="width:30%"> 
+                                <apex:selectoptions value="{!items}" /> 
+                                </apex:selectradio>  
+                          </div>
+                        </div> 
+                        
+                       
+                        <div class="md-subhead" layout="row">
+                          <div class="form-group">
+                            <label>Ethnicity </label>
+                            <apex:inputfield styleclass="form-control" value="{!account.Race__c}" label="Ethnicity" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>  
+                  </section>
+                </apex:outputpanel>
+                <div class="btn-group pull-right">
+                  <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                    <apex:commandbutton id="save" value="{!$Label.site.save}" styleclass="md-button md-raised md-eec pull-right" action="{!save}" rendered="{!isEdit}" />
+                    <apex:commandbutton id="cancel" value="{!$Label.site.cancel}" styleclass="md-button md-raised md-eec pull-right" action="{!cancel}" rendered="{!isEdit}" onclick="return confirm('Are sure to cancel the changes?');" />
+                  </md-content>
+                </div>
+              </apex:pageblock>
+              <apex:pageblock id="viewUserDetail" rendered="{!!isEdit}">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <section class="contact-information">
+                      <apex:outputpanel rendered="{!account.Recordtype.Name != 'FCC Assistant'}">
+                        <h4 class="md-title">Provider Information</h4>
+                      </apex:outputpanel>
+                      <apex:outputpanel rendered="{!account.Recordtype.Name = 'FCC Assistant'}">
+                        <h4 class="md-title">Assistant Information</h4>
+                      </apex:outputpanel>
+                      <md-divider></md-divider><br />
+                      <div class="row">
+                        <div class="col-lg-6">
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Name: </strong>{!account.name}</p>
+                          </div>
+                          <apex:outputpanel rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant', false,true)}">
+                            <div class="md-subhead" layout="row">
+                              <p flex-sm="80" flex="90"><strong>Umbrella:</strong> <a href="/EEC_Umbrella" target="_top">{!account.Umbrella_Members__r.Name}</a></p>
+                            </div>
+                          </apex:outputpanel>
+                          <apex:outputpanel rendered="{!IF(account.Recordtype.Name != 'Family Child Care', false,true)}">
+                            <div class="md-subhead" layout="row">
+                              <p flex-sm="60" flex="70"><strong>FCC System:</strong> {!FCCSystemName}</p>
+                              <p flex-sm="40" flex="30"><a href="mailto:{!user.Email}?Subject=Change%20of%20FCC%20System%20request%20from%20{!HTMLENCODE(account.Name)}">Request a change</a></p>
+                            </div>
+                          </apex:outputpanel>
+                          <apex:outputpanel rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant', false,true)}">
+                            <div class="md-subhead" layout="row">
+                              <p flex-sm="80" flex="90"><strong>Business Name:</strong>{!account.Business_Name__c}</p>
+                            </div>
+                          </apex:outputpanel>
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Type: </strong>{!account.Recordtype.Name}</p>
+                          </div>
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Number:</strong> {!account.Provider_Number__c}</p>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="md-subhead" layout="row">
+                            <apex:outputpanel rendered="{!account.Recordtype.Name != 'FCC Assistant'}">  
+                                <p flex-sm="80" flex="90"><strong>License Status:</strong> {!account.License_Status__c}</p>
+                            </apex:outputpanel>
+                            <apex:outputpanel rendered="{!account.Recordtype.Name == 'FCC Assistant'}">  
+                                <p flex-sm="80" flex="90"><strong>Certificate Status:</strong> {!account.License_Status__c}</p>
+                            </apex:outputpanel>  
+                          </div>
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Provider Status:</strong> {!account.Provider_Status__c}</p>
+                          </div>
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Tax ID:</strong> {!account.Tax_ID__c}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                  <br />
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <section class="contact-information">
+                      <h4 class="md-title">Your Licensor</h4>
+                      <md-divider></md-divider><br />
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>First / Last Name: </strong>{!user.name}</p>
+                          </div>
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Phone: </strong>{!user.phone}</p>
+                          </div>
+                          <div class="md-subhead" layout="row">
+                            <p flex-sm="80" flex="90"><strong>Email: </strong>{!user.Email}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+                <br />
+                
+                  
+                 <div align="left"  class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                  <div class="panel panel-default">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#otherInfo" href="#otherInfo" aria-expanded="false" aria-controls="otherInfo" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Other Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="otherInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div  class="form-group {!IF(account.Recordtype.Name != 'FCC Assistant','','not-visible')}">
+                            <div class="input-group" >
+                              <span class="form-label"  style="text-align:left;">Head Start:  </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Head_Start__c}" />
+                            </div>
+                          </div>   
+                          <div class="form-group">
+                                <div class="input-group {!IF(account.Recordtype.Name == 'FCC Assistant','','not-visible')}">
+                                  <span class="form-label">Preferred Language: </span>
+                                  <apex:outputfield styleclass="form-control" value="{!account.Preferred_Language__c}" rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant', true,false)}" />
+                                </div>
+                              </div>  
+                          <div class="form-group {!IF(account.Recordtype.Name == 'FCC Assistant','','not-visible')}">
+                                <div class="input-group">
+                                  <span class="form-label">Language: </span>
+                                  <apex:outputfield styleclass="form-control" value="{!account.Language__c}" rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant', true,false)}" />
+                                </div>
+                              </div>    
+                        </div>  
+                        <div class="col-lg-6">
+                          
+                          <div class="form-group {!IF(account.Recordtype.Name == 'FCC Assistant','','not-visible')}">
+                                <div class="input-group">
+                                  <span class="form-label">Ethnicity: </span>
+                                  <apex:outputfield styleclass="form-control" value="{!account.Race__c}" rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant', true,false)}" />
+                                </div> 
+                          </div> 
+                          <div class="form-group {!IF(account.Recordtype.Name == 'FCC Assistant','','not-visible')}">
+                                <div class="input-group">
+                                  <span class="form-label">Bi-Lingual Licensor </span>
+                                  <apex:outputfield styleclass="form-control" value="{!account.Bi_lingual_Licensor__c}" rendered="{!IF(account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant', true,false)}" />
+                                </div>
+                          </div>                          
+                                               
+                        </div>                        
+                    </div>
+                  </div>
+                  </div>    
+                  <div class="panel panel-default">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#providerContact" href="#providerContact" aria-expanded="false" aria-controls="providerContact" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp;&nbsp;
+                            <apex:outputText rendered="{!account.Recordtype.Name == 'FCC Assistant'}">Assistant </apex:outputText>
+                            <apex:outputText rendered="{!account.Recordtype.Name != 'FCC Assistant'}">Provider </apex:outputText>
+                            Contact Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="providerContact" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                     
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Phone:  </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Phone}" />
+                              </div>
+                            </div>
+                            <div class="form-group {!IF((account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'FCC Assistant' || account.Recordtype.Name = 'Small Group' ||  account.Recordtype.Name = 'Adoption Agency' || account.Recordtype.Name = 'Group Care' || account.Recordtype.Name = 'Foster Care Agency'|| account.Recordtype.Name = 'Temporary Shelter'  || account.Recordtype.Name = 'Large Group'), '', 'not-visible')}">
+                              <div class="input-group">
+                                <span class="form-label">Alternate Phone: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Alternate_Phone__c}" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Fax: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.fax}" />
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Email: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Provider_Email__c}" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="panel panel-default">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#mainAddress" href="#mainAddress" aria-expanded="false" aria-controls="mainAddress" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Main Address Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="mainAddress" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Street Address 1: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Provider_Address_1__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Street Address 2: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Provider_Address_2__c}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">City: </span>
+                              <apex:outputtext value="{!account.Provider_city_text__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">State: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.State__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Zip Code: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Provider_Zip_Code__c}" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#mailingAddress" href="#mailingAddress" aria-expanded="false" aria-controls="mailingAddress" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Mailing Address Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="mailingAddress" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Street Address: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.ShippingStreet}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">City: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.ShippingCity}" />
+                            </div>
+                          </div>  
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">State: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.ShippingState}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Zip Code: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.ShippingPostalCode}" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+                
+                  <div class="panel panel-default">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#licenseInfo" href="#licenseInfo" aria-expanded="false" aria-controls="licenseInfo" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp;&nbsp; 
+                            <apex:outputText rendered="{!account.Recordtype.Name == 'FCC Assistant'}">Certificate </apex:outputText>
+                            <apex:outputText rendered="{!account.Recordtype.Name != 'FCC Assistant'}">License </apex:outputText>
+                            Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="licenseInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                      
+                          <div class="col-lg-4">
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <span class="form-label">Current 
+                                        <apex:outputText rendered="{!account.Recordtype.Name == 'FCC Assistant'}"> Certificate </apex:outputText>
+                                        <apex:outputText rendered="{!account.Recordtype.Name != 'FCC Assistant'}"> License </apex:outputText>
+                                      Number: </span>
+                                  <apex:outputfield styleclass="form-control" value="{!account.Current_License_Number__c}" />
+                                </div>
+                              </div>
+                            <apex:outputpanel rendered="{!IF(account.Recordtype.Name = 'FCC Assistant', true,false)}">
+                                <div class="form-group">
+                                  <div class="input-group">
+                                    <span class="form-label">Current Certificate: </span>
+                                    <apex:outputfield styleclass="form-control" value="{!account.Certified_As__c}" />
+                                  </div>
+                                </div> 
+                            </apex:outputpanel>    
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">
+                                    <apex:outputText rendered="{!account.Recordtype.Name == 'FCC Assistant'}">Certificate </apex:outputText>
+                                    <apex:outputText rendered="{!account.Recordtype.Name != 'FCC Assistant'}">License </apex:outputText> 
+                                    Type: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.License_Type__c}" />
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Expiration Date: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Renewal_date__c}" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">First Issue Date: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.First_Issue_Date__c}" />
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Last Issue Date: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Last_Issue_Date__c}" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="form-group {!IF(account.Recordtype.Name != 'FCC Assistant','','not-visible')}">
+                              <div class="input-group">
+                                <span class="form-label">Capacity: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Capacity__c}" />
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">
+                                    <apex:outputText rendered="{!account.Recordtype.Name != 'FCC Assistant'}">License </apex:outputText> 
+                                    Conditions: </span>
+                                <apex:outputpanel >
+                                  <apex:outputtext value="{!conditionStr }" />
+                                </apex:outputpanel>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                 <!-- <apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Adoption Agency',true,false)}"  > -->
+                    <div class="panel panel-default {!IF(account.Recordtype.Name == 'Adoption Agency','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetail" href="#programDetail" aria-expanded="false" aria-controls="programDetail" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Detailed Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetail" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Level of Care: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Level_of_Care__c}" />
+                            </div>
+                          </div> 
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Private Adoption: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Private_Adoption__c}" />
+                            </div>
+                          </div>  
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Specialties: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Specialties__c}" />
+                            </div>
+                          </div>        
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Required: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Required__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Agency: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Agency__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Program Age: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Program_Age__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Characteristics of Children Served: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Characteristics_of_Children_Served__c}" />
+                            </div>
+                          </div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!--  </apex:outputpanel> -->
+                   <!-- <apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Family Child Care',true,false)}"  > -->
+                  <div class="panel panel-default {!IF(account.Recordtype.Name == 'Family Child Care','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailfcc" href="#programDetailfcc" aria-expanded="false" aria-controls="programDetailfcc" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Detailed Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailfcc" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Foster Parent: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Foster_Parent__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Language: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Language__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Ethnicity: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Race__c}" />
+                            </div>
+                          </div> 
+                            
+                               
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Bi-Lingual Licensor: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Bi_lingual_Licensor__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Preferred Language: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Preferred_Language__c}" />
+                            </div>
+                          </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                 <!-- </apex:outputpanel> -->
+                <!--  <apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Foster Care Agency',true,false)}"  > -->
+                   <div class="panel panel-default {!IF(account.Recordtype.Name == 'Foster Care Agency','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailfc" href="#programDetailfc" aria-expanded="false" aria-controls="programDetailfc" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Detailed Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailfc" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Required: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Required__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Private Adoption: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Private_Adoption__c}" />
+                            </div>
+                          </div> 
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Level of Care: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Level_of_Care__c}" />
+                            </div>
+                          </div> 
+                              <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Specialties: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Specialties__c}" />
+                            </div>
+                          </div> 
+                               
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Agency: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Agency__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Program Age: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Program_Age__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Characteristics of Children Served: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Characteristics_of_Children_Served__c}" />
+                            </div>
+                          </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                <!--  </apex:outputpanel> -->
+                   <!-- <apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Group Care',true,false)}"  > -->
+                    <div class="panel panel-default {!IF(account.Recordtype.Name == 'Group Care','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailgc" href="#programDetailgc" aria-expanded="false" aria-controls="programDetailgc" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Detailed Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailgc" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Gender: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Gender__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Agency: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Agency__c}" />
+                            </div>
+                          </div> 
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Level of Care: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Level_of_Care__c}" />
+                            </div>
+                          </div> 
+                              <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Restraint Method: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Restraint_Method__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Specialties: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Specialties__c}" />
+                            </div>
+                          </div> 
+                               
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Required: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Required__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Program Age: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Program_Age__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Use Physical Restraints: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Use_Physical_Restraints__c}" />
+                            </div>
+                          </div>
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Characteristics of Children Served: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Characteristics_of_Children_Served__c}" />
+                            </div>
+                          </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                <!--  </apex:outputpanel> -->
+                    <!-- <apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Temporary Shelter',true,false)}"  >  -->
+                   <div class="panel panel-default {!IF(account.Recordtype.Name == 'Temporary Shelter','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailts" href="#programDetailts" aria-expanded="false" aria-controls="programDetailts" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Detailed Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailts" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Gender: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Gender__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Required: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Required__c}" />
+                            </div>
+                          </div> 
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Level of Care: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Level_of_Care__c}" />
+                            </div>
+                          </div> 
+                              <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Restraint Method: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Restraint_Method__c}" />
+                            </div>
+                          </div> 
+                          
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Use Physical Restraints: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Use_Physical_Restraints__c}" />
+                            </div>
+                          </div> 
+                         
+                          
+                          
+                               
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Referral Agency: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Referral_Agency__c}" />
+                            </div>
+                          </div>
+                           
+                          
+                          
+                          
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Characteristics of Children Served: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Characteristics_of_Children_Served__c}" />
+                            </div>
+                          </div>
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Specialties: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Specialties__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Program Age: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Program_Age__c}" />
+                            </div>
+                          </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                <!--  </apex:outputpanel> -->
+                   <!-- start large Group-->
+                    <!--<apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Large Group',true,false)}"  >-->
+                   <div class="panel panel-default {!IF(account.Recordtype.Name == 'Large Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailaz1" href="#programDetailaz1" aria-expanded="false" aria-controls="programDetailaz1" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Information (Age)
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailaz1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Has Multi-Age Group: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Has_Multi_Age_Group__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Months: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Months__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Months: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Months__c}" />
+                            </div>
+                          </div> 
+                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                   <div class="panel panel-default {!IF(account.Recordtype.Name == 'Large Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailot" href="#programDetailot" aria-expanded="false" aria-controls="programDetailot" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Operation Details
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailot" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Operation Type: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Full_School_Year__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">School Year - To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.School_Year_To__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Full Day Program Available From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Full_Day_Program_Available_From__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Morning Program Available On: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_On__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Morning Program Available To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_To__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Afternoon Program Avail. From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Afternoon_Program_Avail_From__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Evenings Service Provided: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Evenings_Service_Provided__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Total Staff: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Total_Staff__c}" />
+                            </div>
+                          </div> 
+                          
+                          
+                          
+                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">School Year From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.School_Year_From__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Full Day Program Available On: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_On__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Full Day Program Available To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Full_Day_Program_Available_To__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Morning Program Available From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_From__c}" />
+                            </div>
+                          </div>
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Afternoon Program Available On: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Afternoon_Program_Available_On__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Afternoon Program Available To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Afternoon_Program_Available_To__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Drop In Service Provided: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Drop_In_Service_Provided__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Has Camp Permit: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Has_Camp_Capacity__c}" />
+                            </div>
+                          </div>
+                           
+                         
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name == 'Large Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailaw" href="#programDetailqwe" aria-expanded="false" aria-controls="programDetailqwe" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Facility Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailqwe" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Indoor Square Footage: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Indoor_Square_Footage__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Number of toilets: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Number_of_toilets__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Pool Approved: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Pool_Approved__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Building Inspection Max. Capacity: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Building_Inspection_Max_Capacity__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Building Codes: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Building_Codes__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Fire Inspection Issue date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Fire_Inspection_Issue_date__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Well Water Test date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Well_Water_Test_date__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Cafeteria Approved: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Cafeteria_Approved__c}" />
+                            </div>
+                          </div> 
+                          
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Gym Approved: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Gym_Approved__c   }" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Lead Paint: Constructed post 1978: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Lead_Paint_Compliance__c}" />
+                            </div>
+                          </div> 
+                            
+                          
+                         </div>
+                         
+                         
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Outdoor Square footage: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Outdoor_Square_footage__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Number of sinks: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Number_of_sinks__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Pool roof inspection date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Pool_roof_inspection_date__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Building inspection expiration Date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Building_inspection_expiration_Date__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Health Inspection Expiration Date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Health_Inspection_Expiration_Date__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Integrated Pest Management Date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Integrated_Pest_Management_Date__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">PWS (Public Water Source) Number: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.PWS_Public_Water_Source_Number__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Other Approved Additional Space: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Other_Approved_Additional_Space__c}" />
+                            </div>
+                          </div>
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Lead Paint: Detailed Inspection: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Detailed_Inspection__c}" />
+                            </div>
+                          </div>
+                            
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name == 'Large Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailadd" href="#programDetailadd" aria-expanded="false" aria-controls="programDetailadd" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Additional Program Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailadd" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Indoor Compliance with ADA: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Indoor_Compliance_with_ADA__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Provide Transportation: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Provide_Transportation__c}" />
+                            </div>
+                          </div> 
+                            
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Offsite Outdoor Play Location: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Offsite_Outdoor_Play_Location__c}" />
+                            </div>
+                          </div> 
+                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Outdoor Compliance with ADA: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Outdoor_Compliance_with_ADA__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Sub-contractor Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Sub_contractor_Name__c}" />
+                            </div>
+                          </div>
+                          
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!--</apex:outputpanel>-->
+                  <!--End large Group-->
+                  
+                  <!-- Start Small Group-->
+                   
+                    <!--<apex:outputpanel rendered="{!IF(account.Recordtype.Name == 'Small Group',true,false)}"  >-->
+                   <div class="panel panel-default {!IF(account.Recordtype.Name == 'Small Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailaz" href="#programDetailaz" aria-expanded="false" aria-controls="programDetailaz" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Information (Age)
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailaz" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Has Multi-Age Group: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Has_Multi_Age_Group__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Months: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Months__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Months: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Months__c}" />
+                            </div>
+                          </div> 
+                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Min. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Min_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Max. Age Years: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Max_Age_Years_LG_SG__c}" />
+                            </div>
+                          </div>
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                   <div class="panel panel-default {!IF(account.Recordtype.Name == 'Small Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailotsg" href="#programDetailotsg" aria-expanded="false" aria-controls="programDetailotsg" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Operation Details
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailotsg" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Operation Type: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Full_School_Year__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">School Year - To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.School_Year_To__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Full Day Program Available From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Full_Day_Program_Available_From__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Morning Program Available On: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_On__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Morning Program Available To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_To__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Afternoon Program Avail. From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Afternoon_Program_Avail_From__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Evenings Service Provided: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Evenings_Service_Provided__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Total Staff: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Total_Staff__c}" />
+                            </div>
+                          </div> 
+                          
+                          
+                          
+                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">School Year From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.School_Year_From__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Full Day Program Available On: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_On__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Full Day Program Available To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Full_Day_Program_Available_To__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Morning Program Available From: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Morning_Program_Available_From__c}" />
+                            </div>
+                          </div>
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Afternoon Program Available On: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Afternoon_Program_Available_On__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Half Day Afternoon Program Available To: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Half_Day_Afternoon_Program_Available_To__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Drop In Service Provided: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Drop_In_Service_Provided__c}" />
+                            </div>
+                          </div>
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Has Camp Permit: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Has_Camp_Capacity__c}" />
+                            </div>
+                          </div>
+                           
+                         
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name == 'Small Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailaw" href="#programDetailqwesg" aria-expanded="false" aria-controls="programDetailqwesg" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Facility Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailqwesg" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Indoor Square Footage: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Indoor_Square_Footage__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Number of toilets: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Number_of_toilets__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Pool Approved: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Pool_Approved__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Building Inspection Max. Capacity: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Building_Inspection_Max_Capacity__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Building Codes: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Building_Codes__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Fire Inspection Issue date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Fire_Inspection_Issue_date__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Well Water Test date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Well_Water_Test_date__c}" />
+                            </div>
+                          </div> 
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Cafeteria Approved: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Cafeteria_Approved__c}" />
+                            </div>
+                          </div> 
+                          
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Gym Approved: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Gym_Approved__c}" />
+                            </div>
+                          </div> 
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Lead Paint: Constructed post 1978: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Lead_Paint_Compliance__c}" />
+                            </div>
+                          </div> 
+                            
+                          
+                         </div>
+                         
+                         
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Outdoor Square footage: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Outdoor_Square_footage__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Number of sinks: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Number_of_sinks__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Pool roof inspection date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Pool_roof_inspection_date__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Building inspection expiration Date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Building_inspection_expiration_Date__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Health Inspection Expiration Date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Health_Inspection_Expiration_Date__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Integrated Pest Management Date: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Integrated_Pest_Management_Date__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">PWS (Public Water Source) Number: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.PWS_Public_Water_Source_Number__c}" />
+                            </div>
+                          </div>
+                           <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Other Approved Additional Space: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Other_Approved_Additional_Space__c}" />
+                            </div>
+                          </div>
+                             <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Lead Paint: Detailed Inspection: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Detailed_Inspection__c}" />
+                            </div>
+                          </div>
+                            
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name == 'Small Group','','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programDetailaddsg" href="#programDetailaddsg" aria-expanded="false" aria-controls="programDetailaddsg" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Additional Program Information
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programDetailaddsg" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Indoor Compliance with ADA: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Indoor_Compliance_with_ADA__c}" />
+                            </div>
+                          </div>
+                          
+                             
+                          
+                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Outdoor Compliance with ADA: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Outdoor_Compliance_with_ADA__c}" />
+                            </div>
+                          </div>
+                          
+                          
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!--</apex:outputpanel>-->
+                  
+                  <!-- End Small Group-->
+                       
+                  <div class="panel panel-default {!IF(account.Recordtype.Name ='Group Care' || account.Recordtype.Name ='Temporary Shelter' , '','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#programStatistics" href="#programStatistics" aria-expanded="false" aria-controls="programStatistics" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Program Statistics
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="programStatistics" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Awake Ratio: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Awake_Ratio__c}" />
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Asleep Ratio: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Asleep_Ratio__c}" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <span class="form-label">Ratio Comment: </span>
+                                <apex:outputfield styleclass="form-control" value="{!account.Ratio_Comment__c}" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  
+                  </div>
+                  <div class="panel panel-default {!IF(account.Recordtype.Name = 'Large Group', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#capacityInfo" href="#capacityInfo" aria-expanded="false" aria-controls="capacityInfo" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Capacity 
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="capacityInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Infant(birth - 15 mo): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Infant_birth_15_mo__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Infant/Toddler(birth - 33 mo): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Infant_Toddler_birth_33_mo__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Toddler(15 mo- 33 mo): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Toddler_15_mo_33_mo__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Toddler/Preschool (15 mo - K): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Toddler_Preschool_15_mo_K__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Preschool(33 mo - K): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Preschool_33_mo_K__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Preschool/SA (33 mo - 8 yr): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Preschool_SA_33_mo_8_yr__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Kindergarten: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Kindergarten__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          </div>
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">School Age (5yr - 14yr): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.School_Age_5_yr_14_yr__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Multi-Age Group (birth - 14 yr): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Multi_Age_Group_birth_14_yr__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Summer Capacity: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Summer_Capacity__c}" rendered="{!IF(account.Recordtype.Name = 'Large Group', true,false)}" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Provider Variances -->
+                  <div class="panel panel-default {!IF(account.Recordtype.Name != 'FCC Assistant' &&  varianceList != null &&  varianceList.size > 0, '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#variance-container" href="#variance-container" aria-expanded="false" aria-controls="variance" role="tab" id="variance-heading">
+                      <h4 class="panel-title"><a><i class="fa fa-chevron-right"></i>&nbsp; License Variance on Regulation</a></h4>
+                    </div>
+                    <div id="variance-container" class="panel-collapse collapse" role="tabpanel" aria-labelledby="variance-heading">
+                      <div class="panel-body">
+                        <div id="no-more-tables">
+                          <table class="table table-hover licensing-table">
+                            <thead>
+                              <tr>
+                                <th>Regulation #</th>
+                                <th>Decision</th>
+                                <th>Decision Rationale</th>
+                                <th>Brief Explanation</th>
+                                <th>Date Granted</th>
+                                <th>Expiration Date</th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! varianceList }" var="varianceWrapper">
+                              <tr>
+                                <td data-title="Regulation">{!varianceWrapper.varianceReg.Associated_Regulation__r.Regulation_Number__c}</td>
+                                <td data-title="Decision">{!varianceWrapper.varianceReg.Decision__c}</td>
+                                <td data-title="DecisionRatinale">{!varianceWrapper.varianceReg.Decision_Rationale__c}</td>
+                                <td data-title="Brief_explanation">{!varianceWrapper.varianceReg.Brief_explanation_for_license__c}</td>
+                                <td data-title="Date_Granted">
+                                <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!varianceWrapper.varianceReg.Date_Granted__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="Expiration_Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!varianceWrapper.varianceReg.Expiration_Date__c}" />
+                                  </apex:outputtext></td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name = 'Large Group' || account.Recordtype.Name = 'Small Group', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#BusinessManagementRecordKeepingResponsibles" href="#BusinessManagementRecordKeepingResponsibles" aria-expanded="false" aria-controls="BusinessManagementRecordKeepingResponsibles" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Business Management/Record Keeping Responsibles
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="BusinessManagementRecordKeepingResponsibles" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Account/Books Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Account_books_Responsible__c}"/>
+                            </div>
+                          </div>                          
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Personnel records Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Personnel_Records_Responsible__c}"/>
+                            </div>
+                          </div>
+                          
+                          
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Financial documentation Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Financial_Documentation_Responsible__c}"/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Records Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Records_Responsible__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Children’s records Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Children_s_Records_Responsible__c}" />
+                            </div>
+                          </div>
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Staff schedules Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Staff_Schedules_Responsible__c}" />
+                            </div>
+                          </div>
+                        </div>                        
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name = 'Large Group' || account.Recordtype.Name = 'Small Group', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#DevelopmentandMaintenanceofProgrammingResponsibles" href="#DevelopmentandMaintenanceofProgrammingResponsibles" aria-expanded="false" aria-controls="DevelopmentandMaintenanceofProgrammingResponsibles" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Development and Maintenance of Programming Responsibles
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="DevelopmentandMaintenanceofProgrammingResponsibles" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Early childhood education program Responsible Name: </span> 
+                              <apex:outputfield styleclass="form-control" value="{!account.Early_Childhood_Education_Program_Resp__c}" />
+                            </div>
+                          </div>                          
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">School Age Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.School_Age_Responsible__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Daily activities Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Daily_Activities_Responsible__c}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Kindergarten Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Kindergarten_Responsible__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Services for children w/disabilities Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Services_for_Children_w_Disability_Resp__c}" />
+                            </div>
+                          </div>
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Equipment Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Equipment_Responsible__c}" />
+                            </div>
+                          </div>
+                        </div>                        
+                      </div>
+                    </div>
+                  </div>
+                  
+                 <div class="panel panel-default {!IF(account.Recordtype.Name = 'Large Group' || account.Recordtype.Name = 'Small Group', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#OtherResponsibility" href="#OtherResponsibility" aria-expanded="false" aria-controls="OtherResponsibility" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Other Responsibility
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="OtherResponsibility" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                     <div class="panel-body">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Staff Development Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Staff_Development_Responsible__c}" />
+                            </div>
+                          </div>                          
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Staff Orientation Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Staff_Orientation_Responsible__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                          <div class="input-group">
+                              <span class="form-label">Parent Involvement Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Parent_Involvement_Responsible__c}" />
+                            </div>
+                         </div>
+                          <div class="form-group">
+                          <div class="input-group">
+                              <span class="form-label">Infant/Toddler Program Responsible Name, if applicable (must be Lead Teacher Qualified): </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Infant_Toddler_Program_Responsible__c}" />
+                            </div>
+                          </div>
+                           </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Staff Training Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Staff_Training_Responsible__c}" />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Staff Supervision Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Staff_Supervision_Responsible__c}" />
+                            </div>
+                          </div>
+                         <div class="form-group">
+                            <div class="input-group">
+                              <span class="form-label">Social Services Responsible Name: </span>
+                              <apex:outputfield styleclass="form-control" value="{!account.Social_Services_Responsible__c}" />
+                            </div>
+                          </div>  
+                        </div>
+                    </div>
+                 </div>
+                 </div>       
+                  <div class="panel panel-default {!IF(account.Recordtype.Name != 'FCC Assistant', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#contacts" href="#contacts" aria-expanded="false" aria-controls="contacts" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Contacts
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="contacts" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Name </th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>                                
+                               <th style="display:{!IF(account.Recordtype.Name == 'Family Child Care', 'none', 'block')}">Start Date</th>
+                                <th></th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! contactlist }" var="con">
+                              <tr>
+                                <td data-title="Name">{!con.contactdetail.name}</td>
+                                <td data-title="Email">{!con.contactdetail.Email}</td>
+                                <td data-title="Pone">{!con.contactdetail.Phone}</td>
+                                <td data-title="Role">{!con.contactdetail.Role__c}</td>
+                                <td data-title="View" style="text-align:right;"><a href="/EEC_ContactPage?Id={!con.contactdetail.Id}{!IF(con.contactdetail.Id == $User.ContactId,'&selfContactMode=true','')}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                
+                                
+                                  <td data-title="Request Portal Access" style="text-align:right;">
+                                
+                                    <apex:commandButton rendered="{!con.userdetail == null && con.taskdetail == null}"  onclick="requestPortalAccess('{!con.contactdetail.Id}'); return false;" title="Request Portal Access" value="Request Portal Access" styleclass="md-button md-raised md-eec header-button"  />                                 
+                                
+                                </td>
+                              
+                              </tr>
+                            </apex:repeat>
+                             <apex:repeat value="{! contactRolelist }" var="conRole">
+                              <tr>
+                                <td data-title="Name">{!conRole.contactroledetail.Contact__r.Name}</td>
+                                <!--<td data-title="Title">{!conRole.Contact__r.Title}</td>-->
+                                <td data-title="Email">{!conRole.contactroledetail.Contact__r.Email}</td>
+                                <td data-title="Pone">{!conRole.contactroledetail.Contact__r.Phone}</td>
+                                <td data-title="Role">{!conRole.contactroledetail.Role__c}</td>
+                                <td  style="display:{!IF(account.Recordtype.Name == 'Family Child Care', 'none', 'block')}" data-title="StDate">
+                                 <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!conRole.contactroledetail.Start_Date__c}" />
+                                  </apex:outputtext></td>
+                                <td data-title="View" style="text-align:right;"><a href="/EEC_ContactPage?Id={!conRole.contactroledetail.Contact__r.Id}{!IF(conRole.contactroledetail.Contact__r.Id == $User.ContactId,'&selfContactMode=true','')}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                <td data-title="Request Portal Access" style="text-align:right;">
+                                <div class="right-group pull-right md-button">
+                                  <apex:outputpanel rendered="{!conRole.userdetail == null && conRole.taskdetail == null}" styleclass="right-group" >
+                                    <apex:commandbutton onclick="requestPortalAccess('{!conRole.contactroledetail.Contact__r.Id}'); return false;" title="Request Portal Access" value="Request Portal Access" styleclass="md-button md-raised md-eec header-button"  />
+                                  </apex:outputpanel>
+                                </div>                            
+                                   <!-- <apex:commandButton onclick="requestPortalAccess('{!conRole.Contact__r.Id}'); return false;" title="Request Portal Access" value="Request Portal Access" styleclass="md-button md-raised md-eec header-button" />  -->                               
+                                </td>
+                              </tr>
+                            </apex:repeat>
+                            <apex:actionFunction name="requestPortalAccess" action="{!requestPortalAccess}" rerender="none">
+                                <apex:param id="contactId" value=""/>
+                            </apex:actionFunction>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="panel panel-default {!IF(account.Recordtype.Name != 'FCC Assistant', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#contacts" href="#users" aria-expanded="false" aria-controls="users" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Users
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="users" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Last Login</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{!userList}" var="users">
+                              <tr>
+                                <td data-title="Name">{!users.name}</td>
+                                <td data-title="Title">{!users.Email}</td>
+                                <td data-title="Email">{!users.LastLoginDate}</td>
+                                <td data-title="View" style="text-align:right;" >
+                                
+                                     <div class="right-group pull-right md-button">
+                                  <apex:outputpanel styleclass="right-group" >
+                                    <apex:commandbutton onclick="requestDeactivate('{!users.Id}'); return false;" title="Request to Deactivate" value="Request to Deactivate" styleclass="md-button md-raised md-eec header-button"  />
+                                  </apex:outputpanel>
+                                </div>                            
+                                </td>
+                               
+                              </tr>
+                            </apex:repeat>                            
+                            <apex:actionFunction name="requestDeactivate" action="{!requestDeactivate}" rerender="none">
+                                <apex:param id="userId" value=""/>
+                            </apex:actionFunction>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  
+                  <!-- Assistants -->
+                  <div class="panel panel-default {!IF(account.Recordtype.Name = 'Family Child Care', '', 'not-visible') }">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#assistant-container" href="#assistant-container" aria-expanded="false" aria-controls="assistant" role="tab" id="assistant-heading">
+                      <h4 class="panel-title"><a><i class="fa fa-chevron-right"></i>&nbsp; Assistants</a></h4>
+                    </div>
+                    <div id="assistant-container" class="panel-collapse collapse" role="tabpanel" aria-labelledby="assistant-heading">
+                      <div class="panel-body">
+                        <div class="slds">
+                          <c:EEC_AssistantList iseditible="false" currentaccount="{!Account}" istable="true" isEndDateVisible="false"/>
+                        </div>
+                        <div class="assistant-button-container" style="text-align: center;">
+                          <a href="/apex/EEC_AssistantUpdateList?param={!EncryptedAccountId}" style="width: 30%;" class="md-button md-raised md-eec">Update</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Affiliated Providers -->
+                  <div class="panel panel-default {!IF(account.Recordtype.Name = 'FCC Assistant', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#assistant-container" href="#aff-providers-container" aria-expanded="false" aria-controls="aff-provider" role="tab" id="aff-providers-heading">
+                      <h4 class="panel-title"><a><i class="fa fa-chevron-right"></i>&nbsp; Affiliated Providers</a></h4>
+                    </div>
+                    <div id="aff-providers-container" class="panel-collapse collapse" role="tabpanel" aria-labelledby="assistant-heading">
+                      <div class="panel-body">
+                        <div id="no-more-tables">
+                          <table class="table table-hover licensing-table">
+                            <thead>
+                              <tr>
+                                <th>Provider Name</th>
+                                <th>Provider Address</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Request a correction</th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! assistantList }" var="assistantWrapper">
+                              <tr>
+                                <td data-title="Provider Name">{!assistantWrapper.providerAssistant.FCC_Provider__r.Name}</td>
+                                <td data-title="Provider Address">{!assistantWrapper.providerAssistant.FCC_Provider__r.Provider_Full_Address__c}</td>
+                                
+                                <td data-title="Start Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!assistantWrapper.providerAssistant.Start_Date__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="End Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!assistantWrapper.providerAssistant.End_Date__c}" />
+                                  </apex:outputtext>
+                                </td>
+
+                                <td data-title="Request a correction" style="text-align: center;">
+                                  <apex:outputpanel rendered="{!assistantWrapper.providerAssistant.FCC_Assistant__r.Licensor_Email__c != null}">
+                                    <a href="mailto:{!assistantWrapper.providerAssistant.FCC_Assistant__r.Licensor_Email__c}?Subject=Provider%20Affiliation%20Correction%20Request%20from%20{!assistantWrapper.providerAssistant.FCC_Assistant__r.Name}"><i class="fa fa-envelope"></i></a>
+                                  </apex:outputpanel>
+                                  <apex:outputpanel rendered="{!assistantWrapper.providerAssistant.FCC_Assistant__r.Licensor_Email__c == null}">
+                                    <span class="fa-stack fa-lg">
+                                      <i class="fa fa-envelope fa-stack-1x"></i>
+                                      <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                                    </span>
+                                  </apex:outputpanel>
+                                </td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default {!IF((account.Recordtype.Name = 'Family Child Care' || account.Recordtype.Name = 'Adoption Agency'  ||  account.Recordtype.Name = 'FCC Assistant' || account.Recordtype.Name = 'Small Group' || account.Recordtype.Name = 'Large Group' || account.Recordtype.Name = 'Group Care'|| account.Recordtype.Name = 'Temporary Shelter' || account.Recordtype.Name = 'Foster Care Agency' ) && profileName != 'EEC Community Standard User_without_transactions', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#license" href="#license" aria-expanded="false" aria-controls="license" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Licensing Transactions
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="license" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables">
+                          <table class="table table-hover licensing-table">
+                            <thead>
+                              <tr>
+                                <th>Transaction ID</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Last Reached Step</th>
+                                <th>Submission Date</th>
+                                <th>EEC Licensor</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! licenselist }" var="lic">
+                              <tr>
+                                <td data-title="Name">{!lic.name}</td>
+                                <td data-title="Type">{!lic.Recordtype.Name}</td>
+                                <td data-title="Status">{!lic.Status__c}</td>
+                                <td data-title="Last Step">{!lic.Last_Reached_Step__c}</td>
+                                <td data-title="Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!lic.Submission_Date__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="Licensor">{!lic.Assigned_To__r.Name}</td>
+                                <apex:outputpanel rendered="{!!IsAssistant}">
+                                  <apex:outputpanel rendered="{!lic.Recordtype.Name == 'FCC Assistant Renewal'}">  
+                                    <td data-title="" style="text-align:right;"><a href="/EEC_ReviewSummarySubmissionAssistant?ltID={!lic.Id}&mode=4" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                  </apex:outputpanel>
+                                  <apex:outputpanel rendered="{!lic.Recordtype.Name != 'FCC Assistant Renewal'}">
+                                    <td data-title="" style="text-align:right;display:{!if((account.RecordType.Name == 'Large Group' || account.RecordType.Name == 'Small Group') && (contains(lic.Recordtype.Name,'GSA')  || lic.Recordtype.Name == 'Close Prior Expiration' || lic.Recordtype.Name == 'Change of Provider Name' || lic.Recordtype.Name == 'Re-issuance of License Certificate'), 'block','none')}"><a href="/EEC_ViewGSALicenseTransaction?ltID={!lic.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                    <td data-title="" style="text-align:right;display:{!if((account.RecordType.Name == 'Foster Care Agency' || account.RecordType.Name == 'Group Care' ) && (Contains(lic.Recordtype.Name,'Placement') || Contains(lic.Recordtype.Name,'Residential') || lic.Recordtype.Name == 'R&P Change of Admin Authority' || lic.Recordtype.Name == 'Close Prior Expiration' || lic.Recordtype.Name == 'Change of Provider Name' || lic.Recordtype.Name == 'Re-issuance of License Certificate'), 'block','none')}"><a href="/EEC_ViewLicenseTransaction?ltID={!lic.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                    <td data-title="" style="text-align:right;display:{!if(lic.recordType.Name == 'Variance On Regulation Request','block','none')}"><a href="/EEC_ViewVarianceTransaction?ltID={!lic.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                    <td data-title="" style="text-align:right;display:{!if(account.RecordType.Name == 'Family Child Care' || account.RecordType.Name == 'FCC Assistant','block','none')}"><a href="/EEC_ViewTransaction?ltID={!lic.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                  </apex:outputpanel>  
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!IsAssistant}">
+                                    <apex:outputpanel rendered="{!lic.Recordtype.Name == 'FCC New License'}">
+                                        <td data-title="" style="text-align:right;"><a href="/EEC_ViewTransaction?ltID={!lic.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!lic.Recordtype.Name != 'FCC New License' && account.RecordType.Name != 'Group Care'}">
+                                        <td data-title="" style="text-align:right;"><a href="/EEC_ReviewSummarySubmissionAssistant?ltID={!lic.Id}&mode=4" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                                    </apex:outputpanel>
+                                </apex:outputpanel> 
+                                <td style="text-align:right;">
+                               
+                                  <apex:outputpanel rendered="{!IF(lic.Status__c != 'To Submit' && !Contains(lic.Status__c,'Closed')  && !Contains(lic.Status__c,'Cancelled'), true, false) && account.Recordtype.Name != 'Family Child Care' }">
+                                    <td data-title="" style="text-align:right;"><a href="/EEC_ViewLicensingAttachment?ltID={!lic.Id}&previouspagename=Provider" target="_top" title="View / Update Transaction Attachment"><i class="fa fa-pencil"></i></a></td>
+                                  </apex:outputpanel>
+                                
+                                </td> 
+                                <td style="text-align:right;">
+                                  <apex:outputpanel rendered="{!IF(lic.Status__c = 'To Submit', true, false) && account.Recordtype.Name = 'Family Child Care'}">
+                                    <apex:commandlink action="{!editInstruction}" title="Edit">
+                                      <i class="fa fa-pencil"></i>
+                                      <apex:param value="{!lic.Id}" name="licTransId"></apex:param>
+                                    </apex:commandlink>
+                                  </apex:outputpanel>
+                                </td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default {!IF(account.Recordtype.Name != 'FCC Assistant', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#visit" href="#visit" aria-expanded="false" aria-controls="visit" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Visits
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="visit" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables" class="table-group-one">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Visit ID</th>
+                                <th>Status</th>
+                                <th>Date of Visit</th>
+                                <th>Time of Visit</th>
+                                <th>EEC Licensor</th>
+                                <th>Number of Non-Compliant Items</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! inspectionlist }" var="ins">
+                              <tr>
+                                <td data-title="Name">{!ins.name}</td>
+                                <td data-title="Status">{!ins.Status__c}</td>
+                                <td data-title="Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!ins.Date_of_Visit__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="Time of Visit">{!ins.Time_of_visit__c}</td>
+                                <td data-title="Licensor">{!ins.Inspector_del__r.Name}</td>
+                                <td data-title="No. of Non-Compliant Items">{!ins.Number_of_non_compliant_items__c}</td>
+                                <td data-title="" style="text-align:right;"><a href="/EEC_VisitReportPage?visitID={!ins.Id}&pageID=provider" title="View" class="{!IF(ins.Status__c = 'Closed' || ins.Status__c = 'Report Sent to Provider, Awaiting feedback' || ins.Status__c = 'Feedback received, to review', '', 'not-visible')}"><i class="fa fa-search"></i></a></td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default {!IF(account.Recordtype.Name != 'FCC Assistant', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#incident" href="#incident" aria-expanded="false" aria-controls="incident" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Reported Incidents / Injuries
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="incident" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables" class="table-group-one">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Number</th>
+                                <th>Summary</th>
+                                <th>Event Date</th>
+                                 <th>Submitted Date</th>
+                                <th>Status</th>
+                               
+                             <!--   <th>Date Opened</th>  -->
+                                <th>Date Closed</th>
+                                
+                                <th></th>
+                                <th class = "{!IF(account.Recordtype.Name = 'Foster Care Agency', '', 'not-visible')}"></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! incidentlist }" var="inc">
+                              <tr>
+                                <td data-title="Number">{!inc.Casedetail.CaseNumber}</td>
+                                <td data-title="Summary">{!inc.Casedetail.Subject}</td>
+                                <td data-title="Event Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!inc.Casedetail.Date_Event_Occured__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <!--<td data-title="Status">{!inc.Status}</td>-->
+                                <td data-title="Date Opened">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!inc.Casedetail.CreatedDate}" />
+                                  </apex:outputtext>
+                                </td>
+                                  <td data-title="Status">{!inc.Casedetail.Status}</td>
+                                <td data-title="Date Closed">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!inc.Casedetail.ClosedDate}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="View" style="text-align:right;">
+                                    <div style="display:{!if(inc.Casedetail.Status == 'Not Submitted','','none')}">
+                                      <a href="/EEC_CasesIncidentsPage?Id={!inc.Casedetail.Id}&mode=view" target="_top" title="View"><i class="fa fa-search"></i></a>
+                                    </div>
+                                    <div style="display:{!if(inc.Casedetail.Status != 'Not Submitted' && inc.attachment != null ,'','none')}">
+                                      <!--<a href="{!$Site.BaseUrl}/servlet/servlet.FileDownload?file={!inc.attachment.id}" download="{!inc.attachment.Name}" target="_blank" title="View"><i class="fa fa-search"></i></a>-->
+                                      <apex:outputLink rendered="{!inc.attachment != null}" value="{!URLFOR($Action.Attachment.Download,inc.attachment.id)}" target="_blank"><i class="fa fa-search"></i></apex:outputLink>
+
+                                    </div>
+                                </td>
+                                <td class = "{!IF(account.Recordtype.Name = 'Foster Care Agency', '', 'not-visible')}" data-title="Investigation Conclusion" style="text-align:right;display:{!if(inc.Casedetail.Recordtype.Name == 'Foster Home 51A or Incident' && inc.Casedetail.Status != null && inc.Casedetail.Status !='Not Submitted' && inc.Casedetail.Investigation_Conclusion_Submitted_Date__c == null,'block','none')}"><a href="/EEC_CasesIncidentsPage?Id={!inc.Casedetail.Id}&mode=edit" target="_top" title="Investigation Conclusion">Investigation Conclusion</a></td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default {!IF(account.Recordtype.Name = 'Adoption Agency' || account.Recordtype.Name = 'Group Care'||  account.Recordtype.Name = 'Foster Care Agency' ||  account.Recordtype.Name = 'Temporary Shelter' ||  account.Recordtype.Name = 'Large Group' || account.Recordtype.Name = 'Small Group', '', 'not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#intervention" href="#intervention" aria-expanded="false" aria-controls="intervention" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Internal Investigation
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="intervention" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables" class="table-group-one">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Investigation ID</th>
+                                <th>Instructions</th>
+                                <th>To be provided before</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! interventionlist }" var="int">
+                              <tr>
+                                <td data-title="ID">{!int.Investigation__r.Name}</td>
+                                <td data-title="Instructions">{!int.Portal_User_Instructions__c}</td>
+                                <td data-title="To be provided before">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!int.To_Be_Provided_By__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="Upload Internal Investigation" style="text-align:right;"><a href="/EEC_Interventionpage?Id={!int.Id}" target="_top" title="Upload"><i class="fa fa-upload"></i></a></td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#investigation" href="#investigation" aria-expanded="false" aria-controls="investigation" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Investigations
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="investigation" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables" class="table-group-one">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Investigation ID</th>
+                                <th>Status</th>
+                                <th>Closed Date</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! investlist }" var="inv">
+                              <tr>
+                                <td data-title="ID">{!inv.Name}</td>
+                                <td data-title="Status">{!inv.Investigation_Status__c}</td>
+                                <td data-title="Closed Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!inv.Closed_Date__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="" style="text-align:right;"><a href="/EEC_PortalInvestigationPage?Id={!inv.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default {!IF((account.Recordtype.Name ='Group Care' || account.Recordtype.Name = 'Temporary Shelter' ) && account.Use_Physical_Restraints__c = true, '','not-visible')}">
+                    <div class="panel-heading collapsed" data-toggle="collapse" data-parent="#report" href="#report" aria-expanded="false" aria-controls="report" role="tab" id="headingThree">
+                      <h4 class="panel-title">
+                        <a>
+                          <i class="fa fa-chevron-right"></i>&nbsp; Quarterly Restraint Report
+ 
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="report" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      <div class="panel-body">
+                        <div id="no-more-tables">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Transaction ID</th>
+                                <th>Report Year</th>
+                                <th>Report Quarter</th>
+                                <th>Submitted By</th>
+                                <th>Submission Date</th>
+                                <th>Restraint Method</th>
+                                <th>Total Restraint</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <apex:repeat value="{! reportlist }" var="rep">
+                              <tr>
+                                <td data-title="ID">{!rep.Name}</td>
+                                <td data-title="Report Year">{!rep.Calendar_Year__c}</td>
+                                <td data-title="Report Quarter">{!rep.Quarter__c}</td>
+                                <td data-title="Submitted By">{!rep.Contact_Submitted_By__r.name}</td>
+                                <td data-title="Date">
+                                  <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!rep.Submitted_Date__c}" />
+                                  </apex:outputtext>
+                                </td>
+                                <td data-title="Restraint Method">{!rep.Restraint_Method2__c}</td>
+                                <td data-title="Total">{!rep.Grand_Total__c}</td>
+                                <td data-title="" style="text-align:right;"><a href="/EEC_RestraintReportDetailPage?Id={!rep.Id}" target="_top" title="View"><i class="fa fa-search"></i></a></td>
+                              </tr>
+                            </apex:repeat>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </apex:pageblock>
+            </apex:outputpanel>
+          </div>
+        </div>
+      </apex:form>
+    </div>
+    <c:EEC_Site_Footer id="siteFooter" />
+  </body>
+</apex:page>

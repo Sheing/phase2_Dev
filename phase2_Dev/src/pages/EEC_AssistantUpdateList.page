@@ -1,0 +1,167 @@
+<apex:page showheader="false" standardstylesheets="false" sidebar="false" controller="EEC_AssistantUpdateListCtrl">
+  <head>
+    <title>EEC : Update Assistants</title>
+    <c:EEC_Header id="pageHeader" />
+
+    <style>
+      .assistant-update-list-container {
+        margin-top: 55px;
+        margin-bottom: 100px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .buttons-container .save-button {
+        float: right;
+        margin: 0;
+      }
+
+      .save-button {
+        font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+        font-weight: 500 !important;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .buttons-container {
+        margin-top: 20px;
+      }
+      
+      @media (max-width: 992px) {
+        .buttons-container .save-button; {
+          float: none;
+        }
+
+        .buttons-container .md-button {
+          width: 100%;
+        }
+      }
+
+      .assistant-list-header-title {
+        color: rgba(0,0,0,.87);
+        font-size: 24px !important;
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        font-family: inherit !important;
+        font-weight: 500 !important;
+        line-height: 1.1 !important;
+        font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+      }
+    </style>
+  </head>
+  <body>
+    <c:EEC_Nav_Bar id="navBar" />
+    <div class="assistant-update-list-container container slds">
+      <apex:form styleClass="assistant-form">
+        <div class="main-content" layout-padding="true">
+          <apex:outputpanel rendered="{!errorMessage == null || errorMessage == 'null'}">
+            <c:EEC_AssistantList assistantinterface="{!CtrlInstance}" introtext="Please update below the Assistants you are working with:" iseditible="true" currentaccount="{!account}" />
+          </apex:outputpanel>
+          <apex:outputpanel rendered="{!errorMessage != null || errorMessage != 'null'}">
+            <p class="error">{!errorMessage}</p>
+          </apex:outputpanel>
+        </div>
+        <div class="buttons-container col-xs-12">
+          <div class="col-xs-12 col-md-7">
+            <a style="margin: 6px 0px; text-decoration: none;" class="md-button md-raised md-eec" href="/apex/eec_portalproviderpage">Cancel Current Changes and Go Back to Provider</a>
+          </div>
+
+          <div class="col-xs-12 col-md-3 pull-right">
+            <apex:commandbutton style="margin: 6px 0px; text-decoration: none;" action="{!save}" rendered="{!errorMessage == null || errorMessage == 'null'}" styleclass="save-button md-button md-raised md-eec" value="Save and Submit to EEC" onclick="if(!validateDates()){return false;}" />
+          </div>
+        </div>
+      </apex:form>
+    </div>
+    <c:EEC_Site_Footer id="siteFooter" />
+    <script>
+      var form = j$(".assistant-form").parsley({
+        errorsWrapper: '<div class="parsley-errors-list"></div>',
+        errorTemplate: '<p class="errorMsg"></p>'
+      });
+
+      function validateDates() {
+        var startDateObjs = j$('.start-date-input');
+        var endDateObjs = j$('.end-date-input');
+        j$('.endDateErrorMessage').hide();
+
+        if (typeof startDateObjs != "undefined" && startDateObjs != null && typeof endDateObjs != "undefined" && endDateObjs != null) {
+          if (startDateObjs.length == 1 && endDateObjs.length == 1) {
+            if (!processSingleCardValidation(startDateObjs, endDateObjs)) {
+              return false;
+            }
+          } else {
+            for (i = 0; i < endDateObjs.length; i++) {
+              if (!processSingleCardValidation(startDateObjs[i], endDateObjs[i])) {
+                return false;
+              }
+            }
+          }
+        }
+        return form.validate();
+      }
+
+      function processSingleCardValidation(startDateObj, endDateObj) {
+        var startDate = convertStringToDate(j$(startDateObj).val());
+        var endDate = convertStringToDate(j$(endDateObj).val());
+
+        if (typeof endDate != "undefined" && endDate != '' && typeof startDate != "undefined" && startDate != '' && endDate < startDate) {
+          j$(endDateObj).parent().parent().find('.endDateErrorMessage').show();
+          form.validate();
+          return false;
+        }
+        return true;
+      }
+
+      function convertStringToDate(dateToConvert) {
+        try {
+          var convertedDate, dateValues, dayValue, monthValue, yearValue;
+
+          if (typeof dateToConvert != "undefined" && dateToConvert != '') {
+            // date string is separated by slashes
+            dateValues = dateToConvert.split('/');
+            // length should be 3. If it is not, attempt to generate Date from string.
+            if (dateValues.length == 3){
+              // assume index 1 is always month.
+              monthValue = dateValues[1];
+              // if index 0 is greater than 31, format is YYYY/MM/DD.
+              if (dateValues[0] > 31) {
+                yearValue = dateValues[0];
+                dayValue = dateValues[2];
+                // This particular format seems to work without bugs for four-digit years.
+                concatDate = yearValue + '/' + monthValue + '/' + dayValue;
+              } else if (dateValues[2] > 31){
+                // if index 2 is greater than 31, format is DD/MM/YYYY.
+                yearValue = dateValues[2];
+                dayValue = dateValues[0];
+
+                // This particular format seems to work without bugs for four-digit years.
+                concatDate = yearValue + '/' + monthValue + '/' + dayValue;
+              } else {
+                // if neither value is greater than 31, assume format is DD/MM/YY.
+                yearValue = dateValues[2];
+                dayValue = dateValues[0];
+
+                // This particular format seems to work without bugs for two-digit years.
+                concatDate = monthValue + '/' + dayValue + '/' + yearValue;
+              }
+
+              convertedDate = new Date(concatDate);
+            } else {
+              // generate from string if length is not 3.
+              convertedDate = new Date(dateToConvert);
+            }
+          } else {
+            // generate from string if string does not contain slashes or dashes (or is empty).
+            // sometimes when js detects the date from a string it subtracts 1 day, we have only seen this issue locally, not on production
+            convertedDate = new Date(dateToConvert);
+          }
+        } catch (e) {
+          console.log('Error: ' + e);
+        };
+        return convertedDate;
+      }
+    </script>
+  </body>
+</apex:page>

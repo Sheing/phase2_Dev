@@ -1,0 +1,195 @@
+<apex:page controller="EEC_TransactionWizardController" standardstylesheets="false" showheader="false" sidebar="false">
+  <head>
+    <title>EEC : Transaction - Instruction</title>
+    <c:EEC_Header id="pageHeader" />
+
+    <style>
+      .instruction-container {
+        margin-bottom: 120px;
+        margin-top: 50px;
+      }
+
+      .instruction-button-contianer {
+        margin-top: 50px;
+      }
+
+      .row {
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+
+      .instruction-info-container {
+        margin-top: 10px;
+        margin-left: 50px;
+      }
+
+      .trans-title {
+        margin-top: 45px;
+        margin-bottom: 10px;
+        padding: 5px;
+      }
+
+      .trans-button span {
+        white-space: normal;
+      }
+
+      [id*="InstructionForm"] {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      eec-wizard {
+        margin-top: -35px !important;
+        padding-top: 0 !important;
+      }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .instruction-button-contianer .md-button {
+          width: 100%;
+        }
+
+        md-divider {
+          width: 100% !important;
+        }
+      }
+
+      md-divider {
+        width: 80%;
+        margin-bottom: 20px;
+      }
+
+      h3 {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar"  rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}"/>
+    <div class="instruction-container row" ng-controller="TransactionController as ctrl">
+      <apex:form id="InstructionForm" styleclass="tech-form col-lg-8 col-md-8 col-sm-12">
+        <div class="instruction-info-container column" layout="column" layout-padding="true">
+          <h3 class="md-headline">Instruction</h3>
+          <div style="margin-top: 20px;" class="row col-lg-12">
+            <div class="panel panel-default">
+              <div class="panel-body">
+          <!--      <apex:outputtext value="{!licenseInstructionMessage}" escape="false" /> -->
+                <!-- LEAD-5072 -- Modified by Vrajesh -->
+                <apex:outputtext value="{!licenseTransation.Transaction_Configuration__r.EEC_Licensing_Transaction_Instructions__c}" escape="false"/>
+              <!--   end --Vrajesh sheth -->
+              </div>
+            </div>
+          </div>
+          <!--  !Provider.Provider_Status__c} -- {!LicenseRecordTypeName}-->
+          <div class="col-lg-12">
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Inactivate' || LicenseRecordTypeName=='FCC_Re_Active'}">
+              <label>Current Provider Status: &nbsp;</label>
+              <apex:outputfield value="{!Provider.Provider_Status__c}" /><br /><br />
+            </apex:outputpanel>
+
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Re_Active' || LicenseRecordTypeName=='FCC_Inactivate'|| LicenseRecordTypeName=='Re_issuance_of_License_Cert'|| LicenseRecordTypeName=='Close_Prior_Expiration'}">
+              <label>Reason for Request <span class="required">*</span></label>
+              <apex:inputfield value="{!licenseTransation.Reason_for_Request__c}" styleclass="form-control" html-data-parsley-required="true" />
+            </apex:outputpanel>
+
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='Close_Prior_Expiration' || LicenseRecordTypeName=='FCC_Inactivate'}">
+              <br />
+              <label>Date of Closure <span class="required">*</span></label>
+              <c:noDateLink ><apex:inputfield value="{!licenseTransation.Date_Activity_Ends__c}" styleclass="form-control" html-data-parsley-required="true" html-data-provide="datepicker" style="width: 20%;" /></c:noDateLink>
+            </apex:outputpanel>
+
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Re_Active'}">
+              <c:noDateLink >
+                <br />
+                <label>Date Care Resumes <span class="required">*</span></label>
+                <apex:inputfield value="{!licenseTransation.Date_Care_Resumes__c}" styleclass="form-control" html-data-parsley-required="true" html-data-provide="datepicker" style="width: 20%;" />
+              </c:noDateLink>
+            </apex:outputpanel>
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='Change_of_Provider_Name'}">
+            <br />
+              <label>Current Name: &nbsp;</label>
+              <apex:outputfield value="{!Provider.Name}" />
+            </apex:outputpanel>
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='Change_of_Provider_Name'}">
+             <br />
+              <label>New Name: &nbsp;<span class="required">*</span></label>
+              <apex:inputfield value="{!licenseTransation.New_Name__c}" styleclass="form-control" style="width: 20%;"/>
+            </apex:outputpanel>
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='Change_of_Provider_Name'}">
+              <br />
+              <label>Effective Date  <span class="required">*</span></label>
+              <c:noDateLink ><apex:inputfield value="{!licenseTransation.Date_Activity_Ends__c}" styleclass="form-control" html-data-parsley-required="true" html-data-provide="datepicker" style="width: 20%;" /></c:noDateLink>
+            </apex:outputpanel>
+            
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Downgrade_Capacity' }">
+              <br />
+              <label>Current License Capacity</label>
+              <apex:outputText value="{!licenseTransation.Provider__r.Capacity__c}" styleclass="form-control" style="width: 20%;border: none;padding: 0px;border-radius: 0px;box-shadow: none;" />
+            </apex:outputpanel>
+            
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Downgrade_Capacity' }">
+              <br />
+              <label>License capacity requested  <span class="required">*</span></label>
+              <apex:selectList style="width:50%" styleClass="form-control" value="{!licenseTransation.License_Requested__c}" html-data-parsley-required="true" size="1" multiselect="false" >
+                   <apex:selectoptions value="{!listLicenseRequested}">                                     
+                   </apex:selectoptions>
+               </apex:selectList>
+               
+            </apex:outputpanel>
+            
+            <apex:outputpanel rendered="{!LicenseRecordTypeName=='FCC_Re_Active' || LicenseRecordTypeName == 'Change_of_Provider_Name' || LicenseRecordTypeName=='FCC_Inactivate'|| LicenseRecordTypeName=='Re_issuance_of_License_Cert'|| LicenseRecordTypeName=='Close_Prior_Expiration'}">
+              <br />
+              <label style="width: 100%;">Transaction Special Requests / Comments</label>
+              <small style="color: #9e9e9e;">If you have any special requests or comments associated with this transaction, please list below</small>
+              <apex:inputfield value="{!licenseTransation.Transaction_Special_Requests_Comments__c}" styleclass="form-control" />
+            </apex:outputpanel>
+          </div><br />
+
+          <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink action="{!cancelInstruction}" value="Cancel {!formattedLicenseRecordTypeLabel}" html-flex-order-sm="2" html-flex-order-md="2" html-md-button="true" styleclass="md-raised" rendered="{!(LicenseRecordTypeName =='FCC_New_License' || LicenseRecordTypeName =='FCC_License_Upgrade' || LicenseRecordTypeName =='Change_of_Address'  || LicenseRecordTypeName =='FCC_Renewal' || LicenseRecordTypeName =='FCC_Change_Room_Floor_Level' || LicenseRecordTypeName =='FCC_Change_of_Household')}" />
+            <apex:commandlink onclick="if(!form.validate()){return false;}" action="{!nextInstruction}" value="Next" html-flex-order-sm="1" html-flex-order-md="1" rendered="{!!(LicenseRecordTypeName=='FCC_Re_Active' || LicenseRecordTypeName=='FCC_Inactivate'|| LicenseRecordTypeName=='Re_issuance_of_License_Cert' || LicenseRecordTypeName =='Change_of_Provider_Name'|| LicenseRecordTypeName=='Close_Prior_Expiration' || LicenseRecordTypeName=='FCC_Downgrade_Capacity')}" html-md-button="true" styleclass="md-raised md-eec" />
+          </md-content>
+          <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+            <apex:commandlink action="{!CancelTransaction}" onclick="return confirm('Are you sure to cancel the transaction?');"  immediate="true" value="Cancel {!formattedLicenseRecordTypeLabel}" html-flex-order-sm="3" html-flex-order-md="3" html-md-button="true" styleclass="md-raised" rendered="{!LicenseRecordTypeName=='FCC_Re_Active' || LicenseRecordTypeName=='FCC_Inactivate'|| LicenseRecordTypeName=='Re_issuance_of_License_Cert'||LicenseRecordTypeName =='Change_of_Provider_Name'|| LicenseRecordTypeName=='Close_Prior_Expiration' || LicenseRecordTypeName =='FCC_Downgrade_Capacity'}" />
+            <apex:commandlink onclick="if(!form.validate()){return false;}" action="{!submitInstruction}" value="Submit" html-flex-order-sm="1" html-flex-order-md="1" rendered="{!(LicenseRecordTypeName=='FCC_Re_Active' || LicenseRecordTypeName=='FCC_Inactivate'|| LicenseRecordTypeName=='Re_issuance_of_License_Cert'||LicenseRecordTypeName =='Change_of_Provider_Name'|| LicenseRecordTypeName=='Close_Prior_Expiration' || LicenseRecordTypeName=='FCC_Downgrade_Capacity') && (loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess')}" html-md-button="true" styleclass="md-raised md-eec" />
+            <apex:commandlink onclick="if(!form.validate()){return false;}" action="{!submitInstruction}" value="Save" html-flex-order-sm="1" html-flex-order-md="1" rendered="{!(LicenseRecordTypeName=='FCC_Re_Active' || LicenseRecordTypeName=='FCC_Inactivate'|| LicenseRecordTypeName=='Re_issuance_of_License_Cert'||LicenseRecordTypeName =='Change_of_Provider_Name'|| LicenseRecordTypeName=='Close_Prior_Expiration' || LicenseRecordTypeName=='FCC_Downgrade_Capacity') && (loggedUser.UserType != 'PowerPartner' && loggedUser.UserType != 'PowerCustomerSuccess' && loggedUser.UserType != 'CspLitePortal' && loggedUser.UserType != 'CustomerSuccess')}" html-md-button="true" styleclass="md-raised md-eec" />
+          </md-content>
+        </div>
+        <apex:actionFunction action="{!nextInstruction}" name="SaveNext"/>
+      </apex:form>
+
+      <eec-wizard btn-progress-color="#fff" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" hide="true" show-gt-md="true">
+        <c:EEC_Navigation rendered="{!if(LicenseRecordTypeName == 'Change_of_Provider_Name' || LicenseRecordTypeName == 'Close_Prior_Expiration' ||
+        LicenseRecordTypeName == 'FCC_Inactivate' || LicenseRecordTypeName == 'FCC_Re_Active' || LicenseRecordTypeName == 'Re_issuance_of_License_Cert' || LicenseRecordTypeName =='FCC_Downgrade_Capacity', false, true)}" current="Instruction"
+                                                 recordTypeDeveloperName="{!LicenseRecordTypeName}"
+                                                 providerRecordType="{!providerRecordType}"> 
+        </c:EEC_Navigation>
+      </eec-wizard>
+    </div>
+
+    <c:EEC_Site_Footer id="siteFooter" />
+    <script>
+      var form = j$(".tech-form").parsley({
+          errorsWrapper: '<div class="parsley-errors-list"></div>',
+          errorTemplate: '<p class="errorMsg"></p>'
+      });
+      app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", 'Instruction'); 
+        console.log(tranCtrl.wizardElements);
+      }]);
+      
+      function doNavigate(previousPage, nextPage){
+            if(nextPage != ''){
+                if(!form.validate()){
+                    return false;
+                }
+                else{
+                    SaveNext();
+                }
+            }
+        }
+    </script>
+  </body>
+</apex:page>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>HistoricalDocumentStaging</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>HistoricalDocumentStaging</value>
+    </caseValues>
+    <fields>
+        <label><!-- DocumentDate --></label>
+        <name>DocumentDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- ErrorMessage --></label>
+        <name>ErrorMessage__c</name>
+    </fields>
+    <fields>
+        <label><!-- FileName --></label>
+        <name>FileName__c</name>
+    </fields>
+    <fields>
+        <label><!-- IntakeId --></label>
+        <name>IntakeId__c</name>
+    </fields>
+    <fields>
+        <label><!-- InteractionId --></label>
+        <name>InteractionId__c</name>
+    </fields>
+    <fields>
+        <label><!-- MetaDataFileName --></label>
+        <name>MetaDataFileName__c</name>
+    </fields>
+    <fields>
+        <label><!-- ProgramId --></label>
+        <name>ProgramId__c</name>
+    </fields>
+    <fields>
+        <label><!-- isProcessed --></label>
+        <name>isProcessed__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

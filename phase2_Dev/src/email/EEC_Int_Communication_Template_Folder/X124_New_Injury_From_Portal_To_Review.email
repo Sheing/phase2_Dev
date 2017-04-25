@@ -1,0 +1,7 @@
+Hello,
+
+A new self-reported injury associated to Provider {!Case.Account} has been submitted from the Provider portal and is ready for your review. 
+
+Please login to Salesforce and review the transaction: {!Case.Link}
+
+LEAD System

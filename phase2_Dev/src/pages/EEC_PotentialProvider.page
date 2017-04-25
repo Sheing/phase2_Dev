@@ -1,0 +1,466 @@
+<apex:page standardController="Lead" extensions="EEC_PotentialProviderController" showHeader="false" sidebar="false">
+	<html lang="en" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	  	<head>
+	  		<title>Potential Provider</title>
+	  		 <c:EEC_Header id="pageHeader" />
+
+	  		<style>
+	        	html {
+			        font: 100%/1.5 "Salesforce Sans", Arial, sans-serif !important;
+			        background: white !important;
+			        color: #16325c !important;
+			        -webkit-tap-highlight-color: transparent !important;
+			      }
+	
+	      		body {
+			        font-size: 0.875rem !important;
+			        font-family: "Salesforce Sans", Arial, sans-serif !important;
+			        background: transparent !important;
+			      }
+	
+		      .loading-status {
+		        line-height: 32px;
+		      }
+	
+		        .loading-status:before {
+		          content: " ";
+		          width: 30px;
+		          height: 60px;
+		          float: left;
+		          display: block;
+		          position: relative;
+		          background: url("{!URLFOR($Resource.SLDS0120, 'assets/images/spinners/slds_spinner_brand.gif')}") top center no-repeat;
+		          background-size: 100%;
+		        }
+		
+			      @font-face {
+			        font-family: "Salesforce Sans";
+			        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff')}") format("woff");
+			        font-weight: 300;
+			      }
+			
+			      @font-face {
+			        font-family: "Salesforce Sans";
+			        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff')}") format("woff");
+			        font-style: italic;
+			        font-weight: 300;
+			      }
+			
+			      @font-face {
+			        font-family: "Salesforce Sans";
+			        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff')}") format("woff");
+			        font-weight: 400;
+			      }
+			
+			      @font-face {
+			        font-family: "Salesforce Sans";
+			        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff')}") format("woff");
+			        font-style: italic;
+			        font-weight: 400;
+			      }
+			
+			      @font-face {
+			        font-family: "Salesforce Sans";
+			        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff')}") format("woff");
+			        font-weight: 700;
+			      }
+			
+			      @font-face {
+			        font-family: "Salesforce Sans";
+			        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff')}") format("woff");
+			        font-style: italic;
+			        font-weight: 700;
+			      }
+			
+			      .slds-container {
+			        padding-bottom: 30px;
+			        margin-left: 20px;
+			        margin-right: 10px;
+			        margin-top: 10px;
+			      }
+			
+			      .button-container {
+			        margin-top: 21px;
+			        padding-left: 5px;
+			      }
+			      
+			      .bPageBlock .requiredInput .requiredBlock {
+			        background-color: #c00;
+			        position: absolute;
+			        left: -4px;
+			        width: 3px;
+			        top: 1px;
+			        bottom: 1px;
+			        top: 20px;
+			        display: none;
+			      }  
+			
+		        	.requiredInput2 {
+		              margin-left: 0px;
+		            }
+	            
+	            	.requiredInput1 {
+	              	margin-left: 0px;
+	            	}
+	            
+		        .requiredInput, md-input-container span {
+		        -webkit-flex: 1 1 auto;
+		        -ms-flex: 1 1 auto;
+		        flex: 1 1 auto;
+		        -webkit-order: 2;
+		        -ms-flex-order: 2;
+		        order: 2;
+		        display: block;
+		        background: 0 0;
+		        padding: 2px 2px 1px;
+		        border-width: 0 0 1px;
+		        line-height: 26px;
+		        -ms-flex-preferred-size: 26px;
+		        border-radius: 0; 
+		      }
+		      
+		      .sr-item-row {
+		        cursor: pointer;
+		        padding: 10px;
+		      }
+		
+		        .sr-item-row:hover {
+		          background: rgba(225,225,225,0.8);
+		          cursor: pointer;
+		        }
+		
+		      .top-level-label {
+		        font-weight: 600;
+		        margin-right: 3px;
+		        line-height: 20px;
+		        color: rgba(0,0,0,0.54);
+		      }
+		        
+		      .inner-label {
+		        color: black;
+		        font-weight: normal;
+		        line-height: initial;
+		        white-space: nowrap;
+		      }
+		      
+		      
+		      
+		      
+		      .bPageBlock .requiredInput .requiredBlock {
+		        background-color: #c00;
+		        position: absolute;
+		        left: -4px;
+		        width: 3px;
+		        top: 1px;
+		        bottom: 1px;
+		        top: 20px;
+		        display: none;
+		      }  
+		        
+		      .parsley-errors-list {
+		        padding-left:75px;
+		        width:50%;
+		      }
+		        
+		      .parsley-error {
+		        border: 2px solid #c00;
+		      }
+		      .my_error_container{
+		        position:absolute;
+		        bottom: 90px; 
+		        width:50%;
+		      }  
+		        
+		      .errorMsg {
+		        color: #d74c3b; 
+		      }
+		        
+		      .message[class*='error'] {
+		        background-color: #eee;
+		        padding: 0 20px 10px;
+		        margin-bottom: 25px;
+		        border-radius: 3px;
+		        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+		        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+		        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+		      }
+		        
+		      .message[class*='error'] .messageTable {
+		        width: 100%;
+		      }
+		        
+		      .message[class*='error'] .messageText {
+		        border-bottom: 1px solid grey;
+		        height: 30px; 
+		      }  
+		      .transprovider-info-container {
+		        margin-bottom: 120px; 
+		      }
+		        
+		      md-input-container {
+		        padding-top: 15px; 
+		      }
+		      .md-title, .md-toolbar-tools {
+		            margin-bottom: 15px;
+		      }  
+		  
+		      md-input-container .input-label {
+		        /*top: -50px;*/
+		      }
+		        
+		      md-input-container .input-label-date-picklist {
+		        top: -25px;
+		      }
+		        
+		      .base-info {
+		        margin-top: 10px; 
+		      }
+		      .input-label{
+		        color: rgba(0,0,0,0.54);  
+		      }  
+		        
+		      .base-info md-content {
+		        margin-bottom: 20px; 
+		      }
+		        
+		      .provider-checkbox {
+		        margin-top: -25px;
+		        margin-left: -5px; 
+		        overflow: visible;
+		      }
+		      .radio-group .parsley-errors-list {
+		            margin-top: 20px;
+		            margin-left: -50px;
+		            position: absolute;
+		            width:50%;
+		       }
+		       .radio-group .parsley-error {
+		            border: 0px; 
+		       }
+		        
+		      .new-address-live-at-address {
+		        margin-top: 29px;
+		      }
+		      md-input-container:not(.md-input-invalid).md-input-has-value label{
+		          transform: translate3d(0,6px,0) scale(1);
+		      }
+		      
+		        
+		      /* @see Angular Material - Input */
+		      .requiredInput, md-input-container span {
+		        -webkit-flex: 1 1 auto;
+		        -ms-flex: 1 1 auto;
+		        flex: 1 1 auto;
+		        -webkit-order: 2;
+		        -ms-flex-order: 2;
+		        order: 2;
+		        display: block;
+		        background: 0 0;
+		        padding: 2px 2px 1px;
+		        border-width: 0 0 1px;
+		        line-height: 26px;
+		        -ms-flex-preferred-size: 26px;
+		        border-radius: 0; 
+		      }
+		       .requiredInput2 {
+		              margin-left: 0px;
+		            }
+		      .other-checkbox {
+		         padding-top: 20px;
+		      }
+		      input[type="radio"], input[type="checkbox"] {
+		              margin: 4px 7px 0;
+		      } 
+		      .radio-group label{
+		        font-weight : normal;  
+		      }
+		        
+		      .commandBtn {
+		        -webkit-appearance: none;
+		        border: none;
+		        box-shadow: none;
+		        background: none;
+		        text-transform: uppercase;
+		        font-weight: 500;
+		        font-size: 14px;
+		        font-style: inherit;
+		        font-variant: inherit;
+		        font-family: inherit;
+		        outline: none;
+		        letter-spacing: .01em;
+		        margin: 3px 0px;
+		        white-space: normal;
+		      }
+		      input[type="text"] {
+		        width: 70%;
+		        margin-bottom : 10px;
+		        border-bottom-left-radius: 4px;
+		        border-bottom-right-radius: 4px;
+		      }
+		      textarea.form-control {
+		        width: 70%;
+		        margin-bottom : 15px;
+		        border-bottom-left-radius: 4px;
+		        border-bottom-right-radius: 4px;
+		      }  
+		        
+		      .navigation-buttons .md-button label {
+		        white-space: normal;
+		      }
+		        
+		      .base-label {
+		        color: rgba(0,0,0,0.54); 
+		      }
+		      .md-input-has-value{
+		        
+		      }  
+		        
+		      md-input-container input, md-input-container .md-input {
+		        max-width: 200px; 
+		      }
+		      p{
+		          display: inline-block;
+		          max-width: 100%;
+		          margin-bottom: 5px;
+		          font-weight: bold;  
+		      }
+		        
+		      .readonly-input {
+		        border-bottom: none;
+		        cursor: not-allowed; 
+		      }
+		      .read-only-input{
+		        cursor: not-allowed; 
+		        background : rgba(0,0,0,0.54);
+		      }  
+		      
+		      /* TODO: Remove this and use md-select with new Validation. */
+		      select {
+		        background: none;
+		        border: none;
+		        border-bottom: 1px solid #ddd; 
+		      }
+		        
+		      .errorMsg {
+		        color: red; 
+		      }
+		      .requiredInput1 {
+		              margin-left: 0px;
+		            }
+		        
+		      .city-outputfield {
+		        outline: none;
+		        text-decoration: none;
+		      }
+		        
+		      .top-level-label {
+		          font-weight: 600;
+		          margin-right: 5px;
+		          line-height: 20px; 
+		          color: rgba(0,0,0,0.54);
+		       }
+		          
+		          
+		          
+		      @media only screen and (min-width: 0px) and (max-width: 959px) {
+		        .navigation-buttons .md-button {
+		          width: 100%;
+		        }
+		        
+		        .navigation-buttons md-content {
+		          width: 100%;
+		        }
+		        
+		        md-input-container input {
+		          max-width: none;
+		        }
+		      }
+		      .base-info{
+		        margin-bottom : 20px;  
+		      }
+		      
+		      /*New Style*/
+		      .transaction-info-row {
+		            margin-left: 0px; 
+		          }
+		      .reasonErrorMessage{
+		            display : none;
+		          }
+		      .visible{
+		            display : block;
+		         }
+		         .parsley-errors-list {        
+			        width:100%;
+			      }
+			      
+			      .requiredinput .parsley-errors-list {
+			        margin-top: 0px;
+			        margin-left: 0px;
+			        position: relative;
+			        width: 100%;
+			      }
+			        
+			      .parsley-error {
+			        border: 2px solid #c00;
+			      } 
+			      .my_error_container{
+			        position:absolute;
+			        bottom: 90px; 
+			        width:50%;
+			      }  
+			        
+			      .errorMsg {
+			        color: #d74c3b; 
+			      }
+			        
+			      .message[class*='error'] {
+			        background-color: #eee;
+			        padding: 0 20px 10px;
+			        margin-bottom: 25px;
+			        border-radius: 3px;
+			        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+			        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+			        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+			      }
+			        
+			      .message[class*='error'] .messageTable {
+			        width: 100%;
+			      }
+			        
+			      .message[class*='error'] .messageText {
+			        border-bottom: 1px solid grey;
+			        height: 30px; 
+			      }  
+	    	</style>
+	  	</head>
+	  	<body>
+	  		<apex:form id="PotentialProviderForm" styleclass="transaction-parsley-form">
+	  		<apex:pageBlock title="Potential Provider" mode="view">
+	  			<apex:PageBlockSection title="Contact Information" columns="2">
+	  				<apex:outputPanel >
+	  					<label for="firstname">First Name:</label>&nbsp;
+	  					<apex:inputtext html-data-parsley-required="true" id="firstname" value="{!contactFirstName}"/>
+	  				</apex:outputPanel>
+	  				<apex:outputPanel >
+	  					<label for="lastname">Last Name:</label>&nbsp;
+	  					<apex:inputtext html-data-parsley-required="true" id="lastname" value="{!contactLastName}"/>
+	  				</apex:outputPanel>
+	  			</apex:PageBlockSection>
+	  			<apex:pageBlockButtons >
+	  				<apex:commandLink styleClass="btn" style="text-decoration: none;" onclick="if(!form.validate()){return false;}" action="{!doSave}" value="Save" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">
+     				</apex:commandLink>
+					<apex:commandLink styleClass="btn" style="text-decoration: none;" immediate="true" action="{!doCancel}" value="Back" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">     
+			        </apex:commandLink> 
+	  			</apex:pageBlockButtons>
+	  		</apex:pageBlock>
+	  		</apex:form>
+	  		<script>
+	  		var form = j$(".transaction-parsley-form").parsley({
+	            errorsWrapper: '<div class="parsley-errors-list"></div>',
+	            errorTemplate: '<p class="errorMsg"></p>'    
+	        });	        
+	  	</script>
+	  	</body>
+	  	
+  	</html>
+</apex:page>

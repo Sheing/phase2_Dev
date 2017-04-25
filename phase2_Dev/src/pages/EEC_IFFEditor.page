@@ -1,0 +1,11 @@
+<apex:page showheader="false" standardstylesheets="false" sidebar="false">
+    <head>
+        <title>EEC : Portal Provider Page</title>
+        <c:EEC_Header id="pageHeader" />
+    </head>
+	<body>
+    	<c:EEC_Nav_Bar id="navBar" />    
+        	<apex:include pageName="iffEditorPage"/>
+		<c:EEC_Site_Footer id="siteFooter" />
+  </body>
+</apex:page>

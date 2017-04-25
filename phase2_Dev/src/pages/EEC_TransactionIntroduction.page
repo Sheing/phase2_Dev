@@ -1,0 +1,247 @@
+<apex:page controller="EEC_TransactionWizardController" standardStylesheets="false" showheader="false" sidebar="false">
+  <head>
+    <title>EEC : Transaction - Introduction</title>
+    <c:EEC_Header id="pageHeader" />
+      
+    <style>
+      [id*='IntroductionForm'] {
+        margin-bottom: 120px;  
+      }
+        
+      .trans-title {
+        margin-top: 45px;
+        margin-bottom: 10px;
+        padding: 5px;
+      }
+      p{
+        font-weight : normal;
+        font-size : 16px;
+      }
+      label{
+        font-weight : normal;  
+      }  
+      
+      .trans-button span {
+        white-space: normal;
+      }
+        div.featured-box {
+            background: rgba(0, 0, 0, 0.01) none repeat scroll 0 0;
+            border-radius: 6px;
+            padding: 23px;
+            text-align: center;
+            transition: all 0.2s ease 0s;
+            margin-bottom:20px;
+        }
+        div.featured-box i.fa {
+            background-color: #a94545;
+            border-radius: 50%;
+            color: #fff;
+            display: inline-block;
+            font-size: 40px;
+            height: 100px;
+            line-height: 100px;
+            margin: 20px 0;
+            padding: 0;
+            position: relative;
+            text-align: center;
+            width: 100px;
+        }
+        i.fa {
+            text-decoration: none !important;
+        }
+        .cancel-btn{
+            margin-bottom: 30px;
+            margin-left: 15px;
+            margin-top: -10px;
+        }
+        .not-visible{
+            display : none;
+        }
+        .card-holder{
+            margin-top : -20px
+        }
+        .md-display-1 {
+            font-size: 24px;
+        }
+        .panel{
+            margin-left: 20px;
+            margin-right: 20px;
+            font-size: 17px;
+            font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif;
+        }
+    </style>
+  </head>
+    
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar" rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}" />  
+     
+    <apex:form id="IntroductionForm">
+      <apex:actionFunction action="{!callTransaction}" name="callTransaction">
+        <apex:param name="buttonLabel" value=""/>   
+      </apex:actionFunction>  
+        
+      <apex:outputPanel layout="block" rendered="true">
+        <div class="trans-title">
+          <h3 class="md-display-1">
+              <div class="panel panel-default">
+                    <div class="panel-body">
+                        <apex:outputtext value="{!leadConfiguration.Portal_Transaction_Introduction__c}" escape="false"/>
+                  </div>
+              </div>
+          </h3>
+        </div>
+        <div layout="row" layout-align="center center">
+        <div class="trans-button-container ng-cloak" flex="90" layout-margin="true" layout-padding="true" layout-align="center center">
+          <div class="row cancel-btn">
+              <apex:commandLink action="{!cancelInstruction}"  oncomplete="closeWindow();" styleClass="md-button md-raised md-eec pull-right">Cancel</apex:commandLink>
+          </div>
+          <div class="card-holder">
+          <apex:repeat id="ButtonList" value="{!buttonList}" var="bl">
+            <div class="col-md-4 {!IF(bl == 'Cancel','not-visible','')}" style="height: 287px; margin-bottom: 10px;margin-top: 25px;">
+                <div class="featured-box noborder" style="height: 310px;">  
+                <apex:commandLink action="{!callTransaction}" styleClass="trans-button md-raised {!IF(bl != 'Cancel', 'md-eec', '')}" >
+                    <apex:param name="buttonLabel" value="{!bl}"/> 
+                    <i class="fa fa-file-text-o"></i>
+                    <h4>{!bl} {!IF(bl == 'Apply for an License Upgrade' , ' for eight or ten children ', ' ')}</h4>
+                </apex:commandLink>    
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a new license (Instructions page will inform you
+                                                                about all items that EEC must receive in order to process 
+                                                                your application).</p>"
+                                          rendered="{!bl == 'New Application' && !isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a new certificate (Instructions page will 
+                                                                inform you about all items that EEC must receive in order 
+                                                                to process your application).</p>"
+                                          rendered="{!bl == 'New Application' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a certificate renewal (Instructions page will 
+                                                                inform you about all items that EEC must receive in 
+                                                                order to process your application).</p>"
+                                          rendered="{!bl == 'Apply for Renewal' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a license renewal (Instructions page will 
+                                                                inform you about all items that EEC must receive in 
+                                                                order to process your application).</p>"
+                                          rendered="{!bl == 'Apply for Renewal' && !isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a renewal as an FCC Assistant - you will not 
+                                                                be able to care for children at your home but continue your
+                                                                activity as an Assistant for another licensed Provider 
+                                                                (Instructions page will inform you about all items that 
+                                                                EEC must receive in order to process your application).</p>"
+                                          rendered="{!bl == 'Apply for Renewal as an Assistant'}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply to become a Family Child Care Provider. 
+                                                                You can not start to care for children at your address 
+                                                                before receiving your new license from EEC 
+                                                                (Instructions page will inform you about all items 
+                                                                that EEC must receive in order to process your application).</p>"
+                                          rendered="{!bl == 'Apply to be licensed as FCC Provider'}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a license upgrade for eight or ten children - Please see regulation <a href='/EEC_PortalRegulationView?id=a08j0000002oqb7' target='_blank'>7.09(15)(b)(2)</a> and 
+                                                                <a href='/EEC_PortalRegulationView?id=a08j0000002oqb4' target='_blank'>7.09(15)(b)(3)</a> 
+                                                                regarding qualifications to upgrade your license prior to beginning this application. </p>"
+                                          rendered="{!bl == 'Apply for an Upgrade' && !isFccAssistant}"></apex:outputLabel></h4>
+                     <h4><apex:outputLabel escape="false" value="<p>Apply for a change of your license capacity (from 10 to 8 or 6, or from 8 to 6). </p>"
+                                          rendered="{!bl == 'Apply for a Decrease of Licensed Capacity' && !isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply to become a Certified Assistant or increase your capacity to 8 or 10 
+                                                                children (Instructions page will inform you about all items that 
+                                                                EEC must receive in order to process your application). </p>"
+                                          rendered="{!bl == 'Apply for an Upgrade' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Apply for a change of address (Once you move, you may not 
+                                                                reopen your program until the EEC licensor has visited your 
+                                                                new address).</p>"
+                                          rendered="{!bl == 'Apply for a Change of Address'}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Change my licensed space (Add or delete an area approved 
+                                                                for family child care. This could impact your licensed capacity).</p>"
+                                          rendered="{!bl == 'Notify EEC - Change of Room usage'}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Add or remove a household member or someone regularly on the licensed premises.</p>"
+                                          rendered="{!bl == 'Notify EEC - Change of Household Members / Individuals Regularly on the Premises'}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Request a re-issuance of your license certificate (Replace a lost or damaged document).</p>"
+                                          rendered="{!bl == 'Request Re-Issuance of License / Certificate' && !isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Request a re-issuance of your certificate (Replace a lost or damaged document)</p>"
+                                          rendered="{!bl == 'Request Re-Issuance of License / Certificate' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Request to re-activate my license (This is only necessary if your 
+                                                                license is in inactive status. You may not resume care until you 
+                                                                receive your license back from EEC).</p>"
+                                          rendered="{!bl == 'Re-Activate License / Certificate' && !isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Request to re-activate my certificate (This is only necessary if your 
+                                                                certificate is in inactive status. You may not resume care until you 
+                                                                receive your license back from EEC).</p>"
+                                          rendered="{!bl == 'Re-Activate License / Certificate' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Make my license inactive (You may only do so if you are not caring for children).</p>"
+                                          rendered="{!bl == 'De-Activate License / Certificate' && !isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Make my certificate inactive (You may only do so if you are not caring for children).</p>"
+                                          rendered="{!bl == 'De-Activate License / Certificate' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Request to close my EEC license (This action will permanently 
+                                                                close your licensing file. 
+                                                                You may only do so if you are not caring for children).</p>"
+                                          rendered="{!bl == 'Close Prior To Expiration' && !isFccAssistant}"></apex:outputLabel></h4>
+                     <h4><apex:outputLabel escape="false" value="<p>Request to close my EEC certificate (This action will permanently 
+                                                                close your certificate file. 
+                                                                You may only do so if you are not caring for children).</p>"
+                                          rendered="{!bl == 'Close Prior To Expiration' && isFccAssistant}"></apex:outputLabel></h4>
+                    <h4><apex:outputLabel escape="false" value="<p>Request variance on one or multiple regulations. 
+                    You will need to submit clear evidence that your variance proposal meets the spirit and intent of EEC regulations.</p>"
+                                          rendered="{!bl == 'Request a Variance on Regulations' && !isFccAssistant}"></apex:outputLabel></h4>
+                                          
+                    <h4><apex:outputLabel escape="false" value="<h4>{!bl}</h4>" rendered="{!bl == 'Cancel'}"></apex:outputLabel></h4>
+                </div>
+              </div>
+          </apex:repeat>
+              <apex:repeat value="{!gsaRecordTypeMap}" var="bl">
+                <div class="col-md-4 {!IF(bl == 'Cancel','not-visible','')}" style="height: 287px; margin-bottom: 10px;margin-top: 25px;">
+                    <div class="featured-box noborder" style="height: 310px;">  
+                        <apex:commandLink action="{!callTransaction}" styleClass="trans-button md-raised" >
+                            <apex:param name="buttonLabel" value="{!bl}"/> 
+                            <i class="fa fa-file-text-o"></i>
+                            <h4>{!bl}</h4> 
+                        </apex:commandLink>
+                        <h4><apex:outputLabel escape="false" value="<p>Apply for a new provisional license (Instructions page will inform you about all items that EEC must receive in order to process your application).</p>"
+                                          rendered="{!bl == 'New Application (Provisional)'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Apply to renew your Provisional License and obtain a new regular license (Instructions page will inform you about all items that EEC must receive in order to process your application)..</p>"
+                                          rendered="{!bl == 'New Application (Regular)'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Apply for a license renewal (Instructions page will inform you about all items that EEC must receive in order to process your application).</p>"
+                                          rendered="{!bl == 'Apply for Renewal (without move)'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Apply for a change in licensed capacity or grouping (Instructions page will inform you about all items that EEC must receive in order to process your application).</p>"
+                                          rendered="{!bl == 'Apply for a License Change (excluding Move)'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Apply to move your Program (if your move happens during renewal period, use this transaction to apply for renewal).</p>"
+                                          rendered="{!bl == 'Apply for a Move or License Renewal with Move'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Request a re-issuance of your license certificate (Replace a lost or damaged document).</p>"
+                                          rendered="{!bl == 'Request Re-issuance of License or Certificate'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Request to close my EEC license (This action will permanently closed your licensing file. You may only do so if you are not caring for children).</p>"
+                                          rendered="{!bl == 'Close Prior To Expiration'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Request to change the name of your Program (This request will re-issue a license with the new name).</p>"
+                                          rendered="{!bl == 'Report a Change in Program Name'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Report a change in Ownership, Administrative Designee, Directors, Administrative Authority.</p>"
+                                          rendered="{!bl == 'Report a Change in Ownership or Designation of Administrative Authority'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<p>Report a change in Ownership, Administrative Designee, Directors, Administrative Authority, or, if applicable, a change in the Advanced degree person for treatment planning or in the restraint coordinator.</p>"
+                                          rendered="{!bl == 'Report a Change in Ownership or Administrative Designee'}"></apex:outputLabel></h4>
+                        <h4><apex:outputLabel escape="false" value="<h4>{!bl}</h4>" rendered="{!bl == 'Cancel'}"></apex:outputLabel></h4>
+                    </div>
+                  </div>
+              </apex:repeat>
+          </div>    
+         </div>
+        </div>
+      </apex:outputPanel>
+    </apex:form>
+
+    <c:EEC_Site_Footer id="siteFooter" /> 
+      
+    <script>
+    
+     function closeWindow(){
+     	this.close();
+     }
+    
+     app.controller('TransactionController', ['$scope', '$location', function($scope, $location) {
+       // Instance of controller.
+       var tranCtrl = this;
+       // Controller level variables.
+       
+       // Function to convert the unix date to a usable format.
+       tranCtrl.convertDateToString = function(dateStr) {
+         var d = new Date(dateStr);
+         // Format the date in English standard. Increment the month by one due to Date returning 0-11.  
+         var formattedDate = d.getUTCDate() + '/' + (d.getUTCMonth() + 1) + '/' + d.getUTCFullYear(); 
+         return formattedDate;
+       }
+     }]);
+    </script>
+  </body>  
+</apex:page>

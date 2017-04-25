@@ -1,0 +1,92 @@
+<apex:component >  
+    /*
+        Due to how the file upload was implemented (inside of angular); these questions must have a parent element that is an angular controller
+    */
+    <apex:attribute name="transaction" description="The transaction the question is associated to." required="true" type="Licensing_Transaction__c" />
+    <apex:attribute name="question" description="The upload question to display" type="EEC_Question" required="true" />
+    <apex:attribute name="transactionAttachmentsMap" description="Map of attachements" required="true" type="Map" />
+    <apex:attribute name="transactionAttachmentsUrlMap" description="Map of attachement URLs" required="true" type="Map" />
+    <apex:attribute name="renderExistingAttachement" description="Does an existing attachment exist" required="true" type="Boolean"/>
+    <apex:attribute name="policiesAction" description="" required="true" type="String" />
+
+    <apex:outputpanel styleclass="ques-panel" layout="block">
+        <apex:outputpanel styleclass="question-panel-spacing" layout="block">
+            <apex:outputlabel styleclass="top-level-label required" value="{! question['question'] }" />
+            <apex:outputPanel styleclass="required">*</apex:outputPanel>
+            <apex:actionregion >
+                <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+
+                    <apex:selectradio value="{! transaction[question['tookTrainingField']] }" styleclass="radio-container">
+                        <apex:actionsupport event="onchange" rerender="dateArea, uploadSection, script-existing-items, fileErrorContainer" oncomplete="uploadVisibility(1)" />
+                        <apex:selectoption itemvalue="Yes" itemlabel="Yes" html-data-parsley-required="true"></apex:selectoption>
+                        <apex:selectoption itemvalue="No" itemlabel="No" html-data-parsley-required="true"></apex:selectoption>
+                    </apex:selectradio>
+                    <p class="errorMessage">This field is required.</p>
+                </div>
+            </apex:actionregion>
+        </apex:outputpanel>
+    </apex:outputpanel>
+
+    <apex:outputpanel id="dateArea" styleclass="desc-panel" layout="block">
+        <apex:outputpanel styleclass="question-panel-spacing" layout="block" rendered="{! transaction[question['tookTrainingField']] == 'Yes' }">
+            <apex:inputhidden html-class="{! question['certField']  }" value="{! transaction[question['certField']] }" />
+
+            <apex:outputlabel styleclass="top-level-label required" value="Date" />
+            <apex:outputpanel styleclass="required">*</apex:outputpanel>
+
+            <c:noDateLink >
+                <apex:inputfield onchange="jQuery('').val(true);" styleclass="form-control" value="{! transaction[question['dateTakenField']] }" html-data-parsley-required="true" html-data-provide="datepicker" />
+            </c:noDateLink>
+
+            <p class="errorMessage dateErrorMessage">This field is required.</p>
+        </apex:outputpanel>
+    </apex:outputpanel>
+
+    <div class="attachments-container" layout-fill="true">
+        <apex:outputpanel id="uploadSection" styleclass="{! question['styleClass'] }">
+            <apex:outputpanel rendered="{! transaction[question['dateTakenField']] == 'Yes'}">
+                <apex:outputpanel >
+                    <apex:outputpanel rendered="{! renderExistingAttachement }">
+                        <label class="top-level-label">Current File:</label>
+                        <div class="attachment-item">
+                            <p>
+                                <a target="_blank" href="{! transactionAttachmentsUrlMap[transactionAttachmentsMap[question['transactionFileMapField']]['FileMap_Id']]}">
+                                    {!transactionAttachmentsMap[question['transactionFileMapField']]['Filename__c']}
+                                </a>
+                            </p>
+
+                            <p>{!transactionAttachmentsMap[question['transactionFileMapField']]['Content_Type__c']}</p>
+
+                            <p>
+                                <apex:commandlink action="{!deleteAttachment}" value="" immediate="true" rerender="uploadSection, script-existing-items" style="color: #000;">
+                                    <apex:param name="attachmentName" assignTo="{!fileToDelete}" value="{!transactionAttachmentsMap[question['transactionFileMapField']]['Filename__c']}" />
+                                    <apex:param name="transCertCheckboxFieldname" assignto="{!transCertCheckboxFieldname}" value="{! question['certField]'] }" />
+                                    <i class="material-icons">&#xE872;</i>
+                                </apex:commandlink>
+                            </p>
+                        </div>
+                    </apex:outputpanel>
+                </apex:outputpanel>
+            </apex:outputpanel>
+        </apex:outputpanel>
+
+        <s3-file-upload ng-show="medicationUploadVisible"
+                        filename="{! question['filename'] }"
+                        bucket_name="{! question['awsBucket'] }"
+                        prefix="{! transaction.Id }/"
+                        key="{! question['keys']['key'] }"
+                        acl="{! question['awsItemAccess'] }"
+                        directive-index="1"
+                        remote_func_params="{! policiesAction }"
+                        button-text="Upload Certificate">
+        </s3-file-upload>
+
+        <apex:outputpanel id="fileErrorContainer">
+            <apex:outputpanel rendered="{! transaction[question['tookTrainingField']] == 'Yes' }">
+                <p class="fileErrorMessage">If training is complete, you must upload certificate/evidence.</p>
+            </apex:outputpanel>
+        </apex:outputpanel>
+    </div>
+
+</apex:component>

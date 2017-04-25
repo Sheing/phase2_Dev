@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Processing Step Result</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Processing Step Results</value>
+    </caseValues>
+    <fields>
+        <label><!-- ErrorMessage --></label>
+        <name>ErrorMessage__c</name>
+    </fields>
+    <fields>
+        <label><!-- Intake --></label>
+        <name>Intake__c</name>
+        <relationshipLabel><!-- Processing Step Results --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Processing Step --></label>
+        <name>ProcessingStep__c</name>
+        <relationshipLabel><!-- Processing Step Results --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Result --></label>
+        <name>Result__c</name>
+        <picklistValues>
+            <masterLabel>Failure</masterLabel>
+            <translation><!-- Failure --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Success</masterLabel>
+            <translation><!-- Success --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Processing Step Result Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Processing Error and Result --></label>
+            <section>Processing Error and Result</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

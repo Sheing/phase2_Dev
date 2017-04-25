@@ -1,0 +1,79 @@
+<apex:page standardController="Licensing_Transaction__c" extensions="EEC_AdditionalInfoController">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+  <script>
+
+    $j = jQuery.noConflict();
+    $j(document).ready(function() {
+      $j('a').attr("target","_blank");
+      //Collapse all sections on page load so user can see all the sections
+      twistSection(document.getElementById('{!$Component.block1.section1}').getElementsByTagName('img')[0]);
+      twistSection(document.getElementById('{!$Component.block1.section2}').getElementsByTagName('img')[0]);
+      twistSection(document.getElementById('{!$Component.block1.section3}').getElementsByTagName('img')[0]);
+      twistSection(document.getElementById('{!$Component.block1.section4}').getElementsByTagName('img')[0]);
+    });
+
+  </script>
+
+  <apex:pageBlock id="block1">
+    <apex:pageBlockButtons >
+      <apex:outputLink styleClass="btn" value="{!URLFOR($Action.Additional_Information__c.New)}">New</apex:outputLink>
+    </apex:pageBlockButtons>
+
+    <apex:pageBlockSection id="section1" columns="1" title="Other Licenses Held">
+      <apex:pageBlockTable value="{!otherLicensesHeld}" var="o" >
+        <apex:column headerValue="Name">
+          <apex:outputLink value="/{!o.Id}">{!o.Name}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!o.Name_of_Licensee__c}"/>
+        <apex:column value="{!o.License_Number__c}"/>
+        <apex:column value="{!o.State_Country_Issuing_the_License__c}"/>
+        <apex:column value="{!o.Type_of_License__c}"/>
+      </apex:pageBlockTable>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection id="section2" columns="1" title="Other License Applications">
+      <apex:pageBlockTable value="{!otherLicenseApps}" var="o" >
+        <apex:column headerValue="Name">
+          <apex:outputLink value="/{!o.Id}">{!o.Name}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!o.Name_of_Applicant__c}"/>
+        <apex:column value="{!o.State_Country_of_Applicant__c}"/>
+        <apex:column value="{!o.Phone_No_of_Licensing_Authority__c}"/>
+        <apex:column value="{!o.Name_of_Licensing_Authority__c}"/> 
+        <apex:column value="{!o.Address_of_Licensing_authority__c}"/> 
+        <apex:column value="{!o.Status_of_Application__c}"/>
+      </apex:pageBlockTable>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection id="section3" columns="1" title="Administrative/Criminal Actions">
+      <apex:pageBlockTable value="{!adminCriminalAction}" var="o" >
+        <apex:column headerValue="Name">
+          <apex:outputLink value="/{!o.Id}">{!o.Name}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!o.Docket_Number__c}" />
+        <apex:column value="{!o.Name_Admin_civil_criminal_action__c}"/>
+        <apex:column value="{!o.Name_of_court_or_administrative_body__c}"/>
+        <apex:column value="{!o.Nature_of_Proceedings__c}" />
+        <apex:column value="{!o.Caption__c}"/>
+        <apex:column value="{!o.Disposition__c}"/>
+        <apex:column value="{!o.Address_of_court__c}"/>
+      </apex:pageBlockTable>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection id="section4" columns="1" title="Federal/State Investigations">
+      <apex:pageBlockTable value="{!fedStateInvestigation}" var="o" >
+        <apex:column headerValue="Name">
+          <apex:outputLink value="/{!o.Id}">{!o.Name}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!o.Name_of_Person_Agency_Investigated__c}"/>
+        <apex:column value="{!o.Nature_of_Investigation__c}"/>
+        <apex:column value="{!o.State_and_or_Federal_Agency__c}"/>
+      </apex:pageBlockTable>
+    </apex:pageBlockSection>
+
+  </apex:pageBlock>
+
+  
+</apex:page>

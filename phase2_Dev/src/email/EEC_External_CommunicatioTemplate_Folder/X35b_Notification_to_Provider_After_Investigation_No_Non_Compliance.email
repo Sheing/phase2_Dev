@@ -1,0 +1,14 @@
+<table border="0" cellpadding="5" width="600" cellspacing="5" height="400" >
+<tr valign="top" height="50" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[]]></td>
+</tr>
+<tr valign="top" height="300" >
+<td tEditID="c1r2" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r2" locked="0" >
+<![CDATA[<font face="Arial, sans-serif" size="2">Dear&nbsp;</font><span style="font-size: small; background-color: rgb(255, 255, 255);">{!Account.Provider_Email_Template_Main_Contact__c}</span><font face="Arial, sans-serif" size="2">,<br><br>The results from the recent investigation {!Investigation__c.Name} conducted by the Department of Early Education and Care (EEC) are available for your review and record.&nbsp; Please follow the link below to the related documents:&nbsp;&nbsp; &nbsp;<br><br><a href="{!$Setup.EEC_Config__c.Portal_Url__c}/eec_portalproviderpage?accountId={!Account.Id}"><span style="background-color: rgb(255, 255, 255);">L</span>ink to portal</a></font><div><font face="Arial, sans-serif" size="2"><br>You may contact your licensor {!Account.OwnerFirstName}&nbsp; {!Account.OwnerLastName} by phone at {!Account.OwnerPhone} or by email at&nbsp; {!Account.OwnerEmail} with any questions or concerns related to this matter. &nbsp;<br><br>Sincerely,<br><br>The Department of Early Education and Care.<br></font><br></div>]]></td>
+</tr>
+<tr valign="top" height="50" >
+<td tEditID="c1r3" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r3" locked="0" >
+<![CDATA[<div align="center"><font face="Arial,Sans-Serif" size="2">{!Account.Region_Address__c}<br>{!Account.Region_Phone__c} • {!Account.Region_Fax__c} • {!Account.Region_Email__c}<br>www.mass.gov/eec</font></div>]]></td>
+</tr>
+</table>

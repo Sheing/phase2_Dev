@@ -1,0 +1,80 @@
+<apex:page showHeader="false"
+      sidebar="false"
+      standardStylesheets="false"
+      applyHtmlTag="false"
+      applyBodyTag="false">
+
+      <head>
+        
+          
+            <apex:stylesheet value="{! URLFOR($Resource.iffEditorResources, 'vendor.css') }" />
+          
+            <apex:stylesheet value="{! URLFOR($Resource.iffEditorResources, 'app.css') }" />
+          
+        
+      </head>
+
+      <body>
+        
+          <apex:remoteObjects jsNamespace="SObjectModel">
+            
+              
+              <apex:remoteObjectModel name="FormVersion__c"
+                fields="Name,Id,Form__c,LastModifiedDate,UUID__c,Status__c"
+              />
+            
+              <apex:remoteObjectModel name="FormComponent__c"
+                fields="Id,Name,Component__c,FormVersion__c,ParentFormComponent__c,Type__c,ComponentType__c,UUID__c,ParentFormComponentUUID__c,Order__c"
+              />
+            
+              <apex:remoteObjectModel name="Component__c"
+                fields="Id,Type__c,Name,DeveloperName__c"
+              />
+            
+              <apex:remoteObjectModel name="Form__c"
+                fields="Id,Name,LastModifiedDate,ActiveVersionName__c,ActiveVersion__c,UUID__c"
+              />
+            
+              <apex:remoteObjectModel name="ComponentProperty__c"
+                fields="Id,Component__c,Property__c,ComponentName__c,Order__c,PropertyName__c"
+              />
+            
+              <apex:remoteObjectModel name="FormComponentProperty__c"
+                fields="Id,Name,FormComponent__c,ComponentName__c,ComponentProperty__c,Conditions__c,PropertyName__c,FormComponentUUID__c,UUID__c"
+              />
+            
+              <apex:remoteObjectModel name="Property__c"
+                fields="Id,Name,DeveloperName__c"
+              />
+            
+              <apex:remoteObjectModel name="ProcessingStep__c"
+                fields="Id,Config__c,FormVersion__c,Type__c"
+              />
+            
+              <apex:remoteObjectModel name="ProcessingStepType__c"
+                fields="Id,Name,Type__c"
+              />
+            
+          </apex:remoteObjects>
+        
+
+        
+          <div id="app"></div>
+        
+
+        <script>
+          window['zipFileVar'] = '{! URLFOR($Resource.iffEditorResources) }';
+          window['accessTokenVar'] = '{!$Api.Session_ID}';
+        </script>
+
+        
+          
+            <script src="{! URLFOR($Resource.iffEditorResources, 'manifest.js') }"></script>
+          
+            <script src="{! URLFOR($Resource.iffEditorResources, 'vendor.js') }"></script>
+          
+            <script src="{! URLFOR($Resource.iffEditorResources, 'app.js') }"></script>
+          
+        
+      </body>
+    </apex:page>

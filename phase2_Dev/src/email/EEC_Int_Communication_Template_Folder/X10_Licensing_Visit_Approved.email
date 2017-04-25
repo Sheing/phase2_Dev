@@ -1,0 +1,7 @@
+Hello,
+
+Visit associated to {!Inspection__c.Provider_No__c} has been approved and is ready to be sent to Provider. 
+
+Please login to Salesforce and review the visit: {!Inspection__c.Link}
+
+LEAD System

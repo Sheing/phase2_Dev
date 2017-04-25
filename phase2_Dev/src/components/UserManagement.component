@@ -1,0 +1,119 @@
+<apex:component controller="UserManagementCtrl" allowDML="true">
+
+  <apex:attribute name="pageParams" type="UM_PageReferenceParamsWrapper[]" assignto="{!pageRefParams}" description="This is the page reference name required to send the user to a different page on save." />
+ 
+  <!-- Universal Header Contents-->
+  <apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+
+  <style>
+    .um-container {
+      margin: 0 auto;
+      margin-bottom: 100px;
+    }
+
+    .um-contact-container {
+      width: 100%;
+      padding: 20px;
+      margin: 0 auto;
+    }
+
+    .um-title {
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      letter-spacing: .005em;
+    }
+
+    .um-row {
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+
+    .um-button {
+      float: right;
+    }
+
+    .first-name-container {
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    @media only screen and (min-width: 0px) and (max-width: 768px) {
+      .first-name-container {
+        padding: 0;
+      }
+    }
+  </style>
+
+  <!-- Component Body -->
+  <div class="slds um-container">
+    <apex:form >
+      <div class="um-contact-container slds-grid">
+        <div class="um-contact-information slds-grid slds-wrap slds-col slds-size--3-of-4">
+          <div class="um-row slds-col slds-size--1-of-1">
+            <apex:outputpanel styleclass="error-container">
+              <apex:pagemessages id="error" />
+            </apex:outputpanel>
+            <!-- Contact Information -->
+            <section class="um-contact-information">
+              <h4 class="um-title">Contact Information</h4>
+              <hr />
+              <div class="um-row slds-grid slds-wrap">
+                <div class="slds-grid slds-wrap slds-col slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                  <apex:outputpanel rendered="{!contact != null}" styleclass="form-group slds-col slds-large-size--1-of-3 slds-medium-size--1-of-3" style="padding: 0;">
+                    <label>Salutation</label>
+                    <apex:inputfield styleclass="form-control" value="{!contact.Salutation}" html-placeholder="Salutation" />
+                  </apex:outputpanel>
+                  <div class="first-name-container form-group slds-col slds-small-size--1-of-1 slds-large-size--2-of-3 slds-medium-size--2-of-3">
+                    <label>First Name&nbsp;<span class="required">*</span></label>
+                    <apex:inputtext required="true" styleclass="form-control" value="{!contact.FirstName}" html-placeholder="First Name" rendered="{!contact != null}" />
+                    <apex:inputtext required="true" styleclass="form-control" value="{!user.FirstName}" html-placeholder="First Name" rendered="{!contact == null}" />
+                  </div>
+                </div>
+                <div class="form-group slds-col slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                  <label>Last Name&nbsp;<span class="required">*</span></label>
+                  <apex:inputtext required="true" styleclass="form-control" value="{!contact.LastName}" html-placeholder="Last Name" rendered="{!contact != null}" />
+                  <apex:inputtext required="true" styleclass="form-control" value="{!user.LastName}" html-placeholder="Last Name" rendered="{!contact == null}" />
+                </div>
+              </div>
+              <div class="um-row slds-grid slds-wrap">
+                <apex:outputpanel rendered="{!contact != null}" styleclass="form-group slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1">
+                  <label>Title</label>
+                  <apex:inputfield styleclass="form-control" value="{!contact.Title}" html-placeholder="Title" />
+                </apex:outputpanel>
+              </div>
+              <div class="um-row slds-grid slds-wrap">
+                <div class="form-group slds-col slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2" style="padding-right: 15px;">
+                  <label>Work Phone</label>
+                  <apex:inputfield styleclass="form-control" value="{!contact.Phone}" html-placeholder="Phone" rendered="{!contact != null}" />
+                  <apex:inputfield styleclass="form-control" value="{!user.Phone}" html-placeholder="Phone" rendered="{!contact == null}" />
+                </div>
+                <apex:outputpanel styleclass="form-group slds-col slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2" layout="block">
+                  <label>Work Phone Extension</label>
+                  <apex:inputfield styleclass="form-control" value="{!contact.Extension__c}" html-placeholder="Extension" rendered="{!contact != null}" />
+                  <apex:inputfield styleclass="form-control" value="{!user.Extension}" html-placeholder="Extension" rendered="{!contact == null}" />
+                </apex:outputpanel>
+              </div>
+              <div class="um-row slds-grid slds-wrap">
+                <div class="form-group slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1">
+                  <label>Mobile Phone</label>
+                  <apex:inputfield styleclass="form-control" value="{!contact.MobilePhone}" html-placeholder="Phone" rendered="{!contact != null}" />
+                  <apex:inputfield styleclass="form-control" value="{!user.MobilePhone}" html-placeholder="Phone" rendered="{!contact == null}" />
+                </div>
+              </div>
+              <div class="um-row slds-grid slds-wrap">
+                <div class="form-group slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1">
+                  <label>Email&nbsp;<span class="required">*</span></label>
+                  <apex:inputtext required="true" styleclass="form-control" value="{!contact.Email}" html-placeholder="Email" rendered="{!contact != null}" />
+                  <apex:inputtext required="true" styleclass="form-control" value="{!user.Email}" html-placeholder="Email" rendered="{!contact == null}" />
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="contact-buttons right-group slds-col slds-size--1-of-1">
+            <apex:commandbutton html-layout-fill-lg="true" styleclass="um-button md-button md-raised md-eec" html-layout-margin="true" html-layout-padding="true" action="{!save}" value="Save" />
+          </div>
+        </div>
+      </div>
+    </apex:form>
+  </div>
+</apex:component>

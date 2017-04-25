@@ -1,0 +1,14 @@
+<table border="0" cellpadding="5" width="600" cellspacing="5" height="400" >
+<tr valign="top" height="50" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[]]></td>
+</tr>
+<tr valign="top" height="300" >
+<td tEditID="c1r2" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r2" locked="0" >
+<![CDATA[<div><font face="arial">Dear Provider,&nbsp;</font></div><div><font face="arial"><br></font></div><div><font face="arial">This is a reminder that "Investigation Conclusions” are missing for one or more “Foster Home 51A or Incident” previously reported. Please use the following link to the LEAD system and log in with your username and password to submit the “Investigation Conclusions":&nbsp;</font></div><div><font face="arial"><br></font></div><div><font face="arial">{!Account.Link}&nbsp;</font></div><div><font face="arial"><br></font></div><div><font face="arial"><br></font></div><div><font face="arial">You may contact your licensor {!Account.Licensor_Full_Name__c} by phone at {!Account.Licensor_Phone__c} or by email at {!Account.Licensor_Email__c} with any questions or concerns related to this matter.&nbsp;</font></div><div><font face="arial"><br></font></div><div><font face="arial">Sincerely,&nbsp;</font></div><div><font face="arial">The Department of Early Education and Care.</font></div>]]></td>
+</tr>
+<tr valign="top" height="50" >
+<td tEditID="c1r3" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r3" locked="0" >
+<![CDATA[]]></td>
+</tr>
+</table>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>HistoricalDocumentsMetadataStaging</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>HistoricalDocumentsMetadataStaging</value>
+    </caseValues>
+    <fields>
+        <label><!-- FileName --></label>
+        <name>FileName__c</name>
+    </fields>
+    <fields>
+        <label><!-- IntakeID --></label>
+        <name>IntakeID__c</name>
+    </fields>
+    <fields>
+        <label><!-- InteractionId --></label>
+        <name>InteractionId__c</name>
+    </fields>
+    <fields>
+        <label><!-- ProgramId --></label>
+        <name>ProgramId__c</name>
+    </fields>
+    <fields>
+        <label><!-- RID --></label>
+        <name>RID__c</name>
+    </fields>
+    <fields>
+        <label><!-- SourceField --></label>
+        <name>SourceField__c</name>
+    </fields>
+    <fields>
+        <label><!-- SourceTableRecordId --></label>
+        <name>SourceTableRecordId__c</name>
+    </fields>
+    <fields>
+        <label><!-- SourceTable --></label>
+        <name>SourceTable__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,6 @@
+<apex:page showHeader="true" sidebar="true" controller="AWS_TestQamarToBeDeleted">
+	<apex:form >
+		<apex:inputFile value="{!file}" fileName="{!fileName}" contentType="{!contentType}"/>
+		<apex:commandbutton action="{!upload}" value="Upload" />
+	</apex:form>
+</apex:page>

@@ -1,0 +1,14 @@
+<table border="0" cellpadding="5" width="600" cellspacing="5" height="400" >
+<tr valign="top" height="50" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[]]></td>
+</tr>
+<tr valign="top" height="300" >
+<td tEditID="c1r2" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r2" locked="0" >
+<![CDATA[<font size="2"><font face="Arial, sans-serif"><font face="arial">Dear&nbsp;</font></font><span style="font-family: arial;">{!Account.Name},</span><font face="Arial, sans-serif"><br><br><font face="arial">For your information, your {!Licensing_Transaction__c.TransactionTypeForEmail__c} transaction submitted on {!Licensing_Transaction__c.Submission_Date__c} has been successfully processed and closed by EEC.</font></font></font><div><span style="font-size: small; background-color: rgb(255, 255, 255);"><br></span></div><div><span style="font-size: small; background-color: rgb(255, 255, 255);">{!Licensing_Transaction__c.EmailTextForProvider__c}</span></div><div><div><span style="font-size: small; background-color: rgb(255, 255, 255);">{!Licensing_Transaction__c.EmailTextForProvider2__c }</span></div></div><div><div><br></div><div><span style="font-size: small;">You may contact your licensor&nbsp; {!Licensing_Transaction__c.Assigned_To__c} by phone at {!Licensing_Transaction__c.Assigned_To_Phone__c} or by email at {!Licensing_Transaction__c.Assigned_User_Email__c} with any questions or concerns related to this matter. &nbsp;</span></div><div><font size="2"><font face="Arial, sans-serif"><br><font face="arial">Sincerely,</font><br><br><font face="arial">The Department of Early Education and Care.</font></font></font><br><br></div></div>]]></td>
+</tr>
+<tr valign="top" height="50" >
+<td tEditID="c1r3" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r3" locked="0" >
+<![CDATA[<div align="center"><font face="Arial,Sans-Serif" size="2">{!Account.Region_Address__c}<br>{!Account.Region_Phone__c} • {!Account.Region_Fax__c} • {!Account.Region_Email__c}<br>www.mass.gov/eec</font></div>]]></td>
+</tr>
+</table>

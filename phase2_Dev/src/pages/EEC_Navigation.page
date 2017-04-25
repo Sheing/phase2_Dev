@@ -1,0 +1,399 @@
+<apex:page controller="EEC_TransactionWizardController" doctype="html-5.0" showheader="false" sidebar="false" standardstylesheets="false">
+  <head>
+    <title>EEC</title>
+    <c:EEC_Header id="pageHeader" />
+    <style>
+      .assistant-header-text {
+
+      }
+
+      .md-button.md-raised.md-eec, .md-button.md-raised.md-eec {
+        color: rgb(250,250,250);
+        background-color: #853F3F;
+      }
+
+        .md-button.md-raised.md-eec:hover, .md-button.md-raised.md-eec:hover {
+          color: rgb(250,250,250);
+          background-color: #703E3E;
+        }
+
+      .md-button.md-raised, .md-button.md-raised {
+        background-color: #f7f7f7;
+      }
+
+      .md-button span {
+        padding: 6px;
+      }
+
+      .top-level-label, .assistant-header-text {
+        font-weight: 600;
+        margin-right: 5px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+
+      input[type="radio"], input[type="checkbox"] {
+        margin: 4px 7px 0;
+      }
+
+      .command-button-container {
+        position: relative;
+        top: -2px;
+      }
+
+      .commandBtn {
+        margin: -1px 0px -2px;
+      }
+
+      .transaction-info-row {
+        margin-left: 0px;
+      }
+
+      .eec-subhead {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-left: 0px;
+      }
+
+      .form-control {
+        color: rgba(0,0,0,.87);
+      }
+
+      .navigation-buttons {
+        overflow: visible;
+      }
+
+      .new-address a {
+        color: black;
+        text-decoration: none;
+        cursor: default;
+      }
+
+      .not-visible {
+        display: none;
+      }
+
+      textarea {
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-bottom: 2px;
+        font-weight: normal;
+      }
+
+      .requiredInput {
+        margin-left: 30px;
+      }
+
+      .desc-panel {
+        margin-left: 15px;
+        width: 80%;
+      }
+      .td {
+         padding-top: 2px;
+         padding-bottom: 2px;
+         padding-right: 20px;
+        }
+
+      .background-form-container {
+        margin-bottom: 20px;
+      }
+
+      thead {
+        background-color: #f5f5f5;
+        font-size: 16px;
+        color: inherit;
+      }
+
+      .desc-answer {
+        margin-bottom: 15px;
+      }
+
+      .ques {
+        margin-bottom: 10px;
+      }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+      }
+
+      .col-lg-8 {
+        padding-left: 0px;
+      }
+
+      .table {
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+      }
+
+      #check-box-tables > .table > tbody > tr > td {
+        border-top: 0px;
+        border-bottom: 0px;
+      }
+
+      #check-box-tables > .table {
+        border-left: 0px;
+        border-right: 0px;
+        border-right: 0px;
+        border-bottom: 0px;
+      }
+
+      .panel-title {
+        font-weight: 500;
+      }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .household-form-container {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .navigation-buttons .md-button {
+         width: 98%;
+         btn-progress-color:"#fff";
+         passed-btn-bg-color:"#4CAF50"; 
+         btn-bg-color:"#FAFAFA";
+         active-btn-bg-color:"#0288D1";
+        }
+
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+
+
+        .add-button-container {
+          padding-right: 0;
+          width: 100%;
+        }
+
+        #agreeButton:disabled {
+          background-color: #f5f5f5;
+          color: #bbbbbb;
+        }
+       
+        #notAgreeButton:disabled {
+          background-color: #f5f5f5;
+          color: #bbbbbb;
+        }
+      }
+    </style>
+    <script>
+
+    </script>
+  </head>
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar"  rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}"/>
+    <div class="background-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">
+      <apex:messages style="color: #FF0000; font-weight: bold;" />
+
+      <div class="background-form-container col-lg-8 col-md-8 col-sm-12" style="margin-bottom:100px;" layout="column" layout-padding="true" flex="100" flex-lg="70" flex-gt-lg="70">
+        <apex:form id="BackgroundInformationForm">
+       </apex:form>
+      </div>
+      
+<html>
+<style>
+body {
+    font-size: 15px;
+    
+}
+</style>
+<body>
+ 
+ <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Instruction</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div> 
+         
+         <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Transaction/Provider Info</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div> 
+         
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Individuals Regularly on Premise</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div> 
+         
+           <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Licensing/Capacity</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div> 
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Assistant Info</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">InvolvementandProfessional Experience</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Background Information</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Training Information</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Indoor/Outdoor Space Info</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">DailyRoutine/Tech Assistance</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+          <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">     
+         <h3 class="md-caption ng-binding" style="width: 88%;">Attachments</h3>   
+         <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">       
+         <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+            <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(76, 175, 80);">
+        </div>
+            </div>          
+     <div class="wizard-step-img ng-scope">          
+         <i class="material-icons icon ng-binding passed" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">check</i>   
+     </div>       
+    </button> 
+         </div>
+        
+       <div class="step-title" style="float: right;width: 100%;text-align: right;display: inline-flex">   
+         <h3 class="md-caption ng-binding" style="width: 88%;">Reviewand Submission</h3>   
+     
+    
+    <button class="md-fab wizard-button md-button md-default-theme" ng-transclude="" aria-label="step button" style="display:inline">    
+    <div class="circle-loader-wrap ng-scope" ng-style="step.progresscircleStyle" style="background-color: rgb(255, 255, 255);">
+    <div class="circle-loader-wrap after" ng-style="step.wizardBtnStyle" style="background-color: rgb(2, 136, 209);">
+    </div></div>        
+    <div class="wizard-step-img ng-scope">     
+    <i class="material-icons icon ng-binding selected" ng-class="{'passed': step.passed == 'true', 'selected': step.selected == 'true'}">info_outline</i>     
+    </div>      
+    </button> 
+    
+    </div>
+     
+     
+    
+    
+   
+  
+</body>
+</html>
+   
+
+  
+
+
+
+   <!--   <eec-wizard class="col-lg-3" btn-progress-color="#fff" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" flex="20" hide="true" show-gt-md="true">
+        <eec-wz-step ng-repeat="step in ctrl.wizardElements" title="{{step.label}}" step-img="{{step.icon}}" selected="{{step.selected}}" passed="{{step.icon != 'info_outline'}}"></eec-wz-step>
+      </eec-wizard>  -->
+    </div>
+    <c:EEC_Site_Footer id="siteFooter" />
+    <script>
+      app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.funcId = null;
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", "Review & Submission");
+        tranCtrl.selected = [];
+      }]);
+      /*
+      j$('#agreeButton').click( function (){
+        j$('#agreeButton').attr("disabled", "");
+        j$('#notAgreeButton').attr("disabled","");
+        j$('#cancelButtonRow').css("display", "block");
+        j$('#submitButtonRow').css("display", "block");
+      });
+      j$('#notAgreeButton').click( function (){
+        j$('#agreeButton').attr("disabled", "");
+        j$('#notAgreeButton').attr("disabled","");
+        j$('#cancelButtonRow').css("display", "block");
+      });*/
+    </script>
+  </body>
+</apex:page>

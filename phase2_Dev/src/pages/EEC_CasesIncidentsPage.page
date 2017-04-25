@@ -1,0 +1,2911 @@
+<apex:page showheader="false" standardstylesheets="false" sidebar="false" controller="EEC_CasesIncidentsPageController" html-ng-app="eecApp" doctype="html-5.0">
+  <head>
+    <title>EEC : {!caseTypeLabel} Reporting Form</title>
+    <c:EEC_Header id="pageHeader" />
+    <style type="text/css">
+      .form-control-repeat {
+    display: block;
+    width: 90%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.form-control-repeat {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+}
+
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }
+      .involvedPersonErrorMessage{
+            display : none;
+            font-weight: bold;
+       } 
+       .visible{
+             display : block;
+      } 
+
+      thead {
+        background-color: #f5f5f5;
+      }
+
+      .table > thead:first-child > tr:first-child > th {
+        border-bottom: 0px;
+        border-top: 1px solid #dddddd;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .table {
+        border: 1px solid #dddddd;
+      }
+
+      .parsley-errors-list {
+        /*position: absolute;*/
+        bottom: -30px;
+        width: auto;
+      }
+
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+
+      .errorMsg {
+        color: #d74c3b;
+      }
+
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+
+        .message[class*='error'] .messageTable {
+          width: 100%;
+        }
+
+        .message[class*='error'] .messageText {
+          border-bottom: 1px solid grey;
+          height: 30px;
+        }
+
+      .form-label {
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      /*.form-group {
+        margin:5px !important;
+      }*/
+
+      .form-group-repeat {
+        margin:0px !important;
+      }
+
+      /*.person-form-field.form-group {
+        margin-bottom: 10px;
+      }*/
+
+      .btn {
+        margin-right: 5px;
+      }
+
+      [id*="mainPanel"] {
+        padding: 50px 50px 50px 50px;
+        margin-bottom: 150px;
+      }
+
+        [id*="mainPanel"] h2 {
+          width: 100%;
+        }
+
+      [id*="introduction"] {
+        margin-top: 10px;
+      }
+
+      .text-disabled {
+        border: none;
+        box-shadow: none;
+      }
+
+      .person {
+        border-bottom: 1px solid #eee;
+        margin-bottom: 15px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .person-age, .person-other-role {
+      }
+
+      .attachment-item {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+
+        .attachment-item p {
+          float: left;
+          margin-right: 15px;
+          align-self: center;
+        }
+
+          .attachment-item p:first-child {
+            flex: 2;
+          }
+
+      .navigation-buttons {
+        overflow: visible;
+      }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 98%;
+        }
+
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+      }
+
+      hr {
+        padding: 0 !important;
+      }
+        
+      .intro-text span {
+        font-size: 1.6rem !important; 
+      }
+    </style>
+    <script>
+      j$(function() {
+            j$(".datepicker").datepicker({ dateFormat: 'mm-dd-yy' });
+      });
+     
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.0.7/parsley.js" type="text/javascript"></script>
+
+  </head>
+  <body>
+    <c:EEC_Nav_Bar id="navBar" />
+    <div class="container" style="width:100%">
+      <apex:form id="incident-form" style="width:100%" styleclass="incident-parsley-form" html-ng-controller="IncidentsController as ctrl">
+        <apex:outputpanel id="scriptpanel">
+<script>
+         var personRoles = {};
+
+          function togglePersonInputs(ele, rowIndex) {
+            //debugger;
+              var person = ele.parent().parent().parent().parent().parent().parent().parent().parent().parent();
+              var ageLabel = person.find('.person-label' + rowIndex);
+              var otherLabels = person.find('.person-role-others-labels' + rowIndex);
+              var roleInput = person.find('.person-role' + rowIndex);
+              var role = person.find('.role' + rowIndex);
+              var roleSelectList = person.find('.roleselectlist' + rowIndex);
+
+              var roleOutputText = person.find('.roleoutputtext' + rowIndex);
+              var statusInput = person.find('.person-status' + rowIndex + ' input');
+              var otherInput = person.find('.person-other-role' + rowIndex + ' input');
+              //var statusOfStaff = person.find('.statusofstaff' + rowIndex);
+              var childBirthdate = person.find('.childbirthdate' + rowIndex);
+              var childBirthdateLabel = person.find('.childbirthdatelabel' + rowIndex);
+              var childBirthdateInputText = person.find('.childbirthdateinputtext' + rowIndex);
+              var childBirthdateOutputText = person.find('.childbirthdateoutputtext' + rowIndex);
+              var placementDate = person.find('.placementdate' + rowIndex);
+              var placementDateLabel = person.find('.placementdatelabel' + rowIndex);
+              var placementDateInputText = person.find('.placementdateinputtext' + rowIndex);
+              var placementDateOutputText = person.find('.placementdateoutputtext' + rowIndex);
+              var childNeedToBeMoved = person.find('.childneedtobemoved' + rowIndex);
+              var childNeedToBeMovedLabel = person.find('.childneedtobemovedlabel' + rowIndex);
+              var childNeedToBeMovedSelectList = person.find('.childneedtobemovedselectlist' + rowIndex);
+              var childNeedToBeMovedOutputText = person.find('.childneedtobemovedoutputtext' + rowIndex);
+
+              var guardianAddress = person.find('.guardianaddress' + rowIndex);
+              var guardianAddressLabel = person.find('.guardianaddresslabel' + rowIndex);
+              var guardianAddressInputTextArea = person.find('.guardianaddressinputtextarea' + rowIndex);
+              var guardianAddressOutputText = person.find('.guardianaddressoutputtext' + rowIndex);
+
+              var guardianName = person.find('.guardianname' + rowIndex);
+              var guardianNameLabel = person.find('.guardiannamelabel' + rowIndex);
+              var guardianNameInputText = person.find('.guardiannameinputtext' + rowIndex);
+              var guardianNameOutputText = person.find('.guardiannameoutputtext' + rowIndex);
+
+              var guardianTelephone = person.find('.guardiantelephone' + rowIndex);
+              var guardianTelephoneLabel = person.find('.guardiantelephonelabel' + rowIndex);
+              var guardianTelephoneInputText = person.find('.guardiantelephoneinputtext' + rowIndex);
+              var guardianTelephoneOutputText = person.find('.guardiantelephoneoutputtext' + rowIndex);
+
+              var title = person.find('.title' + rowIndex);
+              var titleInputText = person.find('.titleinputtext' + rowIndex);
+              var titleOutputText = person.find('.titleoutputtext' + rowIndex);
+              var descInputText = person.find('.descinputtext' + rowIndex);
+              var descOutputText = person.find('.descoutputtext' + rowIndex);
+
+              //var status = person.find('.status' + rowIndex);
+
+              if ('{!mode}' == 'edit') {
+                ele.fadeOut();
+              }
+
+              if (ele.val() == 'Adult Involvement') {
+
+                otherLabels.fadeIn();
+                if ('{!c.Status}' != null && '{!c.Status}' != '' && '{!c.Status}' != 'Not Submitted') {
+                  role.css('display', 'block');
+                  roleSelectList.prop('disabled', true);
+                  roleSelectList.fadeOut();
+                  roleSelectList.attr('data-parsley-required', 'false');
+                  roleOutputText.prop('disabled', false);
+                  roleOutputText.fadeIn();
+
+                  title.css('display', 'block');
+                  titleInputText.prop('disabled', true);
+                  titleInputText.fadeOut();
+                  titleInputText.attr('data-parsley-required', 'false');
+                  titleOutputText.prop('disabled', false);
+                  titleOutputText.fadeIn();
+
+                  descInputText.prop('disabled', true);
+                  descInputText.fadeOut();
+                  descOutputText.prop('disabled', false);
+                  descOutputText.fadeIn();
+                } else { 
+                  role.css('display', 'block');
+                  roleSelectList.prop('disabled', false);
+                  roleSelectList.fadeIn();
+                  roleSelectList.attr('data-parsley-required', 'false');
+                  roleOutputText.prop('disabled', true);
+                  roleOutputText.fadeOut();
+
+                  title.css('display', 'block');
+                  titleInputText.prop('disabled', false);
+                  titleInputText.fadeIn();
+                  titleOutputText.prop('disabled', true);
+                  titleOutputText.fadeOut();
+
+                  descInputText.prop('disabled', false);
+                  descInputText.fadeIn();
+                  descOutputText.prop('disabled', true);
+                  descOutputText.fadeOut();
+                }
+
+
+                person.find('.person-title' + rowIndex).css('display', 'block');
+                statusInput.prop('disabled', false);
+                statusInput.fadeIn();
+                person.find('.person-status' + rowIndex).css('display', 'none');
+                otherInput.prop('disabled', false);
+                otherInput.fadeIn();
+                person.find('.person-other-role' + rowIndex).css('display', 'none');
+                //statusOfStaff.css('display', 'none');
+                childBirthdate.css('display', 'none');
+                childBirthdateLabel.prop('disabled', true);
+                childBirthdateLabel.fadeOut();
+                childBirthdateLabel.css('display', 'none');
+                childBirthdateInputText.prop('disabled', true);
+                childBirthdateInputText.fadeOut();
+                childBirthdateInputText.css('display', 'none');
+                childBirthdateOutputText.prop('disabled', true);
+                childBirthdateOutputText.fadeOut();
+                childBirthdateOutputText.css('display', 'none');
+
+                
+
+                guardianAddress.css('display', 'none');
+                guardianAddressLabel.prop('disabled', true);
+                guardianAddressLabel.fadeOut();
+                guardianAddressLabel.css('display', 'none');
+                guardianAddressInputTextArea.prop('disabled', true);
+                guardianAddressInputTextArea.fadeOut();
+                guardianAddressInputTextArea.css('display', 'none');
+                guardianAddressOutputText.prop('disabled', true);
+                guardianAddressOutputText.fadeOut();
+                guardianAddressOutputText.css('display', 'none');
+
+                guardianName.css('display', 'none');
+                guardianNameLabel.prop('disabled', true);
+                guardianNameLabel.fadeOut();
+                guardianNameLabel.css('display', 'none');
+                guardianNameInputText.prop('disabled', true);
+                guardianNameInputText.fadeOut();
+                guardianNameInputText.css('display', 'none');
+                guardianNameOutputText.prop('disabled', true);
+                guardianNameOutputText.fadeOut();
+                guardianNameOutputText.css('display', 'none');
+
+                guardianTelephone.css('display', 'none');
+                guardianTelephoneLabel.prop('disabled', true);
+                guardianTelephoneLabel.fadeOut();
+                guardianTelephoneLabel.css('display', 'none');
+                guardianTelephoneInputText.prop('disabled', true);
+                guardianTelephoneInputText.fadeOut();
+                guardianTelephoneInputText.css('display', 'none');
+                guardianTelephoneOutputText.prop('disabled', true);
+                guardianTelephoneOutputText.fadeOut();
+                guardianTelephoneOutputText.css('display', 'none');
+
+                if ('{!caseTypeLabel}' == 'Foster Home 51A or Incident') {
+                  placementDate.css('display', 'none');
+
+                  placementDateLabel.prop('disabled', false);
+                  placementDateLabel.fadeIn();
+                  placementDateLabel.css('display', 'block');
+
+                  placementDateInputText.prop('disabled', true);
+                  placementDateInputText.attr('data-parsley-required', 'false');
+                  placementDateInputText.fadeOut();
+                  placementDateInputText.css('display', 'none');
+
+                  placementDateOutputText.prop('disabled', false);
+                  placementDateOutputText.fadeIn();
+                  placementDateOutputText.css('display', 'block');
+
+                  childNeedToBeMoved.css('display', 'none');
+
+                  childNeedToBeMovedLabel.prop('disabled', false);
+                  childNeedToBeMovedLabel.fadeIn();
+                  childNeedToBeMovedLabel.css('display', 'block');
+
+                  childNeedToBeMovedSelectList.prop('disabled', true);
+                  childNeedToBeMovedSelectList.fadeOut();
+                  childNeedToBeMovedSelectList.css('display', 'none');
+
+                  childNeedToBeMovedOutputText.prop('disabled', false);
+                  childNeedToBeMovedOutputText.fadeIn();
+                  childNeedToBeMovedOutputText.css('display', 'block');
+
+                  title.css('display', 'none');
+                  titleInputText.prop('disabled', true);
+                  titleInputText.fadeOut();
+                  titleInputText.attr('data-parsley-required', 'false');
+                  titleOutputText.prop('disabled', true);
+                  titleOutputText.fadeOut();
+                  //Other role
+                } else {
+                  placementDate.css('display', 'none');
+
+                  placementDateLabel.prop('disabled', true);
+                  placementDateLabel.fadeOut();
+                  placementDateLabel.css('display', 'none');
+
+                  placementDateInputText.prop('disabled', true);
+                  placementDateInputText.attr('data-parsley-required', 'false');
+                  placementDateInputText.fadeOut();
+                  placementDateInputText.css('display', 'none');
+
+                  placementDateOutputText.prop('disabled', true);
+                  placementDateOutputText.fadeOut();
+                  placementDateOutputText.css('display', 'none');
+
+                  childNeedToBeMoved.css('display', 'none');
+
+                  childNeedToBeMovedLabel.prop('disabled', true);
+                  childNeedToBeMovedLabel.fadeOut();
+                  childNeedToBeMovedLabel.css('display', 'none');
+
+                  childNeedToBeMovedSelectList.prop('disabled', true);
+                  childNeedToBeMovedSelectList.fadeOut();
+                  childNeedToBeMovedSelectList.css('display', 'none');
+
+                  childNeedToBeMovedOutputText.prop('disabled', true);
+                  childNeedToBeMovedOutputText.fadeOut();
+                  childNeedToBeMovedOutputText.css('display', 'none');
+
+                  title.css('display', 'block');
+                  titleInputText.prop('disabled', false);
+                  titleInputText.fadeIn();
+                  titleInputText.attr('data-parsley-required', 'false');
+                  titleOutputText.prop('disabled', false);
+                  titleOutputText.fadeOut();
+                }
+
+              } else {
+              //Child Involvement
+                otherLabels.fadeOut();
+                if ('{!caseTypeLabel}' == 'Foster Home 51A or Incident') {
+                  //status.css('display', 'none');
+                  role.css('display', 'block');
+                  roleSelectList.prop('disabled', false);
+                  roleSelectList.fadeIn();
+                  roleOutputText.prop('disabled', true);
+                  roleOutputText.fadeOut();
+
+                  //childBirthdate.css('display', 'block');
+                  //childBirthdateLabel.prop('disabled', true);
+                  //childBirthdateLabel.fadeIn();
+                  //childBirthdateInputText.prop('disabled', false);
+                  //childBirthdateInputText.fadeIn();
+                  //childBirthdateOutputText.prop('disabled', false);
+                  //childBirthdateOutputText.fadeOut();
+
+                  placementDate.css('display', 'block');
+                  placementDateLabel.prop('disabled', true);
+                  placementDateLabel.fadeIn();
+                  placementDateInputText.prop('disabled', false);
+                  placementDateInputText.fadeIn();
+                  placementDateOutputText.prop('disabled', true);
+                  placementDateOutputText.fadeOut();
+
+                  childNeedToBeMoved.css('display', 'block');
+                  childNeedToBeMovedLabel.prop('disabled', true);
+                  childNeedToBeMovedLabel.fadeIn();
+                  childNeedToBeMovedSelectList.prop('disabled', false);
+                  childNeedToBeMovedSelectList.fadeIn();
+                  childNeedToBeMovedOutputText.prop('disabled', true);
+                  childNeedToBeMovedOutputText.fadeOut();
+
+                  guardianAddress.css('display', 'none');
+                  guardianAddressLabel.prop('disabled', false);
+                  guardianAddressLabel.fadeOut();
+                  guardianAddressInputTextArea.prop('disabled', false);
+                  guardianAddressInputTextArea.fadeOut();
+                  guardianAddressOutputText.prop('disabled', true);
+                  guardianAddressOutputText.fadeOut();
+
+                  guardianName.css('display', 'none');
+                  guardianNameLabel.prop('disabled', false);
+                  guardianNameLabel.fadeOut();
+                  guardianNameInputText.prop('disabled', false);
+                  guardianNameInputText.fadeOut();
+                  guardianNameOutputText.prop('disabled', true);
+                  guardianNameOutputText.fadeOut();
+
+                  guardianTelephone.css('display', 'none');
+                  guardianTelephoneLabel.prop('disabled', false);
+                  guardianTelephoneLabel.fadeOut();
+                  guardianTelephoneInputText.prop('disabled', false);
+                  guardianTelephoneInputText.fadeOut();
+                  guardianTelephoneOutputText.prop('disabled', true);
+                  guardianTelephoneOutputText.fadeOut();
+
+                } else {
+                  //status.css('display', 'block');
+                  role.css('display', 'none');
+                  roleSelectList.prop('disabled', true);
+                  roleSelectList.fadeOut();
+                  roleOutputText.prop('disabled', false);
+                  roleOutputText.fadeOut();
+
+                  placementDate.css('display', 'none');
+                  placementDateLabel.prop('disabled', true);
+                  placementDateLabel.fadeOut();
+                  placementDateInputText.prop('disabled', true);
+                  placementDateInputText.fadeOut();
+                  placementDateOutputText.prop('disabled', true);
+                  placementDateOutputText.fadeOut();
+
+                  childNeedToBeMoved.css('display', 'none');
+                  childNeedToBeMovedLabel.prop('disabled', true);
+                  childNeedToBeMovedLabel.fadeOut();
+                  childNeedToBeMovedSelectList.prop('disabled', true);
+                  childNeedToBeMovedSelectList.fadeOut();
+                  childNeedToBeMovedOutputText.prop('disabled', true);
+                  childNeedToBeMovedOutputText.fadeOut();
+
+                  guardianAddress.css('display', 'block');
+                  guardianAddressLabel.prop('disabled', false);
+                  guardianAddressLabel.fadeIn();
+                  guardianAddressInputTextArea.prop('disabled', false);
+                  guardianAddressInputTextArea.fadeIn();
+                  guardianAddressOutputText.prop('disabled', false);
+                  guardianAddressOutputText.fadeOut();
+
+                  guardianName.css('display', 'block');
+                  guardianNameLabel.prop('disabled', false);
+                  guardianNameLabel.fadeIn();
+                  guardianNameInputText.prop('disabled', false);
+                  guardianNameInputText.fadeIn();
+                  guardianNameOutputText.prop('disabled', false);
+                  guardianNameOutputText.fadeOut();
+
+                  guardianTelephone.css('display', 'block');
+                  guardianTelephoneLabel.prop('disabled', false);
+                  guardianTelephoneLabel.fadeIn();
+                  guardianTelephoneInputText.prop('disabled', false);
+                  guardianTelephoneInputText.fadeIn();
+                  guardianTelephoneOutputText.prop('disabled', false);
+                  guardianTelephoneOutputText.fadeOut();
+
+                }
+
+
+                statusInput.prop('disabled', true);
+                person.find('.person-status' + rowIndex).css('display', 'none');
+                statusInput.fadeOut();
+                otherInput.prop('disabled', true);
+                person.find('.person-other-role' + rowIndex).css('display', 'none');
+                //statusOfStaff.css('display', 'none');
+                otherInput.fadeOut();
+
+                title.css('display', 'none');
+                titleInputText.prop('disabled', true);
+                titleInputText.fadeOut();
+                titleOutputText.prop('disabled', false);
+                titleOutputText.fadeOut();
+
+                //childBirthdate.css('display', 'block');
+                //childBirthdateLabel.prop('disabled', true);
+                //childBirthdateLabel.fadeIn();
+                //childBirthdateInputText.prop('disabled', false);
+                //childBirthdateInputText.fadeIn();
+                //childBirthdateOutputText.prop('disabled', false);
+                //childBirthdateOutputText.fadeOut();
+
+                //statusInput.val('');
+                //otherInput.val('');
+
+                if ('{!c.Status}' != null && '{!c.Status}' != '' && '{!c.Status}' != 'Not Submitted') {
+                  childBirthdate.css('display', 'block');
+                  childBirthdateLabel.prop('disabled', true);
+                  childBirthdateLabel.fadeIn();
+                  childBirthdateInputText.prop('disabled', true);
+                  childBirthdateInputText.fadeOut();
+                  childBirthdateOutputText.prop('disabled', false);
+                  childBirthdateOutputText.fadeIn();
+
+                  //placementDate.css('display', 'block');
+                  //placementDateLabel.prop('disabled', true);
+                  //placementDateLabel.fadeIn();
+                  //placementDateInputText.prop('disabled', true);
+                  //placementDateInputText.attr('data-parsley-required', 'false');
+                  //placementDateInputText.fadeOut();
+                  //placementDateOutputText.prop('disabled', false);
+                  //placementDateOutputText.fadeIn();
+
+                  //childNeedToBeMoved.css('display', 'block');
+                  //childNeedToBeMovedLabel.prop('disabled', true);
+                  //childNeedToBeMovedLabel.fadeIn();
+                  //childNeedToBeMovedSelectList.prop('disabled', true);
+                  //childNeedToBeMovedSelectList.fadeOut();
+                  //childNeedToBeMovedOutputText.prop('disabled', false);
+                  //childNeedToBeMovedOutputText.fadeIn();
+                  
+                  
+
+                  descInputText.prop('disabled', true);
+                  descInputText.fadeOut();
+                  descOutputText.prop('disabled', false);
+                  descOutputText.fadeIn();
+                } else {
+                  childBirthdate.css('display', 'block');
+                  childBirthdateLabel.prop('disabled', false);
+                  childBirthdateLabel.fadeIn();
+                  childBirthdateInputText.prop('disabled', false);
+                  childBirthdateInputText.fadeIn();
+                  childBirthdateOutputText.prop('disabled', true);
+                  childBirthdateOutputText.fadeOut();
+
+                  //placementDate.css('display', 'block');
+                  //placementDateLabel.prop('disabled', true);
+                  //placementDateLabel.fadeIn();
+                  //placementDateInputText.prop('disabled', false);
+                  //placementDateInputText.fadeIn();
+                  //placementDateOutputText.prop('disabled', true);
+                  //placementDateOutputText.fadeOut();
+
+                  //childNeedToBeMoved.css('display', 'block');
+                  //childNeedToBeMovedLabel.prop('disabled', true);
+                  //childNeedToBeMovedLabel.fadeIn();
+                  //childNeedToBeMovedSelectList.prop('disabled', false);
+                  //childNeedToBeMovedSelectList.fadeIn();
+                  //childNeedToBeMovedOutputText.prop('disabled', true);
+                  //childNeedToBeMovedOutputText.fadeOut();
+
+                  
+
+                  descInputText.prop('disabled', false);
+                  descInputText.fadeIn();
+                  descOutputText.prop('disabled', true);
+                  descOutputText.fadeOut();
+                }
+              }
+            }
+
+            /**
+             * checkAllPeopleEntries
+             *
+             * This function will check all current person entries and ensure that specified fields are disabled.
+             * @author Darkis
+             */
+            function checkAllPeopleEntries() {
+              // Get all the people.
+              var people = $('.person');
+              // Loop through the people.
+              for (i = 0; i < people.length; i++) {
+                // Get the person.
+                var person = $(people[i]);
+                var personNumber = person.data('row-num');
+                // Get the select input for type.
+                var selInput = person.find('.persontypeselectlist' + personNumber);
+                // Toggle the correct fields.
+                togglePersonInputs(selInput, personNumber);
+
+                CheckForOther(person.find('.roleselectlist' + personNumber));
+
+
+                /*if (typeof personRoles[personNumber].role != undefined && personRoles[personNumber].role != null && selInput.val() == 'Adult Involvement') {
+                  person.find('.roleselectlist'+personNumber).val(personRoles[personNumber].role);
+                } else {
+                  person.find('.roleselectlist'+personNumber).val('');
+                }*/
+              }
+              $('#personsTable').css('visibility', 'visible');
+            }
+
+            /**
+             * CheckForOther
+             *
+             * This function will check for the role 'Other' and toggle the other role field accordingly.
+             * @author Darkis
+             * @param ele The element from the onChange event.
+             */
+            function CheckForOther(ele) {
+
+//debugger;
+              var person = ele.parent().parent().parent().parent();
+              var personNumber = person.data('row-num');
+              var parsleyInput = person.find('.person-other-role' + personNumber + ' input').parsley();
+
+              if (parsleyInput != undefined) {
+
+                personRoles[personNumber] = {
+                  'role': ele.val()
+                };
+                if (ele.val() != null) {
+                  if ((ele.val()).toLowerCase() == 'other') {
+
+                    if ('{!caseTypeLabel}' != 'Foster Home 51A or Incident') {
+                        person.find('.person-other-role' + personNumber).css('display', 'block');
+                        person.find('.person-other-role' + personNumber + ' input').attr('data-parsley-required', 'true');
+
+                        person.find('.status' + personNumber).css('display', 'none');
+                        person.find('.statuslabel' + personNumber).css('display', 'none');
+                        //person.find('.statusinputtext'+personNumber+' input').val('');
+                        person.find('.statusinputtext' + personNumber).css('display', 'none');
+                        person.find('.statusoutputtext' + personNumber).css('display', 'none');
+                    }
+                    
+                  } else if ((ele.val()).toLowerCase() == 'provider staff people') {
+
+                     if ('{!caseTypeLabel}' != 'Foster Home 51A or Incident') {
+                        person.find('.person-other-role' + personNumber).css('display', 'none');
+                        person.find('.person-other-role' + personNumber + ' input').attr('data-parsley-required', 'false');
+
+                        person.find('.status' + personNumber).css('display', 'block');
+                        person.find('.statuslabel' + personNumber).css('display', 'block');
+                        person.find('.statusinputtext' + personNumber).css('display', 'block');
+                        person.find('.statusoutputtext' + personNumber).css('display', 'none');
+                     }
+                    
+                  } else {
+
+                    if ('{!caseTypeLabel}' != 'Foster Home 51A or Incident') {
+                        // Re-disable the field and clear it.
+                        //person.find('.person-other-role'+personNumber+' input').val('');
+                        person.find('.person-other-role' + personNumber).css('display', 'none');
+                        person.find('.person-other-role' + personNumber + ' input').attr('data-parsley-required', 'false');
+
+                        person.find('.status' + personNumber).css('display', 'none');
+                        person.find('.statuslabel' + personNumber).css('display', 'none');
+                        //person.find('.statusinputtext'+personNumber+' input').val('');
+                        person.find('.statusinputtext' + personNumber).css('display', 'none');
+                        person.find('.statusoutputtext' + personNumber).css('display', 'none');
+                        // Call validate to clear the field of any error labels.
+                        parsleyInput.validate();
+
+                    }
+                    
+                  }
+                }
+              }
+            }
+      </script>
+      </apex:outputpanel>
+        <apex:outputpanel id="mainPanel" layout="block" styleclass="incidents-attachment-container">
+          <apex:pagemessages id="showmsg" />
+          <!--{!editViewMode} - {!mode}-->
+          <apex:outputPanel rendered="{!editViewMode && !currentStage[3]}">
+            <h2>Report a {!caseTypeLabel}</h2>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{! currentStage[3] && editViewMode}">
+              <h2> 
+                  {!caseTypeLabel} Summary and Submission Page
+              </h2>
+          </apex:outputPanel>  
+          <apex:outputPanel rendered="{!!editViewMode && mode== 'view'}">
+            <h2>View {!caseTypeLabel} Summary</h2>
+          </apex:outputPanel>  
+          <br/>  
+          <apex:pageblock id="introduction" rendered="{! currentStage[0] }">
+            <div class="intro-text">
+              <apex:outputpanel rendered="{!introText != null}">
+                <apex:outputtext value="{!introText}" escape="false"></apex:outputtext>
+              </apex:outputpanel>
+            </div>
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+              <apex:commandbutton id="cancelButton" styleclass="md-button md-raised md-eec" action="{!returnProvider}" value="Cancel" rendered="{!!editMode}" />
+              <apex:commandbutton id="cancelEditButton" styleclass="md-button md-raised md-eec" action="{!viewIncident}" value="Cancel" rendered="{!editMode}" />
+             <div layout="column" layout-lg="row" layout-gt-lg="row">
+                <apex:outputPanel >  
+                  <apex:commandbutton id="nextButton" styleclass="md-button md-raised md-eec" action="{!nextStageIncident}" value="{!IF(c.Id != null, 'Continue', 'Report a')} Program Incident" rerender="mainPanel,scriptpanel" rendered="{!IF(c.Id == null || (c.Id != null && caseTypeLabel == 'Incident'), true, false)}"/>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!a.Recordtype.Name == 'Foster Care Agency'}">
+                  <apex:commandbutton id="next51AButton" styleclass="md-button md-raised md-eec" action="{!next51AIncident}" value="{!IF(c.Id != null, 'Continue', 'Report a')} Foster Home 51A or Incident" rerender="mainPanel,scriptpanel" rendered="{!IF(c.Id == null || (c.Id != null && caseTypeLabel == '51AIncident'), true, false)}"/>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!a.Is_GSA__c}">
+                  <apex:commandbutton id="nextInjuryButton" styleclass="md-button md-raised md-eec" action="{!nextStageInjury}" value="{!IF(c.Id != null, 'Continue', 'Report an')} Injury" rerender="mainPanel,scriptpanel" rendered="{!IF(c.Id == null || (c.Id != null && caseTypeLabel == 'Injury'), true, false)}"/>
+                </apex:outputPanel>
+              </div>
+            </md-content>
+          </apex:pageblock>
+          
+          <apex:pageblock id="collectIncidentInfo" rendered="{! currentStage[1] }">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading" id="headingTwo">
+                    <h4 class="panel-title">
+                      <a>
+                        Provider and Reporter
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="incidentDesc" class="panel-group" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="md-subhead" layout="row">
+                              <apex:inputhidden value="{!a.Name}" />
+                                <span class="form-label">Provider Name: </span>&nbsp;{!a.Name}
+                            </div>
+                            <div class="md-subhead" layout="row">
+                              <apex:inputhidden value="{!ct.Name}" />
+                                <span class="form-label">Name: </span>&nbsp;{!ct.Name}
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="md-subhead" layout="row">
+                              <apex:inputhidden value="{!ct.Phone}" />
+                                <span class="form-label">Contact Number: </span>&nbsp;{!ct.Phone}
+                            </div>
+                            <div class="md-subhead" layout="row">
+                              <apex:inputhidden value="{!ct.Email}" />
+                                <span class="form-label">Email Address: </span>&nbsp;{!ct.Email}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+              </div>
+              
+              <div class="panel panel-default">
+                <div class="panel-heading" id="headingTwo">
+                  <h4 class="panel-title">
+                    <a>
+                      {!caseTypeLabel} Description
+                    </a>
+                  </h4>
+                </div>
+                <div id="incidentDesc" class="panel-group" role="tabpanel" aria-labelledby="headingTwo">
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <span class="form-label" style="margin-right:5px">Summary / Type of Case<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <img style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}" src="/img/alohaSkin/help_orange.png" title="In a few words describe the nature of incident (i.e.; supervision concern, potential abuse or neglect, health and safety, etc.)"
+                          />
+                          <apex:inputfield styleclass="form-control" value="{!c.subject}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                            label="Subject" html-data-parsley-required="true" />
+                          <apex:outputfield styleclass="form-control" value="{!c.subject}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                            label="Subject" html-data-parsley-required="true" />
+                        </div>
+                        <apex:outputPanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                          <div class="form-group">
+                            <span class="form-label">Foster Parent Address<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                              </span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Foster_Parent_Address__c}" html-maxlength="100" html-data-parsley-required="true" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                            />
+                            <apex:outputfield styleclass="form-control" value="{!c.Foster_Parent_Address__c}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                            />
+                          </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury'}">
+                          <div class="form-group">
+                            <span class="form-label">Where did the {!caseTypeLabel} occur?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputtextarea styleclass="form-control" value="{!c.Event_Location__c}" html-maxlength="255" label="Event Description" html-data-parsley-required="true"
+                            />
+                          </div>
+                          <div class="form-group">
+                            <span class="form-label">What time did the {!caseTypeLabel} occur?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Time_Event_Occured__c}" label="Time Event Occurred" html-data-parsley-required="true"
+                            />
+                          </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}">
+                          <div class="form-group">
+                            <span class="form-label">Number of children in the group<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" type="number" value="{!c.No_children_in_group__c  }" html-data-parsley-required="true"
+                            />
+                          </div>
+                          <div class="form-group">
+                            <span class="form-label">Description of any corrective action taken to prevent similar occurence<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Description_of_corrective_action__c}" html-maxlength="32768" html-data-parsley-required="true"
+                            />
+                          </div>
+                        </apex:outputPanel>
+                      </div>
+                      <div class="col-lg-6">
+                        <apex:outputPanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                          <div class="form-group">
+                            <span class="form-label">Foster Parent Name<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                                </span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Foster_Parent_Name__c}" html-data-parsley-required="true" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                            />
+                            <apex:outputfield styleclass="form-control" value="{!c.Foster_Parent_Name__c}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                            />
+                          </div>
+                          <div class="form-group">
+                            <span class="form-label">Does Foster Parent also provide Family Child Care?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Provide_Family_Child_Care__c}" html-data-parsley-required="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                            <apex:outputfield styleclass="form-control" value="{!c.Provide_Family_Child_Care__c}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                            />
+                          </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury'}">
+                          <div class="form-group">
+                            <span class="form-label">What happened? (If applicable, describe any equipment involved including its location and condition)<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                                <img src="/img/alohaSkin/help_orange.png" title="In a few words describe the nature of incident (i.e.; supervision concern, potential abuse or neglect, health and safety, etc.)"/>  
+                                                </span>
+                            <apex:inputtextarea styleclass="form-control" value="{!c.description}" html-maxlength="255" label="Description" html-data-parsley-required="true"
+                            />
+                          </div>
+                          <div class="form-group">
+                            <span class="form-label" style="display:{!if(caseTypeLabel == 'Injury', 'inline', 'none')}">When did the {!caseTypeLabel} occur?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <span class="form-label" style="display:{!if(caseTypeLabel == 'Incident', 'inline', 'none')}">When did the {!caseTypeLabel} occur?(If the date or time of the incident is not known please enter the date and time that you were made aware of the allegation, or report about the incident.)<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <c:noDateLink ><apex:inputField styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Date_Event_Occured__c}" html-data-parsley-required="true"
+                            /></c:noDateLink>
+                          </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}">
+                          <div class="form-group">
+                            <span class="form-label">What group was the child in when injury occured?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Group_the_child_was_in__c }" html-data-parsley-required="true" />
+                          </div>
+                          <div class="form-group">
+                            <span class="form-label">Names &amp; qualifications of staff supervising the group when injury occurred?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Name_Qual_of_staff_supervising__c}" html-data-parsley-required="true"
+                            />
+                          </div>
+                        </apex:outputPanel>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+<!--================================================-->
+              
+
+              <apex:outputpanel id="involved-person-container" styleclass="panel panel-default" layout="block">
+                <div class="panel-heading" id="headingTwo">
+                  <h4 class="panel-title">
+                    <a>Involved Persons</a>
+                  </h4>
+                </div>
+                <div id="involvedPersons" class="panel-group inv-persons">
+                  <div class="panel-body">
+                    <apex:outputText value="{!incidentIntroText}" escape="false"></apex:outputText> 
+                    <br/>
+                    <p class="errorMsg  involvedPersonErrorMessage">At least, information related to the injured child must be added in this list, please add information
+                      related to the injured child.</p>
+                      <br/>
+                    <apex:outputpanel id="personsTable">
+                      <apex:variable value="{!0}" var="rowNum" />
+                      
+                      <div layout="row" layout-wrap="true">         
+                        <apex:repeat value="{!InvolvedPersons}" var="p" id="personsRepeater">
+                          <md-card flex="100" flex-lg="45" flex-gt-lg="45" class="ng-scope md-default-theme" style="width:50%">
+                            <apex:outputpanel styleclass="person" html-data-row-num="{!rowNum + 1}">
+                              <md-card-content layout="row" layout-align="center center" layout-wrap="true">
+                                <div class="card-row" flex="100" layout="row" layout-wrap="true">
+
+                                  <div flex="50" class="form-group-repeat" flex-sm="100">
+                                    <label class="form-label">First and Last Name</label><span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span>
+                                    <span
+                                      style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                      <apex:inputtext styleclass="form-control-repeat" maxlength="80" value="{!p.Name}" html-data-parsley-required="true" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                                      />
+                                      <apex:outputText value="{!p.Name}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                                      />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat" flex-sm="100">
+                                    <label class="form-label">Type</label><span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span>
+                                    <span
+                                      style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                      <apex:selectlist rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" styleclass="persontypeselectlist{!rowNum + 1} form-control-repeat"
+                                        value="{!p.Type}" size="1" label="Type" html-data-parsley-required="true" onchange="togglePersonInputs($(this), '{!rowNum + 1}');">
+                                        <apex:selectoptions value="{!PersonTypes}" />
+                                      </apex:selectlist>
+                                      <apex:outputText value="{!p.Type}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                                      />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat childbirthdate{!rowNum + 1}" style="display:{!if(p.Type == 'Child Involvement','block','none')}">
+                                    <label class="form-label childbirthdatelabel{!rowNum + 1}">Child's birth date</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+
+                                    <c:noDateLink >
+                                    <apex:inputtext rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" html-data-provide="datepicker"
+                                      onfocus="DatePicker.pickDate(false, this , false);" styleclass="childbirthdateinputtext{!rowNum + 1} form-control-repeat"
+                                      value="{!p.ChildBirthDate}" />
+                                    </c:noDateLink>
+                                    <apex:outputText rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" styleclass="childbirthdateoutputtext{!rowNum + 1}"
+                                      value="{!p.ChildBirthDate}" />
+
+                                  </div>
+                                  <div flex="50" class="form-group-repeat placementdate{!rowNum + 1}" style="display:{!if(p.Type == 'Child Involvement' && caseTypeLabel == 'Foster Home 51A or Incident','block','none')}">
+                                    <label class="form-label placementdatelabel{!rowNum + 1}">Placement date</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+
+                                    <c:noDateLink ><apex:inputtext rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" html-data-provide="datepicker"
+                                      onfocus="DatePicker.pickDate(false, this , false);" styleclass="placementdateinputtext{!rowNum + 1} form-control-repeat"
+                                      value="{!p.PlacementDate}" /></c:noDateLink>
+
+                                    <apex:outputText rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" styleclass="placementdateoutputtext{!rowNum + 1}"
+                                      value="{!p.PlacementDate}" />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat childneedtobemoved{!rowNum + 1}" style="display:{!if(p.Type == 'Child Involvement' && caseTypeLabel == 'Foster Home 51A or Incident','block','none')}">
+                                    <label class="form-label childneedtobemovedlabel{!rowNum + 1}">Does the child need to be moved?</label>
+                                    <span
+                                      style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span>
+                                      <apex:selectlist rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" styleclass="childneedtobemovedselectlist{!rowNum + 1} form-control-repeat"
+                                        value="{!p.ChildNeedToBeMoved}" size="1">
+                                        <apex:selectoptions value="{!ChildNeedToBeMovedOptions}" />
+                                      </apex:selectlist>
+                                      <apex:outputText rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" styleclass="childneedtobemovedoutputtext{!rowNum + 1}"
+                                        value="{!p.ChildNeedToBeMoved}" />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat guardianname{!rowNum + 1}" id="personGuardianName" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label guardiannamelabel{!rowNum + 1}">Parent/Guardian's name</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:inputtext styleclass="guardiannameinputtext{!rowNum + 1} form-control-repeat" maxlength="255" value="{!p.GuardianName}" />
+                                    <apex:outputText styleclass="guardiannameoutputtext{!rowNum + 1}" value="{!p.GuardianName}" />
+                                  </div>
+                                  <div flex="50" class="form-group-repeat guardianaddress{!rowNum + 1}" id="personGuardianAddress" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label guardianaddresslabel{!rowNum + 1} ">Parent/Guardian's address</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:inputtextarea styleclass="guardianaddressinputtextarea{!rowNum + 1} form-control-repeat" html-maxlength="255" value="{!p.GuardianAddress}"
+                                    />
+                                    <apex:outputText styleclass="guardianaddressoutputtext{!rowNum + 1}" value="{!p.GuardianAddress}" />
+                                  </div>
+                                  <div flex="50" class="form-group-repeat guardiantelephone{!rowNum + 1}" id="personGuardianTelephone" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label guardiantelephonelabel{!rowNum + 1} ">Parent/Guardian's telephone number</label>
+                                    <span
+                                      style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                      <apex:inputtext styleclass="guardiantelephoneinputtext{!rowNum + 1} form-control-repeat" value="{!p.GuardianPhone}" maxlength="40"/>
+                                      <apex:outputText styleclass="guardiantelephoneoutputtext{!rowNum + 1}" value="{!p.GuardianPhone}" />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat role{!rowNum + 1}">
+                                    <label class="form-label">Role</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:selectlist rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" styleclass="roleselectlist{!rowNum + 1} form-control-repeat"
+                                      size="1" value="{!p.Role}" onchange="CheckForOther($(this));">
+                                      <apex:selectoptions value="{!PersonRoles}" />
+                                    </apex:selectlist>
+                                    <apex:outputText rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" styleclass="roleoutputtext{!rowNum + 1}"
+                                      value="{!p.Role}" />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat person-other-role{!rowNum + 1} otherrole{!rowNum + 1} " id="personOtherRole" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label">Other Role</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:inputtext styleclass="form-control-repeat" value="{!p.OtherRole}" maxlength="50" rendered="{!if(p.Role == 'Other' && c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                                    />
+                                    <apex:outputText value="{!p.OtherRole}" rendered="{!if(p.Role == 'Other' && c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}"
+                                    />
+                                  </div>
+                                  <div flex="50" class="form-group-repeat title{!rowNum + 1}" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label">Title</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:inputtext styleclass="titleinputtext{!rowNum + 1} form-control-repeat" maxlength="50" value="{!p.Title}" label="Title" />
+                                    <apex:outputText styleclass="titleoutputtext{!rowNum + 1}" value="{!p.Title}" />
+                                  </div>
+
+                                  <div flex="50" class="form-group-repeat status{!rowNum + 1}" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label statuslabel{!rowNum + 1}">Status of Staff</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:inputtext styleclass="statusinputtext{!rowNum + 1} form-control-repeat" maxlength="50" value="{!p.Status_of_Staff }" />
+                                    <apex:outputtext styleclass="statusoutputtext{!rowNum + 1}" value="{!p.Status_of_Staff }" />
+                                  </div>
+                                  <div flex="50" class="form-group-repeat person-description" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury','block','none')}">
+                                    <label class="form-label">Description of Involvement</label><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span>
+                                    <apex:inputtext styleclass="descinputtext{!rowNum + 1} form-control-repeat" maxlength="255" value="{!p.Description_of_Involvement}" label="Description of Involvement"
+                                    />
+                                    <apex:outputText styleclass="descoutputtext{!rowNum + 1}" value="{!p.Description_of_Involvement}" label="Description of Involvement"
+                                    />
+                                  </div>
+
+                                  <div style="clear:both;width:100%">
+                                    <label>
+                                                            <apex:commandlink action="{!delPerson}" style="font-size: 12px;font-weight: bold;" value="Remove" oncomplete="checkAllPeopleEntries();"
+                                                              immediate="true" styleClass="md-button md-eec md-raised" rerender="personsTable" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}">
+                                                              <apex:param name="index" value="{!rowNum}"></apex:param>
+                                                            </apex:commandlink>
+                                                          </label>
+                                  </div>
+
+                                  <!--Closing divs-->
+                                </div>
+                              </md-card-content>
+
+                            </apex:outputpanel>
+
+                            <apex:variable var="rowNum" value="{!rowNum + 1}" />
+
+                          </md-card>
+                        </apex:repeat>
+                      </div>
+                    </apex:outputpanel>
+                    <div style="clear:both">
+                      <apex:commandLink style="font-size: 12px;font-weight: bold;" styleClass="md-button md-raised md-eec" rerender="personsTable"
+                        value="Add" oncomplete="checkAllPeopleEntries();" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"
+                        onclick="$('#personsTable').css('visibility', 'hidden');" action="{!addPerson}" />
+                    </div>
+                  </div>
+                </div>
+              </apex:outputpanel>
+
+
+
+
+
+              <!--=========================================-->
+              <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' || caseTypeLabel == 'Injury'}">
+              <div class="panel panel-default">
+                <div class="panel-heading" id="headingTwo">
+                  <h4 class="panel-title">
+                    <a>First Aid / CPR</a>
+                  </h4>
+                </div>
+                <div id="firstaidCPR" class="panel-group">
+                  <div class="panel-body">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <div class="col-xs-12 col-lg-6">
+                          <span class="form-label">Was first aid provided?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.First_Aid_or_CPR_Provided__c}" html-data-parsley-required="true">
+                            <apex:actionsupport event="onchange" rerender="PanelFirstAidCPR" />
+                          </apex:inputfield>
+                        </div>
+                        <apex:outputpanel id="PanelFirstAidCPR">
+                          <apex:outputpanel rendered="{!blnFirstAidCPR}">
+                            <div class="col-xs-12 col-lg-6">
+                              <span class="form-label">When?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.First_Aid_When__c}" html-data-parsley-required="true" html-maxlength="100"/>
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">By Whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.First_Aid_By_whom__c}"  html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">What was provided?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.First_Aid_What__c}"   html-maxlength="255" html-data-parsley-required="true" />
+                            </div>  
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+                      </div>
+
+                      <hr class="col-xs-12" />
+
+                      <div class="form-group">
+                        <div class="col-xs-12 col-lg-6">
+                          <span class="form-label">Was CPR provided?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.CPR_Provided__c}" html-data-parsley-required="true">
+                            <apex:actionsupport event="onchange" rerender="summaryPanelCPR" />
+                          </apex:inputfield>
+                        </div>
+
+                        <apex:outputpanel id="summaryPanelCPR">
+                          <apex:outputpanel rendered="{!blnCPR}">
+                            <div class="col-xs-12 col-lg-6">
+                              <span class="form-label">When?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.CPR_When__c}" html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">By Whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.CPR_By_Whom__c}"  html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a>911 Contacted</a>
+                  </h4>
+                </div>
+                <div id="911Contacted" class="panel-group">
+                  <div class="panel-body">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <div class="col-xs-12 col-lg-6">
+                          <span class="form-label">Was 911 called?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.X911_Called__c}" html-data-parsley-required="true">
+                            <apex:actionsupport event="onchange" rerender="Panel911" />
+                          </apex:inputfield>
+                        </div>
+
+                        <apex:outputpanel id="Panel911">
+                          <apex:outputpanel rendered="{!blnCalled911}">
+                            <div class="col-xs-12 col-lg-6">
+                              <span class="form-label">When?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.X911_called_when__c}"  html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">By Whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.X911_By_whom__c}"  html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a>Medical Attention</a>
+                  </h4>
+                </div>
+                <div id="medicalAttn" class="panel-group">
+                  <div class="panel-body">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <div class="col-xs-12 col-lg-6">
+                          <span class="form-label">Was the child transported for medical attention?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.Child_Transported_for_Medical_Attention__c}" label="Child Transported for Medical Attention" html-data-parsley-required="true">
+                            <apex:actionsupport event="onchange" rerender="PanelMedical" />
+                          </apex:inputfield>
+                        </div>
+                        <apex:outputpanel id="PanelMedical">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <div class="col-xs-12 col-lg-6">
+                              <span class="form-label">Where?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Med_AttentionWhere__c}"  html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">By whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Med_Attention_By_whom__c}"   html-maxlength="100" html-data-parsley-required="true" />
+                            </div>
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">What medical treatment was provided? (be specific)<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Medical_Treatment_Provided__c}"  html-maxlength="32768" html-data-parsley-required="true" />
+                            </div>
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">What diagnosis resulted from any medical intervention?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Diagnosis_Resulted__c}"  html-maxlength="32768" html-data-parsley-required="true" />
+                            </div>
+
+                            <div class="col-xs-12" style="margin-top: 10px; padding:0">
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Did the child return to your program?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Child_return_to_Program__c}" html-data-parsley-required="true">
+                                <apex:actionsupport event="onchange" rerender="PanelChildReturn" />
+                              </apex:inputfield>
+                            </div>
+
+                            <apex:outputpanel id="PanelChildReturn">
+                              <apex:outputpanel rendered="{!blnChildReturned}">
+                                <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                                  <span class="form-label">When?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                  <apex:inputfield styleclass="form-control" value="{!c.When_Child_Return__c}" html-data-parsley-required="true" />
+                                </div>
+                              </apex:outputpanel>
+                            </apex:outputpanel>
+                          </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a>Information Shared with Parents / Guardians</a>
+                  </h4>
+                </div>
+                <div id="infoShared" class="panel-group">
+                  <div class="panel-body">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+
+                        <div class="col-xs-12 col-lg-6">
+                          <span class="form-label">Was this information shared with the child's parent/guardian?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.Shared_with_Parents__c}" html-data-parsley-required="true">
+                            <apex:actionsupport event="onchange" rerender="PanelSharedParents" />
+                          </apex:inputfield>
+                        </div>
+
+                        <apex:outputpanel id="PanelSharedParents" style="display:{!if(blnSharedParents,'block','none')}">
+                          <apex:outputpanel rendered="{!blnSharedParents}">
+
+                            <div class="col-xs-12 col-lg-6">
+                              <span class="form-label">When was this information shared?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.When_Shared_Info__c}"   html-data-parsley-required="true" />
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Provide the name of the parent/guardian who was contacted?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.With_who__c}"   html-maxlength="150" html-data-parsley-required="true" />
+                            </div>
+
+                            
+                              <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                                <span class="form-label">Who shared the information with the parent/guardian?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.Who_Shared_Info__c}"  html-maxlength="150" html-data-parsley-required="true" />
+                              </div>
+                              <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                                <span class="form-label">How was this information shared?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.How_What_Shared_Info__c}"  html-maxlength="32768" html-data-parsley-required="true" />
+                              </div>
+                           
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+                      </div>
+                    </div>
+                    <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                          <span class="form-label">Was anyone else notified?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.Other_Person_Notified__c }" html-data-parsley-required="true">
+                            <apex:actionsupport event="onchange" rerender="PanelOtherPersons" />
+                          </apex:inputfield>
+                        </div>
+                        <apex:outputpanel id="PanelOtherPersons">
+                          <apex:outputpanel rendered="{!blnOtherParents}">
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px; padding: 0;">
+                              <span class="form-label">Who else was notified?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Other_Person_Notified_Who__c }" html-maxlength="200" html-data-parsley-required="true" />
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">How was this other person notified?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Other_Person_Notified_How__c }" html-maxlength="200" html-data-parsley-required="true" />
+                            </div>
+
+                            
+                              <div class="col-xs-12 col-lg-6" style="margin-top: 10px; padding: 0;">
+                                <span class="form-label">When was this other person notified?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.Other_Person_Notified_When__c }"  html-maxlength="150" html-data-parsley-required="true" />
+                              </div>
+                           
+                          </apex:outputpanel>
+                        </apex:outputpanel>  
+                      </div>
+                    </div>
+                   </apex:outputPanel>    
+                  </div>
+                </div>
+              </div>
+               </apex:outputPanel>
+              
+                
+
+              <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' || caseTypeLabel == 'Foster Home 51A or Incident'}">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a>Filed Reports</a>
+                    </h4>
+                  </div>
+                  <div id="otherInformation" class="panel-group">
+                    <div class="panel-body">
+                      <div class="col-lg-12">
+                        <div class="col-xs-12 col-lg-6">
+                          <span class="form-label">Was a report filed with the Massachusetts Department of Children and Families (DCF)(51A)?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                          <apex:inputfield styleclass="form-control" value="{!c.Filed_with_DCF__c}" html-data-parsley-required="true"
+                          rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}">
+                            <apex:actionsupport event="onchange" rerender="PanelFiledDCF" />
+                          </apex:inputfield>
+                          <apex:outputfield styleclass="form-control" value="{!c.Filed_with_DCF__c}" 
+                          rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                        </div>
+
+                        <apex:outputpanel id="PanelFiledDCF">
+                          <apex:outputpanel rendered="{!blnFiledDCF}">
+                            <div class="col-xs-12 col-lg-6" >
+                              <span class="form-label">By whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.DCF_Filer__c}"  html-maxlength="80" html-data-parsley-required="true"
+                                rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                              <apex:outputfield styleclass="form-control" value="{!c.DCF_Filer__c}"  
+                                rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            </div>
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">When was it reported?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <c:noDateLink >
+                              <apex:inputfield styleclass="form-control" value="{!c.DCF_File_Submission_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                              </c:noDateLink>
+                              <c:noDateLink >
+                              <apex:outputfield styleclass="form-control" value="{!c.DCF_File_Submission_Date__c}" html-data-provide="datepicker"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                              </c:noDateLink>
+                            </div>
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                                <span class="form-label">Screening Status<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.DCF_Screening_Status__c}" html-data-parsley-required="true"
+                                rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                                <apex:outputfield styleclass="form-control" value="{!c.DCF_Screening_Status__c}" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            </div>
+                            
+                          </apex:outputpanel>
+                          
+                          <div style="display:{!if(caseTypeLabel == 'Incident' && a.Is_R_P__c == true ,'block','none')}; width:100%">
+                            <hr class="col-xs-12" />
+                          </div>
+
+                          <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' && a.Is_R_P__c == true}">
+                            <div class="col-xs-12 col-lg-6">
+                                <span class="form-label">Was a report filed with the Disabled Persons Protection Commission (DPPC)(19C)?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.Filed_with_DPPC__c}" html-data-parsley-required="true">
+                                    <apex:actionsupport event="onchange" rerender="PanelFiledDPPC"/>
+                                </apex:inputfield>
+                                <apex:outputfield styleclass="form-control" value="{!c.Filed_with_DPPC__c}" 
+                                rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            </div>
+
+                            <apex:outputpanel id="PanelFiledDPPC">
+                                <apex:outputpanel rendered="{!blnFiledDPPC}">
+                                    <div class="col-xs-12 col-lg-6">
+                                      <span class="form-label">By whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                                      <apex:inputfield styleclass="form-control" value="{!c.DPPC_Filer__c}"  html-maxlength="80" html-data-parsley-required="true"
+                                        rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                                      <apex:outputfield styleclass="form-control" value="{!c.DPPC_Filer__c}"  
+                                        rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                                    </div>
+
+                                    <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                                      <span class="form-label">When was it reported?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                                      <c:noDateLink ><apex:inputfield styleclass="form-control" value="{!c.DPPC_File_Submission_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" /></c:noDateLink>
+                                      <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.DPPC_File_Submission_Date__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                          </apex:outputPanel>
+
+
+                          <div style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident' ,'block','none')}; width:100%">
+                            <hr class="col-xs-12" />
+                          </div>
+                          <apex:outputPanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                           <div class="col-xs-12 col-lg-6" style="margin-top:{!if(blnFiledDCF || blnFiledDPPC, '10px','')}">
+                              <span class="form-label">Dates of contact with Homefinder within last 6 months?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Homefinder_Contact_Last_6_Months__c}" html-maxlength="128" html-data-parsley-required="true"
+                                rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"  />
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Homefinder_Contact_Last_6_Months__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Last social worker home visit date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <c:noDateLink ><apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Last_Social_Worker_Home_Visit__c}" html-data-parsley-required="true"
+                               rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" /></c:noDateLink>
+                               <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Last_Social_Worker_Home_Visit__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Most recent re-evaluation date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <c:noDateLink ><apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Most_Recent_Reevaluation__c}" html-data-parsley-required="true"
+                               rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" /></c:noDateLink>
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Most_Recent_Reevaluation__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                            
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Original Home Study date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <c:noDateLink ><apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Original_Home_Study__c}" html-data-parsley-required="true"
+                               rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" /></c:noDateLink>
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Original_Home_Study__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Concerns identified if any?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Concerns_Identified__c}" html-maxlength="2048" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Concerns_Identified__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                          
+                          <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">MAPP training date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <c:noDateLink ><apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.MAPP_Training_Date__c}" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" /></c:noDateLink>
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.MAPP_Training_Date__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">List of restrictions?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.List_of_Restrictions__c}" html-maxlength="2048" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.List_of_Restrictions__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                            
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Allegation(s)<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Summary_of_Allegation__c}"  html-maxlength="32768" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Summary_of_Allegation__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                            
+                            <div class="col-xs-12 col-lg-6" style="margin-top: 10px;">
+                              <span class="form-label">Home type (Regular/Restricted)?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                              <apex:inputfield styleclass="form-control" value="{!c.Home_Type__c}" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                              <c:noDateLink ><apex:outputfield styleclass="form-control" value="{!c.Home_Type__c}"  html-data-provide="datepicker"
+                                      rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" /></c:noDateLink>
+                            </div>
+                        
+                          </apex:outputPanel>
+
+                        <hr class="col-xs-12" />
+
+                        <apex:outputpanel rendered="{!blnFiledDCF}">
+                            <div style="margin-top: 10px; padding: 0;" class="col-xs-12">
+                              <div class="col-xs-12 col-lg-6">
+                                <span class="form-label">Does your report involves legal proceedings?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}"> </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.Incident_involves_legal_proceedings__c}" html-data-parsley-required="true" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}">
+                                  <apex:actionsupport event="onchange" rerender="PanelInvolvesLegal" />
+                                </apex:inputfield>
+
+                                <apex:outputfield styleclass="form-control" value="{!c.Incident_involves_legal_proceedings__c}"
+                                rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                              </div>
+
+                              <apex:outputpanel id="PanelInvolvesLegal">
+                                <apex:outputpanel rendered="{!blnLegal}">
+                                  <div class="col-xs-12 col-lg-6">
+                                    <span class="form-label">Describe the nature of legal proceedings and explain who is involved<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                    <apex:inputfield styleclass="form-control" value="{!c.Legal_Proceeding_Description__c}" html-maxlength="32768" html-data-parsley-required="true"
+                                    rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+
+                                    <apex:outputfield styleclass="form-control" value="{!c.Legal_Proceeding_Description__c}"
+                                    rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                                  </div>
+                                </apex:outputpanel>
+                              </apex:outputpanel>
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </apex:outputPanel>
+              
+              <apex:outputPanel rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted' && caseTypeLabel == 'Foster Home 51A or Incident', true, false)}">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a>Investigation Conclusion Summary</a>
+                    </h4>
+                  </div>
+
+                  <div id="investigationconclusion" class="panel-group">
+                    <div class="panel-body">
+                      <div class="col-lg-12">
+                        <div class="col-lg-12">
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Agency Investigation Conclusion<span class="required">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Agency_Investigation_Conclusion__c}" html-maxlength="32768" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            <apex:outputfield styleclass="form-control" value="{!c.Agency_Investigation_Conclusion__c}"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                          </div>
+
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">DCF Investigation Conclusion<span class="required">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.DCF_Investigation_Conclusion__c}" html-maxlength="32768"  html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            <apex:outputfield styleclass="form-control" value="{!c.DCF_Investigation_Conclusion__c}" 
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                          </div>
+
+                          <div class="col-xs-12 col-lg-6" style="margin-top:10px">
+                            <span class="form-label">Actions Taken<span class="required">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Actions_Taken__c}" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            <apex:outputfield styleclass="form-control" value="{!c.Actions_Taken__c}" 
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                          </div>
+
+                          <div class="col-xs-12 col-lg-6" style="margin-top:10px">
+                            <span class="form-label">Status of Home<span class="required">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Status_of_Home__c}" html-data-parsley-required="true"
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', true, false)}" />
+                            <apex:outputfield styleclass="form-control" value="{!c.Status_of_Home__c}" 
+                              rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}" />
+                          </div>
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </apex:outputPanel>
+              <!-- The following needs to be merged with R&P related updated to incident -->
+              <!-- <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' || caseTypeLabel == '51A Incident'}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                            <a>Filed Reports</a>
+                            </h4>
+                        </div>
+                        <div id="otherInformation" class="panel-group">
+                            <div class="panel-body">
+                                <div class="col-lg-12">
+                                    <div class="col-xs-12 col-lg-6">
+                                        <span class="form-label">Screening Status<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                        <apex:inputfield styleclass="form-control" value="{!c.DCF_Screening_Status__c}" html-data-parsley-required="true">
+                                        </apex:inputfield>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-6">
+                                        <span class="form-label">Was a report filed with the Disabled Persons Protection Commission (DPPC)(19C)?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                        <apex:inputfield styleclass="form-control" value="{!c.Filed_with_DPPC__c}" html-data-parsley-required="true">
+                                            <apex:actionsupport event="onchange" rerender="PanelFiledDPPC"/>
+                                        </apex:inputfield>
+                                    </div>
+                                
+                                        
+                                    <div class="col-xs-12 col-lg-6">
+                                        <span class="form-label">Was a report filed with the Massachusetts Department of Children and Families (DCF)(51A)?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                        <apex:inputfield styleclass="form-control" value="{!c.Filed_with_DCF__c}" html-data-parsley-required="true">
+                                          <apex:actionsupport event="onchange" rerender="PanelFiledDCF" />
+                                        </apex:inputfield>
+                                    </div>
+                          <apex:outputpanel id="PanelFiledDPPC">
+                            <apex:outputpanel rendered="{!blnFiledDPPC}">
+                              <div class="col-xs-12 col-lg-3" style="margin-top: 20px;">
+                                <span class="form-label">By whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.DPPC_Filer__c}" html-maxlength="80" html-data-parsley-required="true" />
+                              </div>
+
+                              <div class="col-xs-12 col-lg-3" style="margin-top: 20px;">
+                                <span class="form-label">When was it reported?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.DPPC_File_Submission_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker" />
+                              </div>
+
+                          
+                            </apex:outputpanel>
+                          </apex:outputpanel>
+                          <apex:outputpanel id="PanelFiledDCF">
+                            <apex:outputpanel rendered="{!blnFiledDCF}">
+                              <div class="col-xs-12 col-lg-3" style="margin-top: 20px;">
+                                <span class="form-label">By whom?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.DCF_Filer__c}" html-maxlength="80" html-data-parsley-required="true" />
+                              </div>
+
+                              <div class="col-xs-12 col-lg-3" style="margin-top: 20px;">
+                                <span class="form-label">When was it reported?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                <apex:inputfield styleclass="form-control" value="{!c.DCF_File_Submission_Date__c}" html-data-parsley-required="true" html-data-provide="datepicker" />
+                              </div>
+
+                              <div style="margin-top: 10px; padding: 0;" class="col-xs-12">
+                                <div class="col-xs-12 col-lg-4">
+                                  <span class="form-label">Does your report involves legal proceedings?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                  <apex:inputfield styleclass="form-control" value="{!c.Incident_involves_legal_proceedings__c}" html-data-parsley-required="true">
+                                    <apex:actionsupport event="onchange" rerender="PanelInvolvesLegal" />
+                                  </apex:inputfield>
+                                </div>
+
+                                <apex:outputpanel id="PanelInvolvesLegal">
+                                  <apex:outputpanel rendered="{!blnLegal}">
+                                    <div class="col-xs-12 col-lg-8">
+                                      <span class="form-label">Describe the nature of legal proceedings and explain who is involved<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                                      <apex:inputfield styleclass="form-control" value="{!c.Legal_Proceeding_Description__c}"  html-maxlength="32768" html-data-parsley-required="true" />
+                                    </div>
+                                  </apex:outputpanel>
+                                </apex:outputpanel>
+                              </div>
+                            </apex:outputpanel>
+                          </apex:outputpanel>
+                          
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                  </apex:outputPanel>       
+                  <apex:outputPanel rendered="{!caseTypeLabel == 'Incident' || caseTypeLabel == '51A Incident'}">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a>Other Information</a>
+                      </h4>
+                    </div>
+                    <div id="otherInformation" class="panel-group">
+                      <div class="panel-body">
+                        <div class="col-lg-12">
+                           
+                          <apex:outputPanel rendered="{!caseTypeLabel == '51A Incident'}">
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Dates of contact with Homefinder within last 6 months?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Homefinder_Contact_Last_6_Months__c}" html-maxlength="128" html-data-parsley-required="true" />
+                            
+                          </div>
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Last social worker home visit date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Last_Social_Worker_Home_Visit__c}" html-data-parsley-required="true"/>
+                          </div>
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Most recent re-evaluation date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Most_Recent_Reevaluation__c}" html-data-parsley-required="true">
+                            </apex:inputfield>
+                          </div>
+                          
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Concerns identified if any?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Concerns_Identified__c}" html-maxlength="2048" html-data-parsley-required="true">
+                            </apex:inputfield>
+                          </div>
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Original Home Study date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.Original_Home_Study__c}" html-data-parsley-required="true">
+                            </apex:inputfield>
+                          </div>
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">List of restrictions?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.List_of_Restrictions__c}"  html-maxlength="2048" html-data-parsley-required="true">
+                            </apex:inputfield>
+                          </div>
+                          
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">MAPP training date?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control datepicker" html-data-provide="datepicker" value="{!c.MAPP_Training_Date__c}" html-data-parsley-required="true">
+                            </apex:inputfield>
+                          </div>
+                          <div class="col-xs-12 col-lg-6">
+                            <span class="form-label">Home type (Regular/Restricted)?<span class="required" style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','none','')}">*</span><span style="display:{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted','','none')}">: </span></span>
+                            <apex:inputfield styleclass="form-control" value="{!c.Home_Type__c}" html-data-parsley-required="true">
+                            </apex:inputfield>
+                          </div>
+                          
+                          </apex:outputPanel>
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </apex:outputPanel>  -->
+
+              <br />
+              <apex:inputhidden id="IsGSA" value="{!caseTypeLabel}" />
+              
+              <div class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <apex:commandlink id="prevButton" rendered="{!if(c.Status != null && c.status != '' && c.Status != 'Not Submitted' , false, true)}"  styleclass="md-button md-raised md-eec" action="{!save}" onclick="if(validateInjuryPersons() == false){return false;}" value="Save and Previous">
+                  <apex:param assignto="{!saveButtonType}" value="previous" name="Previous" />
+                </apex:commandlink>
+                <apex:commandlink id="nextButton" styleclass="md-button md-raised md-eec" action="{!save}" onclick="if(validateInjuryPersons() == false){return false;}" value="Save and Next">
+                  <apex:param assignto="{!saveButtonType}" value="next" name="Next" />
+                </apex:commandlink>
+              </div>
+
+              <div class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <apex:commandlink id="cancelButton" rendered="{!if(c.Status != null && c.Status != '' && c.Status != 'Not Submitted', false, true)}"  styleclass="md-button md-raised" action="{!returnProvider}" value="Cancel Current Changes and Go back to Provider" onclick="if(!confirm('Are you sure? All changes will be lost!')){return false;}" />
+                <apex:commandlink id="returnButton" styleclass="md-button md-raised" action="{!save}" onclick="if(validateInjuryPersons() == false){return false;}" value="Save and Return to Provider">
+                  <apex:param assignto="{!saveButtonType}" value="return" name="Return" />
+                </apex:commandlink>
+              </div>
+
+              <!--<apex:commandLink id="deleteButton" style="width: 98%;" styleClass="md-button md-raised md-eec" action="{!deleteReturn}" value="Delete" onclick="confirm('Are you sure? This case will be deleted!');" />-->
+
+              <br />
+              <br />
+              <br />
+
+
+            <script type="text/javascript">
+              var form = $(".incident-parsley-form").parsley({
+                errorsWrapper: '<div class="parsley-errors-list"></div>',
+                errorTemplate: '<p class="errorMsg"></p>'
+              });
+              
+              $(document).ready(function() {
+                checkAllPeopleEntries();
+              });
+              
+              function validateInjuryPersons(formVal){
+              //debugger;
+                 var isGSA = $('[id*=IsGSA]').val();
+                 var selected = []; 
+                 var flag = false;
+                 if(isGSA == 'Injury' || ('{!caseTypeLabel}' == 'Foster Home 51A or Incident' && '{!mode}' != 'edit')){
+                    if($('.inv-persons select').val() !== "undefined"){ 
+                        $('.inv-persons select').each(function() {
+                            selected.push($(this).val());
+                            if($(this).val() === 'Child Involvement'){
+                                flag = true;
+                            }
+                        });
+                        if(!flag){
+                            form.validate();
+                            $('.involvedPersonErrorMessage').addClass("visible");
+                            return false;
+                        }
+                        else{
+                            $('.involvedPersonErrorMessage').removeClass("visible"); 
+                            return form.validate();
+                        }
+                    }
+                    else{
+                        form.validate();
+                        $('.involvedPersonErrorMessage').addClass("visible");
+                        return false;
+                    } 
+                 }
+                 else{
+                    $('.involvedPersonErrorMessage').removeClass("visible"); 
+                    return form.validate();
+                 }
+                 return true; 
+              }
+            </script>
+          </apex:pageblock>
+          <apex:pageblock id="attachment-container" rendered="{!currentStage[2]}">
+            <apex:outputpanel >
+              <h4>Attachments - {!caseType}</h4>
+              <hr />
+           <div class="attachment-text">
+              <apex:outputpanel rendered="{!attachmentIntroText != null}">
+                <apex:outputtext value="{!attachmentIntroText}" escape="false"></apex:outputtext>
+              </apex:outputpanel>
+            </div> 
+            <br/>  
+              <apex:outputpanel id="fileAttachmentContainer" styleclass="fileAttachmentContainer" style="width: 100%;">
+                <apex:outputpanel id="fileListContainer">
+                  <!-- Incident Attachments -->
+                  <apex:outputpanel rendered="{!attachments.size > 0}">
+                    <apex:repeat value="{!attachments}" var="attachment">
+                      <div class="attachment-item">
+                        <p>{!attachment.Filename__c}</p>
+                        <p>{!attachment.CreatedDate}</p>
+                        <p>
+                          <apex:commandlink action="{!deleteAttachment}" value="" rerender="script-existing-items, fileAttachmentContainer" style="color: #000;">
+                            <apex:param name="attachmentName" assignto="{!fileToDelete}" value="{!attachment.Id}" />
+                            <i class="material-icons">&#xE872;</i>
+                          </apex:commandlink>
+                        </p>
+                      </div>
+                    </apex:repeat>
+                  </apex:outputpanel>
+                  <!-- No Attachments -->
+                  <apex:outputpanel rendered="{!attachments.size == 0}">
+                    <p>There are no files attached to this report</p>
+                  </apex:outputpanel>
+                </apex:outputpanel>
+              </apex:outputpanel>
+
+              <s3-file-upload button-text="Add an Attachment"
+                              endpoint_url="{!$Setup.AWS_Config__c.S3_Endpoint_Url__c}"
+                              bucket-name="{!$Setup.AWS_Config__c.S3_Bucket_Name__c}"
+                              acl="{!$Setup.AWS_Config__c.S3_Access_Control_Level__c}"
+                              prefix="{!c.Id}/"
+                              key="{!accessKey}"
+                              remote-func-params="{!$RemoteAction.EEC_CasesIncidentsPageController.generateMultiplePolicySignature}"
+                              multiple-enabled="true"
+                              timestamp-enabled="true"
+                              keep-files-enabled="true">
+              </s3-file-upload>
+              <button type="button" class="clear-button md-button md-eec md-raised" ng-click="ctrl.clear()">Clear</button>
+              <p style="margin-top: 10px;"><b>Note:</b> If you wish to upload multiple files then select all desired files in the file explorer window OR you may select each file one by one.</p>
+
+              <apex:actionfunction name="UpdateIncidentAttachments" action="{!saveAttachmentsFromJson}" oncomplete="saveAttachmentsFromJsonComplete();" rerender="showmsg, fileAttachmentContainer">
+                <apex:param name="json" value="" assignto="{!attachmentsJson}" />
+              </apex:actionfunction>
+
+              <apex:actionfunction name="refreshAttachmentsJson" rerender="script-existing-items, fileAttachmentContainer" />
+
+              <apex:actionfunction action="{!nextStage}" name="SaveAndNext">
+                <apex:param assignto="{!saveButtonType}" value="next" name="Next" />
+              </apex:actionfunction>
+              <apex:actionfunction action="{!prevStage}" name="SaveAndPrevious">
+                <apex:param assignto="{!saveButtonType}" value="previous" name="Previous" />
+              </apex:actionfunction>
+              <apex:actionfunction action="{!returnProvider}" name="SaveAndReturn">
+                <apex:param assignto="{!saveButtonType}" value="return" name="Return" />
+              </apex:actionfunction>
+              
+              <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                
+                <apex:commandlink value="Save and Previous" styleclass="md-button md-raised md-eec"
+                                  html-layout-padding="true"
+                                  onclick="uploadAttachments(2); return false;" html-role="button"
+                                   />
+                <apex:commandlink value="Save and Next" styleclass="md-button md-raised md-eec"
+                                  html-layout-padding="true"
+                                  onclick="uploadAttachments(1); return false;" html-role="button" />
+              </md-content>
+
+              <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <apex:commandlink id="cancelButton" styleclass="md-button md-raised" action="{!returnProvider}" value="Cancel Current Changes and Go back to Provider" onclick="if(!confirm('Are you sure? All changes will be lost!')){return false;}" />
+                <apex:commandlink value="Save and Return to Provider" styleclass="md-button md-raised"
+                                  html-layout-padding="true"
+                                  onclick="uploadAttachments(3); return false;" html-role="button" />
+              </md-content>
+            </apex:outputpanel>
+          </apex:pageblock>
+
+          <apex:pageblock id="summarySubmission" rendered="{! currentStage[3] }">
+            <br />
+            <apex:pagemessages />
+            <section>
+              <div class="panel panel-default ">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                      Provider and Reporter
+                  </h3>
+                </div> 
+                <div layout="row" layout-wrap="true">
+                    <div class="col-md-12 col-sm-12" style="padding: 0;">
+                        <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                          <div layout="card-block row" layout-wrap="true">
+                          
+                              <div class="card-row-item col-md-6 col-sm-12">
+                                  <span class="form-label">Provider Name: </span>
+                                  {!a.Name} 
+                              </div> 
+                              <div class="card-row-item col-md-6 col-sm-12">
+                                  <span class="form-label">Name: </span>
+                                {!ct.Name}
+                              </div>
+                            <div class="card-row-item col-md-6 col-sm-12">
+                                  <span class="form-label">Contact Number: </span>
+                                  {!ct.Phone}
+                              </div>
+                              <div class="card-row-item col-md-6 col-sm-12">
+                                  <span class="form-label">Email Address:</span>
+                                  {!ct.Email}
+                              </div>                       
+                          </div>
+                        </div>
+                    </div>
+                </div>            
+              </div>  
+            </section>
+
+
+            <div class="panel panel-default">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                                {!caseTypeLabel} Description
+                              </a>
+                </h4>
+              </div>
+              <div layout="row" layout-wrap="true">
+
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Summary / Type of Case: </span> {!c.subject}
+                      </div>
+
+                      <apex:outputPanel rendered="{!caseTypeLabel != 'Foster Home 51A or Incident'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                          <span class="form-label">What happened? (If applicable, describe any equipment involved including its location and condition): </span><br
+                          /> {!c.Description}
+                        </div>
+                      </apex:outputPanel>
+
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                          <span class="form-label">Foster Parent Name: </span> {!c.Foster_Parent_Name__c}
+
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Foster Parent Address: </span> {!c.Foster_Parent_Address__c}
+
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Does Foster Parent also provide Family Child Care? </span> {!c.Provide_Family_Child_Care__c}
+
+                        </div>
+                      </apex:outputPanel>
+
+
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}" style="width:50%">
+
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Where did the {!caseTypeLabel} occur? </span>
+                          <apex:outputtext value="{!c.Event_Location__c}" />
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">When did the {!caseTypeLabel} occur? </span>
+                          <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!c.Date_Event_Occured__c}" />
+                          </apex:outputtext>
+
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">What time did the {!caseTypeLabel} occur? </span>
+                          <apex:outputtext value="{!c.Time_Event_Occured__c}" label="Time Event Occurred" />
+
+                        </div>
+                      </apex:outputPanel>
+
+
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">What group was the child in when injury occured? </span>
+                          <apex:outputtext value="{!c.Group_the_child_was_in__c }" />
+
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Number of children in the group: </span>
+                          <apex:outputtext value="{!c.No_children_in_group__c  }" />
+
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Names &amp; qualifications of staff supervising the group when injury occurred? </span><br
+                          />
+                          <apex:outputtext value="{!c.Name_Qual_of_staff_supervising__c}" />
+
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!caseTypeLabel == 'Injury'}" style="width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Description of any corrective action taken to prevent similar occurence: </span><br
+                          />
+                          <apex:outputtext value="{!c.Description_of_corrective_action__c}" />
+                        </div>
+                      </apex:outputPanel>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="display:{!if(isChildren || isAdult,'block','none')}">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    Involved Persons
+                  </h3>
+                </div>
+                <div class="panel-body">
+                  <div id="no-more-tables" style="display:{!if(isChildren,'block','none')}">
+                    <apex:outputlabel styleclass="form-label" value="Involved Children"></apex:outputlabel>
+                    <table class="table table-hover">
+                      <thead class="form-label">
+                        <td>First and Last Name</td>
+                        <!--<td>Type</td>-->
+                        <td>Child's birth date</td>
+                        <apex:outputpanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                          <td>Placement date</td>
+                          <td>Does the child need to be moved?</td>
+                        </apex:outputpanel>
+                        <apex:outputpanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}">
+                          <td>Parent/Guardian's Name</td>
+                          <td>Parent/Guardian's Address</td>
+                          <td>Parent/Guardian's Telephone Number</td>
+                        </apex:outputpanel>
+                        <apex:outputpanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                          <td>Role</td>
+                        </apex:outputpanel>
+                        <apex:outputpanel rendered="{!(caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident') }">
+                          <!--<td>Other Role</td>-->
+                          <td>Description of Involvement</td>
+                        </apex:outputpanel>
+                      </thead>
+                      <apex:repeat value="{!InvolvedPersons}" var="p" id="personsRepeaters">
+                        <apex:outputpanel rendered="{!p.TypeName = 'Child Involvement'}">
+                          <tr>
+                            <td>
+                              <apex:outputtext value="{!p.Name}" />
+                            </td>
+                            <!--<td>
+                              <apex:outputtext value="{!p.TypeName}" />
+                            </td>-->
+                            <td>
+                              <c:EEC_DateFormat date="{!p.ChildBirthDate}" />
+                            </td>
+                            <apex:outputpanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                              <td>
+                                <c:EEC_DateFormat date="{!p.PlacementDate}" />
+                              </td>
+                               <td>
+                                <apex:outputtext value="{!p.ChildNeedToBeMoved}" />
+                              </td>
+                            </apex:outputpanel>
+
+                            <apex:outputpanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}">
+                              <td>
+                                <apex:outputtext value="{!p.GuardianName}" />
+                              </td>
+                              <td >
+                                <apex:outputtext value="{!p.GuardianAddress}" />
+                              </td>
+                              <td>
+                                <apex:outputtext value="{!p.GuardianPhone}" />
+                              </td>
+                            </apex:outputpanel>
+                            <apex:outputpanel rendered="{!caseTypeLabel == 'Foster Home 51A or Incident'}">
+                              <td>
+                                <apex:outputtext value="{!p.Role}" />
+                              </td>
+                            </apex:outputpanel>
+                            <apex:outputpanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}">
+                              <!--<td><apex:outputtext value="{!p.OtherRole}" /></td>-->
+                              <td><apex:outputtext value="{!p.Description_of_Involvement}" /></td>
+                            </apex:outputpanel>
+                          </tr>
+                        </apex:outputpanel>
+                      </apex:repeat>
+                    </table>
+                  </div>
+                  <div id="no-more-tables" style="display:{!if(isAdult,'block','none')}">
+                    <apex:outputlabel styleclass="form-label" value="Involved Adults"></apex:outputlabel>
+                    <table class="table table-hover">
+                      <thead class="form-label">
+                        <tr>
+                          <td>First and Last Name</td>
+                          <!--<td>Type</td>-->
+                          <td>Role</td>
+                          <apex:outputpanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}">
+                            <td>Other Role</td>
+                            <td>Title</td>
+                            <td>Status of Staff</td>
+                            <td>Description of Involvement</td>
+                          </apex:outputpanel>
+                        </tr>
+                      </thead>
+                      <apex:repeat value="{!InvolvedPersons}" var="p" id="personsRepeater">
+                        <apex:outputpanel rendered="{!p.TypeName = 'Adult Involvement'}">
+                          <tr>
+                            <td>
+                              <apex:outputtext value="{!p.Name}" />
+                            </td>
+                            <!--<td>
+                              <apex:outputtext value="{!p.TypeName}" />
+                            </td>-->
+                            <td>
+                              <apex:outputtext value="{!p.Role}" />
+                            </td>
+                            <apex:outputpanel rendered="{!caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident'}">
+                              <td>
+                                <apex:outputtext value="{!p.OtherRole}" />
+                              </td>
+                              <td>
+                                <apex:outputtext value="{!p.Title}" />
+                              </td>
+                              <td>
+                                <apex:outputtext value="{!p.Status_of_Staff}" />
+                              </td>
+                              <td>
+                                <apex:outputtext value="{!p.Description_of_Involvement}" />
+                              </td>
+                            </apex:outputpanel>
+                          </tr>
+                        </apex:outputpanel>
+                      </apex:repeat>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default" style="display:{!if(caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident','block','none')}">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                  First Aid / CPR
+                  </a>
+                </h4>
+              </div>
+              <div layout="row" layout-wrap="true">
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Was first aid provided? </span>
+                        {!c.First_Aid_or_CPR_Provided__c}
+                      </div>
+
+                      <apex:outputpanel style="display:{!if(blnFirstAidCPR,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnFirstAidCPR}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                              <span class="form-label">When? </span>
+                              <apex:outputtext value="{!c.First_Aid_When__c}" />
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+                      <apex:outputpanel style="display:{!if(blnFirstAidCPR,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnFirstAidCPR}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">By Whom? </span>
+                              <apex:outputtext value="{!c.First_Aid_By_whom__c}" />
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+                      <apex:outputpanel style="display:{!if(blnFirstAidCPR,'block','none')}; width:50%">
+                          <apex:outputpanel rendered="{!blnFirstAidCPR}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                                <span class="form-label">What was provided? </span>
+                                <apex:outputtext value="{!c.First_Aid_What__c}" />
+                            </div>   
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <hr class="col-xs-12" />
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Was CPR provided? </span>
+                        {!c.CPR_Provided__c}
+                      </div>
+
+                      <apex:outputpanel style="display:{!if(blnCPR,'block','none')}; width:50%">
+                          <apex:outputpanel rendered="{!blnCPR}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                              <span class="form-label">When? </span>
+                              {!c.CPR_When__c}
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+                      <apex:outputpanel style="display:{!if(blnCPR,'block','none')}; width:50%">
+                        <apex:outputpanel rendered="{!blnCPR}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                            <span class="form-label">By Whom? </span>
+                            {!c.CPR_By_Whom__c}
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default" style="display:{!if(caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident','block','none')}">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                  911 Contacted
+                  </a>
+                </h4>
+              </div>
+              <div layout="row" layout-wrap="true">
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Was 911 called? </span>
+                        {!c.X911_Called__c}
+                      </div>
+                      
+                      <apex:outputpanel style="display:{!if(blnCalled911,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnCalled911}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                            <span class="form-label">When?</span>
+                            {!c.X911_called_when__c}
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnCalled911,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnCalled911}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                            <span class="form-label">By Whom? </span>
+                            {!c.X911_By_whom__c}
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>      
+
+            <div class="panel panel-default" style="display:{!if(caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident','block','none')}">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                  Medical Attention
+                  </a>
+                </h4>
+              </div>
+              <div layout="row" layout-wrap="true">
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Was the child transported for medical attention? </span>
+                        {!c.Child_Transported_for_Medical_Attention__c}
+                      </div>
+
+
+                      <apex:outputpanel style="display:{!if(blnChildTransport,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                              <span class="form-label">Where? </span>
+                              {!c.Med_AttentionWhere__c}
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnChildTransport,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">By whom? </span>
+                              {!c.Med_Attention_By_whom__c}
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnChildTransport,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">What medical treatment was provided? (be specific): </span>
+                              {!c.Medical_Treatment_Provided__c}
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnChildTransport,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">What diagnosis resulted from any medical intervention? </span>
+                              {!c.Diagnosis_Resulted__c}
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <hr class="col-xs-12" />
+
+                      <apex:outputpanel style="display:{!if(blnChildTransport,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                              <span class="form-label">Did the child return to your program? </span>
+                              {!c.Child_return_to_Program__c}
+                            </div>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnChildTransport,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnChildTransport}">
+                            <apex:outputpanel style="display:{!if(blnChildReturned,'block','none')};width:100%">
+                              <apex:outputpanel rendered="{!blnChildReturned}">
+                                <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                                  <span class="form-label">When? </span>
+                                  {!c.When_Child_Return__c}
+                                </div>
+                              </apex:outputpanel>
+                            </apex:outputpanel>
+                          </apex:outputpanel>
+                      </apex:outputpanel>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>                    
+
+            <div class="panel panel-default" style="display:{!if(caseTypeLabel == 'Injury' || caseTypeLabel == 'Incident','block','none')}">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                  Information Shared with Parents / Guardians
+                  </a>
+                </h4>
+              </div>
+
+              <div layout="row" layout-wrap="true">
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                          <span class="form-label">Was this information shared with the child's parent/guardian? </span>
+                          {!c.Shared_with_Parents__c}
+                        </div>
+
+
+                        <apex:outputpanel style="display:{!if(blnSharedParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnSharedParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                              <span class="form-label">How was this information shared? </span>
+                              {!c.How_What_Shared_Info__c}
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+
+                        <apex:outputpanel style="display:{!if(blnSharedParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnSharedParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">When was this information shared? </span>
+                              {!c.When_Shared_Info__c}
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+
+                        <apex:outputpanel style="display:{!if(blnSharedParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnSharedParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">Provide the name of the parent/guardian who was contacted? </span>
+                              {!c.With_who__c}
+                            </div>
+                            </apex:outputpanel>
+                        </apex:outputpanel>
+
+                        <apex:outputpanel style="display:{!if(blnSharedParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnSharedParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">Who shared the information with the parent/guardian? </span>
+                              {!c.Who_Shared_Info__c}
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+
+                        <div style="display:{!if(caseTypeLabel == 'Injury','block','none')};width:100%">
+                          <hr class="col-xs-12" />
+                        </div>
+                        <apex:outputPanel style="display:{!if(caseTypeLabel == 'Injury','block','none')};width:50%">
+
+                          
+
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                            <span class="form-label">Was anyone else notified? </span>
+                            {!c.Other_Person_Notified__c }
+                          </div>
+                        </apex:outputPanel>  
+
+                        <apex:outputpanel style="display:{!if(caseTypeLabel == 'Injury' && blnOtherParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnOtherParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                              <span class="form-label">Who else was notified? </span>
+                              {!c.Other_Person_Notified_Who__c }
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+                        <apex:outputpanel style="display:{!if(caseTypeLabel == 'Injury' && blnOtherParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnOtherParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">How was this other person notified? </span>
+                              {!c.Other_Person_Notified_How__c }
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel>
+
+                        <apex:outputpanel style="display:{!if(caseTypeLabel == 'Injury' && blnOtherParents,'block','none')};width:50%">
+                          <apex:outputpanel rendered="{!blnOtherParents}">
+                            <div class="card-row-item col-md-6 col-sm-12" style="width:100%;margin-top:10px;">
+                              <span class="form-label">When was this other person notified? </span>
+                              {!c.Other_Person_Notified_When__c }
+                            </div>
+                          </apex:outputpanel>
+                        </apex:outputpanel> 
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>                       
+
+            <div class="panel panel-default" style="display:{!if(caseTypeLabel == 'Incident' || caseTypeLabel == 'Foster Home 51A or Incident','block','none')}">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                  Filed Reports
+                  </a>
+                </h4>
+              </div>
+
+              <div layout="row" layout-wrap="true">
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Was a report filed with the Massachusetts Department of Children and Families (DCF)(51A)? </span>
+                        {!c.Filed_with_DCF__c}
+                      </div>
+
+                      <apex:outputpanel style="display:{!if(blnFiledDCF,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnFiledDCF}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                            <span class="form-label">By whom? </span>
+                            {!c.DCF_Filer__c}
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnFiledDCF,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnFiledDCF}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                            <span class="form-label">When was it reported? </span>
+                            <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                              <apex:param value="{!c.DCF_File_Submission_Date__c}" />
+                            </apex:outputtext>
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(blnFiledDCF,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnFiledDCF}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                            <span class="form-label">Screening Status: </span>
+                            {!c.DCF_Screening_Status__c}
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <div style="display:{!if(caseTypeLabel == 'Incident','block','none')}; width:100%">
+                        <hr class="col-xs-12" />
+                      </div>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Incident','block','none')};width:50%">
+
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                          <span class="form-label">Was a report filed with the Disabled Persons Protection Commission (DPPC)(19C)? </span>
+                          <apex:outputtext value="{!c.Filed_with_DPPC__c}">
+                          </apex:outputtext>
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(caseTypeLabel == 'Incident' && blnFiledDPPC,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnFiledDPPC}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                            <span class="form-label">By whom? </span>
+                            <apex:outputtext value="{!c.DPPC_Filer__c}" />
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+                      <apex:outputpanel style="display:{!if(caseTypeLabel == 'Incident' && blnFiledDPPC,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnFiledDPPC}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                            <span class="form-label">When was it reported? </span> 
+                            <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                              <apex:param value="{!c.DPPC_File_Submission_Date__c}" />
+                            </apex:outputtext>
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+                      
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Dates of contact with Homefinder within last 6 months? </span>
+                          <apex:outputtext value="{!c.Homefinder_Contact_Last_6_Months__c}" />
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Last social worker home visit date? </span>
+                          <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!c.Last_Social_Worker_Home_Visit__c}" />
+                          </apex:outputtext>
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Most recent re-evaluation date? </span>
+                          <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!c.Most_Recent_Reevaluation__c}" />
+                          </apex:outputtext>
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Original Home Study date? </span>
+                           <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!c.Original_Home_Study__c}" />
+                          </apex:outputtext>
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Concerns identified if any? </span>
+                          <apex:outputtext value="{!c.Concerns_Identified__c}" />
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">MAPP training date? </span>
+                          <apex:outputtext value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!c.MAPP_Training_Date__c}" />
+                          </apex:outputtext>
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Home type (Regular/Restricted)? </span>
+                          <apex:outputtext value="{!c.Home_Type__c}" />
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">List of restrictions? </span>
+                          <apex:outputtext value="{!c.List_of_Restrictions__c}" />
+                        </div>
+                      </apex:outputpanel>
+
+                      <apex:outputPanel style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident','block','none')};width:50%">
+                        <div class="card-row-item col-md-6 col-sm-12" style="width:100%; margin-top:10px;">
+                          <span class="form-label">Allegation(s): </span>
+                          <apex:outputtext value="{!c.Summary_of_Allegation__c}" />
+                        </div>
+                      </apex:outputpanel>
+
+                      <hr class="col-xs-12" />
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="display:{!if(blnFiledDCF,'block','none')};width:50%">
+                        <span class="form-label">Does your report involves legal proceedings? </span>
+                        <apex:outputtext value="{!c.Incident_involves_legal_proceedings__c}">
+                        </apex:outputtext>
+                      </div>
+
+                      <apex:outputpanel style="display:{!if(blnFiledDCF && blnLegal,'block','none')};width:50%">
+                        <apex:outputpanel rendered="{!blnLegal}">
+                          <div class="card-row-item col-md-6 col-sm-12" style="width:100%">
+                            <span class="form-label">Describe the nature of legal proceedings and explain who is involved: </span>
+                            <apex:outputtext value="{!c.Legal_Proceeding_Description__c}" />
+                          </div>
+                        </apex:outputpanel>
+                      </apex:outputpanel>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default" style="display:{!if(caseTypeLabel == 'Foster Home 51A or Incident' && c.Status != '' && c.Status != null && c.Status != 'Not Submitted','block','none')}">
+              <div class="panel-heading" id="headingTwo">
+                <h4 class="panel-title">
+                  <a>
+                  Investigation Conclusion Summary
+                  </a>
+                </h4>
+              </div>
+
+              <div layout="row" layout-wrap="true">
+                <div class="col-md-12 col-sm-12" style="padding: 0;">
+                  <div class="slds-box slds-box--x-small " layout="column" layout-padding="true" layout-margin="true" style="overflow: hidden;margin-left: 0px;">
+                    <div layout="card-block row" layout-wrap="true">
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">Agency Investigation Conclusion: </span>
+                        {!c.Agency_Investigation_Conclusion__c}
+                      </div>
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%">
+                        <span class="form-label">DCF Investigation Conclusion: </span>
+                        {!c.DCF_Investigation_Conclusion__c}
+                      </div>
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%;margin-top:10px">
+                        <span class="form-label">Actions Taken: </span>
+                        {!c.Actions_Taken__c}
+                      </div>
+
+                      <div class="card-row-item col-md-6 col-sm-12" style="width:50%;margin-top:10px">
+                        <span class="form-label">Status of Home: </span>
+                        {!c.Status_of_Home__c}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="panel-group">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Attachments</h3>
+                </div>
+
+                <div class="panel-body">
+                  <apex:outputpanel id="fileAttachmentContainer" styleclass="fileAttachmentContainer" style="width: 100%;">
+                    <apex:outputpanel id="fileListContainer">
+                      <!-- Incident Attachments -->
+                      <apex:outputpanel rendered="{!attachments.size > 0}">
+                        <apex:repeat value="{!attachments}" var="attachment">
+                          <div class="attachment-item">
+                            <p>{!attachment.Filename__c}</p>
+                            <p><apex:outputtext value="{0, date, MMMM d','  yyyy}"><apex:param value="{!attachment.CreatedDate}" /></apex:outputtext></p>
+                            <p>
+                              <apex:commandlink rendered="{!editViewMode}" action="{!deleteAttachment}" value="" rerender="script-existing-items, fileAttachmentContainer" style="color: #000;">
+                                <apex:param name="attachmentName" assignto="{!fileToDelete}" value="{!attachment.Id}" />
+                                <i class="material-icons">&#xE872;</i>
+                              </apex:commandlink>
+                            </p>
+                          </div>
+                        </apex:repeat>
+                      </apex:outputpanel>
+                      <!-- No Attachments -->
+                      <apex:outputpanel rendered="{!attachments.size == 0}">
+                        <p>No attachments for this {!caseTypeLabel}.</p>
+                      </apex:outputpanel>
+                    </apex:outputpanel>
+                  </apex:outputpanel>
+                </div>
+              </div>
+            </div>
+            <br />
+            <apex:actionfunction action="{!submitReturn}" name="SubmitAndReturn">
+                <apex:param assignto="{!submitButtonType}" value="submit" name="Submit" />
+            </apex:actionfunction>
+            <apex:outputpanel layout="block" rendered="{!editViewMode}">
+              <div class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <apex:commandbutton id="prevButton"  styleclass="md-button md-raised md-eec" action="{!prevStage}" value="Previous" />
+                <apex:commandbutton id="submitButton" onclick="fileCheck(); return false;" styleclass="md-button md-raised md-eec" action="{!submitReturn}" value="Submit" />
+              </div>
+
+              <div class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <apex:commandlink id="cancelButton" styleclass="md-button md-raised" action="{!returnProvider}" value="Cancel Current Changes and Go back to Provider" onclick="if(!confirm('Are you sure? All changes will be lost!')){return false;}" />
+                <apex:commandbutton id="submitLaterButton" styleclass="md-button md-raised" action="{!returnProvider}" value="Save and Return to Provider" />
+              </div>
+            </apex:outputpanel>
+            <apex:outputpanel rendered="{!!editViewMode}">
+              <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+                <apex:commandbutton id="editBackButton" styleclass="md-button md-raised" action="{!returnProvider}" value="Return to Provider" />
+                <apex:outputpanel layout="column" rendered="{!IF(c.Status == 'Not Submitted', true, false)}" style="float: right;">
+                  <apex:commandbutton id="editEditButton" styleclass="md-button md-raised md-eec" action="{!editIncident}" value="Edit" />
+                </apex:outputpanel>
+              </md-content>
+            </apex:outputpanel>
+            <br />
+            <br />
+            <br />
+
+          </apex:pageblock>
+        </apex:outputpanel>
+      </apex:form>
+    </div>
+     
+    <c:EEC_LightningProcessingWidget />  
+      
+    <c:EEC_Site_Footer id="siteFooter" />
+
+    <script>
+    app.controller('IncidentsController', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
+      $scope.funcId = '';
+      $scope.numUploadComponents = 0;
+      $scope.timesUploadComplete = 0;
+      $scope.bucketName = '{!bucketName}';
+      $scope.exisitingFiles = '{!attachmentsJson}';
+
+      var ctrl = this;
+      // Call this function to broadcast to the directive to process the upload.
+      this.upload = function(id) {
+        // Set the callback function ID for later.
+        $scope.funcId = id;
+        $scope.numUploadComponents = jQuery('s3-file-upload').length;
+        // Call all upload directives to process files.
+        $rootScope.$broadcast('upload', {});
+      };
+
+      this.clear = function(clearIndex) {
+        if (!angular.isUndefined(clearIndex)) {
+          $rootScope.$broadcast('clearFiles_' + clearIndex, {});
+        } else {
+          $rootScope.$broadcast('clearFiles',{});
+        }
+      }
+
+      // Capture Emit event from Directive for result data.
+      $scope.$on('uploadComplete', function(event, data) {
+        $scope.timesUploadComplete++;
+
+        if (angular.isArray(data)) {
+          var json = [];
+
+          for (var i = 0; i < data.length; i++) {
+            if (!data[i].status) {
+              console.log("----> Error: File not successfully uploaded.");
+              break;
+            }
+            console.log(data[i].data);
+            var attachment = data[i].data;
+            // Split the filename to get the prefix.
+            var splitFilename = attachment.key.split('/');
+            // Create the JSON needed for the S3_File__c objects.
+            var file = {
+              "Filename__c": splitFilename[1],
+              "Prefix__c": splitFilename[0],
+              "Content_Type__c": attachment['Content-Type'],
+              "Acl__c": attachment.acl,
+              "Bucket__c": $scope.bucketName
+            };
+
+            if (!angular.isUndefined($scope.exisitingFiles) && $scope.exisitingFiles !== '') {
+              var exisitingFilesJson = JSON.parse($scope.exisitingFiles);
+              // Loop through the results.
+              angular.forEach(exisitingFilesJson, function(value, key) {
+                // Get the short names of the files without the file extensions.
+                var exisitingShortName = value.Filename__c.split('.')[0];
+                var shortName = file.Filename__c.split('.')[0];
+                // If the short name of the file is the same as the existing then set the id for upsert.
+                if (exisitingShortName == shortName) {
+                  file.Id = value.Id;
+                }
+              });
+            }
+            // Push the file into the json object to send.
+            json.push(file);
+          }
+          console.log("Files Uploaded Successfully!");
+          // Call the action function to create the S3 Object entries in Sforce.
+          UpdateIncidentAttachments(JSON.stringify(json));
+        } else if ($scope.timesUploadComplete == $scope.numUploadComponents) {
+          console.log("Error: " + data.error);
+
+          if (data.error.indexOf('No files') > -1) {
+            console.log("No files to upload. Continue to next page.");
+            switch($scope.funcId) {
+              case 1:
+                SaveAndNext();
+                break;
+              case 2:
+                SaveAndPrevious();
+                break;
+              case 3:
+                SaveAndReturn();
+                break;
+            }
+          }
+        }
+      });
+    }]);
+    </script>
+
+    <script>
+    var inProgress = false;
+
+    var fileCheck = function() {
+        
+        var num = '{!attachments}';
+        if (num.length == 2) {
+          if(confirm('If this is an injury report, please review your attachments to ensure all Injury Reports and First Aid Cards have been attached. Click OK to continue submitting or Cancel to review or change attachments.')) {
+              SubmitAndReturn();
+          } else {
+              return false;
+          }
+      } else {
+          if(confirm('If this is an injury report, please review your attachments to ensure all Injury Reports and First Aid Cards have been attached. Click OK to continue submitting or Cancel to review or change attachments.')) {              
+              SubmitAndReturn();
+          } else {
+              return false;          
+          }
+      }
+    }
+    
+    var uploadAttachments = function(functionId) {
+  
+        if(confirm('If this is an injury report, check to see if you have attached an Injury Report and First Aid Cards. Click OK to continue to the next page. Click Cancel to remain on this page and upload attachments.')) {
+            callUpload(functionId);
+        } else {
+            return false;
+        }
+ 
+    }
+    
+    var callUpload = function(functionId) {
+        
+        j$('body').scrollTop(0);
+        j$('body').css('height', '100%');
+        j$('body').css('overflow', 'hidden')
+        j$('.lpw-widget').show();
+        // Call the Angular process method from JS.
+        return angular.element(jQuery('.incidents-attachment-container'))
+            .scope()
+            .ctrl.upload(functionId);
+        }
+
+        var saveAttachmentsFromJsonComplete = function() {
+          refreshAttachmentsJson();
+          var timesComplete = angular.element(jQuery('.incidents-attachment-container')).scope().timesUploadComplete;
+          var numUploadComponents = angular.element(jQuery('.incidents-attachment-container')).scope().numUploadComponents;
+
+          if (!inProgress && timesComplete == numUploadComponents) {
+            inProgress = true;
+            console.log("----> On Complete for saving attachments");
+            // Call action function for specified button.
+            switch(angular.element(jQuery('.incidents-attachment-container')).scope().funcId) {
+              case 1:
+                SaveAndNext();
+                break;
+              case 2:
+                SaveAndPrevious();
+                break;
+              case 3:
+                SaveAndReturn();
+                break;
+            }
+          }
+        }
+        </script>
+
+        <apex:outputpanel id="script-existing-items">
+          <script>
+          jQuery(window).load(function() {
+            var scope = angular.element(jQuery('.incidents-attachment-container')).scope();
+            scope.$apply(function() {
+              scope.exisitingFiles = '{!attachmentsJson}';
+            });
+          });
+          </script>
+        </apex:outputpanel>
+      </body>
+    </apex:page>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Variance on regulation can be requested by a provider when it can not be in compliance with a specific regulation. Every variance should be associated to 1 reg.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <fields>
+        <fullName>Associated_Regulation__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Associated Regulation</label>
+        <lookupFilter>
+            <active>true</active>
+            <booleanFilter>(1 AND 2) OR 3</booleanFilter>
+            <filterItems>
+                <field>Regulation__c.Date_Active__c</field>
+                <operation>lessOrEqual</operation>
+                <valueField>$Source.Date_today__c</valueField>
+            </filterItems>
+            <filterItems>
+                <field>Regulation__c.Date_Removed__c</field>
+                <operation>greaterOrEqual</operation>
+                <valueField>$Source.Date_today__c</valueField>
+            </filterItems>
+            <filterItems>
+                <field>Regulation__c.Date_Removed__c</field>
+                <operation>equals</operation>
+                <value></value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Regulation__c</referenceTo>
+        <relationshipLabel>Variance on Regulations</relationshipLabel>
+        <relationshipName>Variance_on_Regulations</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Brief_explanation_for_license__c</fullName>
+        <externalId>false</externalId>
+        <label>Brief explanation for license</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISBLANK(Expiration_Date__c ) || TODAY() &gt; Expiration_Date__c || TODAY() &lt; Date_Granted__c , False, IF(ISPICKVAL(Source_Transaction__r.Status__c, &quot;Closed (License Issued / Updated)&quot;) || ISPICKVAL(Source_Transaction__r.Status__c, &quot;Closed (Processed)&quot;), True, False))</formula>
+        <label>Current</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Date_Granted__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND( ISPICKVAL( Decision__c , &quot;Granted&quot;) , ISPICKVAL(Source_Transaction__r.Status__c, &quot;Closed (License Issued / Updated)&quot;) || ISPICKVAL(Source_Transaction__r.Status__c, &quot;Closed (Processed)&quot;))  ,  Source_Transaction__r.License_Issue_Date__c ,null )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Date Granted</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_today__c</fullName>
+        <defaultValue>Today()</defaultValue>
+        <description>This is field is created just to use today field in lookup filter</description>
+        <externalId>false</externalId>
+        <label>Date today</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Decision_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Decision Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Decision_Rationale__c</fullName>
+        <externalId>false</externalId>
+        <label>Decision Rationale</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Decision__c</fullName>
+        <externalId>false</externalId>
+        <label>Decision</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Granted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Denied</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND(ISPICKVAL( Decision__c , &quot;Granted&quot;), ISPICKVAL(Source_Transaction__r.Status__c, &quot;Closed (License Issued / Updated)&quot;) || ISPICKVAL(Source_Transaction__r.Status__c, &quot;Closed (Processed)&quot;)) ,  Source_Transaction__r.License_Expiration_Date__c  ,null )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Licensor_Recommendation__c</fullName>
+        <externalId>false</externalId>
+        <label>Licensor Recommendation</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Granted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Denied</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ProviderType__c</fullName>
+        <externalId>false</externalId>
+        <formula>Provider__r.RecordType.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProviderType</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Provider_Alternative_Method_to_Comply__c</fullName>
+        <externalId>false</externalId>
+        <label>Provider Alternative Method to Comply</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Provider_Understanding_of_Regulation__c</fullName>
+        <externalId>false</externalId>
+        <label>Provider Understanding of Regulation</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Provider__c</fullName>
+        <externalId>false</externalId>
+        <label>Provider</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Variance on Regulations</relationshipLabel>
+        <relationshipName>Variance_on_Regulations</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Recommendation_Rationale__c</fullName>
+        <externalId>false</externalId>
+        <label>Recommendation Rationale</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Source_Transaction__c</fullName>
+        <externalId>false</externalId>
+        <label>Source Transaction</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Licensing_Transaction__c.Provider__r.Id</field>
+                <operation>equals</operation>
+                <value>Variance on Regulation: Provider</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Licensing_Transaction__c</referenceTo>
+        <relationshipLabel>Variance on Regulations</relationshipLabel>
+        <relationshipName>Variance_on_Regulations</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>isCopied__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This field will inform the user if the current variance is a copy from the original transaction or the original ones.</description>
+        <externalId>false</externalId>
+        <label>isCopied</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Variance on Regulation</label>
+    <nameField>
+        <displayFormat>VAR- {000000}</displayFormat>
+        <label>Variance No</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Variance on Regulations</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Brief_explanation_for_license_required</fullName>
+        <active>true</active>
+        <description>Mandatory if Decision = Granted</description>
+        <errorConditionFormula>AND(ISPICKVAL( Decision__c , &quot;Granted&quot;), Brief_explanation_for_license__c  = &quot;&quot;)</errorConditionFormula>
+        <errorDisplayField>Brief_explanation_for_license__c</errorDisplayField>
+        <errorMessage>If the variance is granted, then the brief explanation is mandatory. Fill the field before saving.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Decision_Date_required</fullName>
+        <active>true</active>
+        <description>Mandatory if &quot;Decision&quot; is not empty</description>
+        <errorConditionFormula>AND(NOT(ISPICKVAL( Decision__c , &quot;&quot;) ),  ISNULL(Decision_Date__c) )</errorConditionFormula>
+        <errorDisplayField>Decision_Date__c</errorDisplayField>
+        <errorMessage>If the decision is taken, then the decision date is mandatory. Fill the field before saving.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Decision_Rationale_required</fullName>
+        <active>true</active>
+        <description>Mandatory if Decision is filled</description>
+        <errorConditionFormula>AND(NOT(ISPICKVAL( Decision__c , &quot;&quot;)), Decision_Rationale__c  = &quot;&quot;)</errorConditionFormula>
+        <errorDisplayField>Decision_Rationale__c</errorDisplayField>
+        <errorMessage>If the decision is taken, then the rationale is mandatory. Fill the field before saving.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Provider_should_be_same</fullName>
+        <active>true</active>
+        <description>If Source Transaction is not empty, then provider associated should be the same than the provider associated with the transaction</description>
+        <errorConditionFormula>AND(  NOT(ISNULL( Source_Transaction__c ) ) , Provider__c  &lt;&gt;    Source_Transaction__r.Provider__c)</errorConditionFormula>
+        <errorDisplayField>Provider__c</errorDisplayField>
+        <errorMessage>provider associated should be the same as the provider associated with the transaction</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Recommendation_Rationale_required</fullName>
+        <active>true</active>
+        <description>Mandatory if &quot;Licensor Recommendation&quot; is not empty</description>
+        <errorConditionFormula>AND(NOT(ISPICKVAL( Licensor_Recommendation__c , &quot;&quot;)), Recommendation_Rationale__c   =  &quot;&quot;)</errorConditionFormula>
+        <errorDisplayField>Recommendation_Rationale__c</errorDisplayField>
+        <errorMessage>Rationale is mandatory if  the Recommendation is filled</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Regulations_applicable_to_provider</fullName>
+        <active>true</active>
+        <description>Can only be associated to regulations that are applicable to the Provider type associated to the variance.</description>
+        <errorConditionFormula>AND( NOT(ISBLANK( Associated_Regulation__c )),NOT(OR(
+(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Adoption Agency&apos;) &amp;&amp;  Provider__r.RecordType.Name = &apos;Adoption Agency&apos;), (INCLUDES(Associated_Regulation__r.Applicable_To__c, &apos;Family Child Care&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Family Child Care&apos;), (INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Foster Care Agency&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Foster Care Agency&apos;), (INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Group Care&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Group Care&apos;),(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Large Group&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Large Group&apos;),(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Large and Small Group Umbrella&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Large and Small Group Umbrella&apos;),(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;R&amp;P Umbrella&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;R&amp;P Umbrella&apos;),(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Small Group&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Small Group&apos;),
+(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Temporary Shelter&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Temporary Shelter&apos;),
+(INCLUDES(Associated_Regulation__r.Applicable_To__c,&apos;Unlicensed Provider&apos;) &amp;&amp; Provider__r.RecordType.Name = &apos;Unlicensed Provider&apos;))
+))</errorConditionFormula>
+        <errorDisplayField>Associated_Regulation__c</errorDisplayField>
+        <errorMessage>Associated regulations are not applicable to the Provider type associated to the variance.</errorMessage>
+    </validationRules>
+</CustomObject>

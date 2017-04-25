@@ -1,0 +1,209 @@
+<apex:page controller="EEC_AssistantInfoStepCtrl" doctype="html-5.0" showheader="false" sidebar="false" standardstylesheets="false">
+  <head>
+    <title>EEC</title>
+    <c:EEC_Header id="pageHeader" />
+
+    <style>
+      .assistant-list-header-title {
+        color: rgba(0,0,0,.87);
+        font-size: 24px !important;
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        font-family: inherit !important;
+        font-weight: 500 !important;
+        line-height: 1.1 !important;
+        font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+      }
+    </style>
+  </head>
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar" />
+    <div class="assistant-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">
+      <div class="background-form-container col-lg-8 col-md-8 col-sm-12" layout="column" layout-padding="true" style="margin-bottom:100px;padding-left: 50px;">
+        <apex:form styleclass="assistant-form">
+          
+          <h3 class="md-display-1">Assistant Information</h3>
+          <div class="transaction-info">
+            <h3 class="eec-subhead">Transaction Information</h3>
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label">Transaction Type: </p>
+              <apex:outputtext value="{!LicenseRecordTypeLabel}" />
+            </md-content>
+            <md-content class="transaction-info-row" layout="row">
+              <p class="md-subhead top-level-label">Transaction Number: </p>
+              <apex:outputtext value="{!licenseTransaction.Name}" />
+            </md-content>
+          </div>
+          <h3 class="eec-subhead">Working with Assistants</h3>
+          <div class="working-with-assistants">
+            <md-content class="transaction-info-row" layout="row" layout-wrap="true">
+              <p flex="25" class="md-subhead top-level-label">Are you working with an Assistant(s) or intending to work with an assistant?<span class="required">*</span></p>
+              <apex:inputfield html-flex="70" styleclass="dropdown-input form-control" value="{!licenseTransaction.Working_With_Assistant__c}" html-data-parsley-required="true" />
+            </md-content>
+          </div>
+          <div class="slds">
+            <c:EEC_AssistantList iseditible="true" assistantinterface="{!ctrlInstance}" />
+          </div>
+          <div class="row" style="margin-top:20px;">
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+              <apex:commandlink styleclass="md-button md-raised md-eec" onclick="if(!validateDates()){return false;}" value="Save and Previous" action="{!AssistantInfoSave}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">
+                <apex:param name="saveType" value="2" />
+              </apex:commandlink>
+              <apex:commandlink styleclass="md-button md-raised md-eec" onclick="if(!validateDates()){return false;}" value="Save and Next" action="{!AssistantInfoSave}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">
+                <apex:param name="saveType" value="1" />
+              </apex:commandlink>
+            </md-content>
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">
+              <apex:commandlink styleclass="md-button md-raised" action="{!CancelTransaction}" immediate="true" value="Cancel {!formattedLicenseRecordTypeLabel} Transaction" onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" />
+              <apex:commandlink styleclass="md-button md-raised" onclick="if(!validateDates()){return false;}" value="Save and Return to Provider" action="{!AssistantInfoSave}"  html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true">
+                <apex:param name="saveType" value="3" />
+              </apex:commandlink>
+            </md-content>
+          </div>
+          <apex:actionFunction action="{!AssistantInfoSave}" name="SaveNext" reRender="none" oncomplete="addMargin();">
+         	<apex:param name="saveType" value="1" />
+          </apex:actionFunction>
+         <apex:actionFunction action="{!AssistantInfoSave}" name="SavePrevious" reRender="none" oncomplete="addMargin();">
+            <apex:param name="previousPage" assignTo="{!previousPageName}" value=""/>
+          <apex:param name="saveType" value="2" />
+          </apex:actionFunction>
+        </apex:form>
+      </div>
+      <eec-wizard btn-progress-color="#fff" class="wizard col-md-3" flex="30" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" hide="true" show-gt-md="true">
+       <c:EEC_Navigation current="Assistant Info"
+                                                 recordTypeDeveloperName="{!licenseRecordTypeName}"
+                                                 providerRecordType="{!provider.RecordType.Name}">  
+           </c:EEC_Navigation>
+      </eec-wizard>
+    </div>
+    <c:EEC_Site_Footer id="siteFooter" />
+    <script>
+      function addMargin(){
+            j$(".required-input").addClass("required-input-with-error");
+        }
+      var form = j$(".assistant-form").parsley({
+        errorsWrapper: '<div class="parsley-errors-list"></div>',
+        errorTemplate: '<p class="errorMsg"></p>'
+      });
+
+      function validateDates() {
+        var startDateObjs = j$('.start-date-input');
+        var endDateObjs = j$('.end-date-input');
+        j$('.endDateErrorMessage').hide();
+
+        if (typeof startDateObjs != "undefined" && startDateObjs != null && typeof endDateObjs != "undefined" && endDateObjs != null) {
+          if (startDateObjs.length == 1 && endDateObjs.length == 1) {
+            if (!processSingleCardValidation(startDateObjs, endDateObjs)) {
+              return false;
+            }
+          } else {
+            for (i = 0; i < endDateObjs.length; i++) {
+              if (!processSingleCardValidation(startDateObjs[i], endDateObjs[i])) {
+                return false;
+              }
+            }
+          }
+        }
+        return form.validate();
+      }
+
+      function processSingleCardValidation(startDateObj, endDateObj) {
+        var startDate = convertStringToDate(j$(startDateObj).val());
+        var endDate = convertStringToDate(j$(endDateObj).val());
+
+        if (typeof endDate != "undefined" && endDate != '' && typeof startDate != "undefined" && startDate != '' && endDate < startDate) {
+          j$(endDateObj).parent().parent().find('.endDateErrorMessage').show();
+          form.validate();
+          return false;
+        }
+        return true;
+      }
+
+      app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.funcId = null;
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", 'Assistant Info');
+        tranCtrl.selected = [];
+
+        // Function to check for messages available due to errors.
+        tranCtrl.checkForMessages = function() {
+          // TODO: Switch this to use Angular and now jQuery.
+          var ele = jQuery('[id*="showmsg"]');
+          if (ele.children().length > 0) {
+            return true;
+          }
+          return false;
+        };
+      }]);
+
+      function convertStringToDate(dateToConvert) {
+        try {
+          var convertedDate, dateValues, dayValue, monthValue, yearValue;
+
+          if (typeof dateToConvert != "undefined" && dateToConvert != '') {
+            // date string is separated by slashes
+            dateValues = dateToConvert.split('/');
+            // length should be 3. If it is not, attempt to generate Date from string.
+            if (dateValues.length == 3){
+              // assume index 1 is always month.
+              monthValue = dateValues[1];
+              // if index 0 is greater than 31, format is YYYY/MM/DD.
+              if (dateValues[0] > 31) {
+                yearValue = dateValues[0];
+                dayValue = dateValues[2];
+                // This particular format seems to work without bugs for four-digit years.
+                concatDate = yearValue + '/' + monthValue + '/' + dayValue;
+              } else if (dateValues[2] > 31){
+                // if index 2 is greater than 31, format is DD/MM/YYYY.
+                yearValue = dateValues[2];
+                dayValue = dateValues[0];
+
+                // This particular format seems to work without bugs for four-digit years.
+                concatDate = yearValue + '/' + monthValue + '/' + dayValue;
+              } else {
+                // if neither value is greater than 31, assume format is DD/MM/YY.
+                yearValue = dateValues[2];
+                dayValue = dateValues[0];
+
+                // This particular format seems to work without bugs for two-digit years.
+                concatDate = monthValue + '/' + dayValue + '/' + yearValue;
+              }
+
+              convertedDate = new Date(concatDate);
+            } else {
+              // generate from string if length is not 3.
+              convertedDate = new Date(dateToConvert);
+            }
+          } else {
+            // generate from string if string does not contain slashes or dashes (or is empty).
+            // sometimes when js detects the date from a string it subtracts 1 day, we have only seen this issue locally, not on production
+            convertedDate = new Date(dateToConvert);
+          }
+        } catch (e) {
+          console.log('Error: ' + e);
+        };
+        return convertedDate;
+      }
+      function doNavigate(previousPage, nextPage){
+         if(nextPage != ''){
+          if(!validateDates()){
+           return false;
+          }
+          else{
+           SaveNext();
+          }
+         }
+         else if(previousPage != ''){
+          if(!validateDates()){
+           return false;
+          }
+          else{
+           SavePrevious(previousPage);
+          }
+         }
+        }
+    </script>
+  </body>
+</apex:page>

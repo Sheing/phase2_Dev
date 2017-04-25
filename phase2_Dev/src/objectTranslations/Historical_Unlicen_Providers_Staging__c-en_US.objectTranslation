@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Historical Unlicen Providers Staging</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Historical Unlicen Providers Staging</value>
+    </caseValues>
+    <fields>
+        <label><!-- ErrorText --></label>
+        <name>ErrorText__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider Processed --></label>
+        <name>Provider_Processed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed Address1 --></label>
+        <name>Unlicensed_Address1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed City --></label>
+        <name>Unlicensed_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed ID --></label>
+        <name>Unlicensed_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed Licensor Name --></label>
+        <name>Unlicensed_Licensor_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed Licensor --></label>
+        <name>Unlicensed_Licensor__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed Name --></label>
+        <name>Unlicensed_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed Phone --></label>
+        <name>Unlicensed_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed State --></label>
+        <name>Unlicensed_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unlicensed ZipCode --></label>
+        <name>Unlicensed_ZipCode__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

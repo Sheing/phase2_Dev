@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Transaction Process Step</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Transaction Process Steps</value>
+    </caseValues>
+    <fields>
+        <help><!-- Contain the API name of the field to be updated (ex: &quot;Missing_to_move_to_Under_Review__c&quot;...) --></help>
+        <label><!-- Associated Transaction Field --></label>
+        <name>Associated_Transaction_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Transaction Type --></label>
+        <name>Transaction_Type__c</name>
+        <relationshipLabel><!-- Transaction Process Steps --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Missing Elements For Finalizing</masterLabel>
+            <translation><!-- Missing Elements For Finalizing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Missing Elements For Licensor</masterLabel>
+            <translation><!-- Missing Elements For Licensor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Missing to move to Under Review</masterLabel>
+            <translation><!-- Missing to move to Under Review --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Need Approval</masterLabel>
+            <translation><!-- Need Approval --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Transaction Process Step Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Transaction Process Rule --></label>
+            <section>Transaction Process Rule</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

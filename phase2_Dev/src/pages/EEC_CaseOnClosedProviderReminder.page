@@ -1,0 +1,19 @@
+<apex:page standardController="Case" extensions="EEC_CaseOnClosedProviderController" action="{!updateReminder}">
+    <body>    
+        <apex:includeScript value="{!URLFOR($Resource.EEC_Bootstrap, 'EEC_Bootstrap/js/jquery-1.11.2.min.js')}"/>
+        <script>
+            if(('{!Case.Account.Provider_Status__c}' == 'Voluntary Closure' || '{!Case.Account.Provider_Status__c}' == 'Application Withdrawn / Closed')  
+               && '{!Case.Account.RecordType.Name}' != 'Unlicensed Provider' && !{!Case.Provider_Closed_Reminder__c}){
+                alert('REMINDER: You have created a case for a Provider that is closed.');
+            }
+        	 
+        </script>
+        <apex:outputtext value="{!Case.Status}" rendered="false" />
+        <apex:outputPanel rendered="{!(Case.Account.Provider_Status__c == 'Voluntary Closure' || 
+                                    Case.Account.Provider_Status__c == 'Application Withdrawn / Closed')
+                                    && Case.Account.RecordType.Name != 'Unlicensed Provider'}">
+            <br/>
+            <strong>NOTICE:</strong> The Provider of this case is closed.
+        </apex:outputPanel>
+    </body>    
+</apex:page>

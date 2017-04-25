@@ -1,0 +1,589 @@
+<apex:page controller="EEC_TransactionWizardController" standardStylesheets="false" showheader="false" sidebar="false">
+  <head>
+    <title>EEC : Transaction - Operation Details</title>
+    <c:EEC_Header id="pageHeader" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+        $('[id$=chmDesc1]').hide();
+        $('[id$=chmDesc2]').hide();
+        $('[id$=chmDesc3]').hide();
+        $('[id$=chmDesc4]').hide();
+        saveCheckboxes();
+        saveHalfCheck();
+        saveHalfACheck();
+        });
+        function saveCheckboxes() 
+        { 
+            var n = $('#availableDays input:checked').length;
+            if(n!=0){
+                $('[id$=chmDesc1]').show();
+            }else {
+                $('[id$=chmDesc1]').hide();
+            }
+        }
+        function saveHalfCheck() 
+        { 
+            var n = $('#halfDays input:checked').length;
+            if(n!=0){
+                $('[id$=chmDesc2]').show();
+            }else {
+                $('[id$=chmDesc2]').hide();
+            }
+        } 
+        function saveHalfACheck() 
+        { 
+            var n = $('#halfaDays input:checked').length;
+            if(n!=0){
+                $('[id$=chmDesc3]').show();
+            }else {
+                $('[id$=chmDesc3]').hide();
+            }
+        } 
+        
+    </script>
+    
+      
+    <style>
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {
+        
+        width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .collectcapacity-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            margin-bottom: 15px;
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+      
+        
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+        
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        -webkit-appearance: none;
+        border: none;
+        box-shadow: none;
+        background: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: inherit;
+        font-variant: inherit;
+        font-family: inherit;
+        outline: none;
+        letter-spacing: .01em;
+        margin: 3px 0px;
+        white-space: normal;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+    </style>
+      
+  </head>
+    
+  <body ng-app="eecApp">
+    <c:EEC_Nav_Bar id="navBar"  rendered="{!loggedUser.UserType == 'PowerPartner' || loggedUser.UserType == 'PowerCustomerSuccess' || loggedUser.UserType == 'CspLitePortal' || loggedUser.UserType == 'CustomerSuccess'}"/>
+      
+    <div class="collectcapacity-info-container" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="row" layout-padding="true" layout-margin="true" ng-controller="TransactionController as ctrl">
+      <md-content style="margin-top: 20px;" ng-show="ctrl.checkForMessages()" layout="row" flex="100" layout-align="center center">   
+        <md-whiteframe class="md-whiteframe-z2 ng-cloak" layout="column" layout-padding="true" flex="75">
+          <apex:pageMessages id="showmsg"></apex:pageMessages>
+        </md-whiteframe> 
+      </md-content>
+    
+    <apex:form id="TransactionDesignationForm" styleClass="transaction-parsley-form col-lg-8 col-md-8 col-sm-12">
+      <apex:outputPanel style="padding:50px 50px 50px 50px" id="userDetail"  styleClass="ng-cloak">
+        <h3 class="md-display-1">Operation Details</h3>
+        <md-divider layout-align="center center"></md-divider>  
+        <apex:pageBlock html-layout="column" html-layout-padding="true">
+          <!-- Basic Information -->
+            <div class="base-info" layout="column" layout-lg="row" layout-gt-lg="row" layout-wrap="true">   
+                <h3 class="md-title" flex="100">Provider/Transaction Information</h3>
+                
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Provider Name</label>
+                  <apex:outputText value="{!provider.Name}" id="providerName" />
+                </md-content>
+                
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Transaction Type</label>
+                  <apex:outputText value="{!LicenseRecordTypeLabel}" id="transactionTypeTA" />
+                </md-content>
+
+                <md-content flex="50" layout="column">
+                  <label class="base-label">Transaction Number</label>
+                  <apex:outputText value="{!licenseTransation.Name}" id="transactionNumberTA" />
+                </md-content>
+            </div>
+            <!-- Operation Type-->
+        <div layout="row" layout-wrap="true">
+            <h3 class="md-title" flex="100">Operation Type</h3>
+                <apex:pageBlock >    
+                    <apex:outputpanel >
+                        <apex:actionregion >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <label class="input-label">Operation Type<span class="required">*</span></label>                           
+                            <apex:inputField styleclass="form-control" style="width:320px" 
+                            value="{!licenseTransation.Operation_Type__c}" html-data-parsley-required="true">
+                                <apex:actionsupport event="onchange"  rerender="chmDesc" />
+                            </apex:inputField>
+                        </div>
+                        </apex:actionregion>
+                    </apex:outputpanel>
+                    <apex:outputpanel id="chmDesc" >
+                        <apex:outputpanel rendered="{!licenseTransation.Operation_Type__c=='School Year'}"><br/>
+                            <label class="input-label">From<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.Operation_Start_Month__c}" html-data-parsley-required="true"/> <br/> 
+                            <label class="input-label">To<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.Operation_End_Month__c}" html-data-parsley-required="true"/>  
+                        </apex:outputpanel>
+                    </apex:outputpanel>
+                </apex:pageBlock>
+        </div>
+        
+            <!-- Operation Period - Full Day Program-->
+        <div layout="row" layout-wrap="true">
+            <h3 class="md-title" flex="100">Operation Period - Full Day Program</h3>
+                <apex:pageBlock >    
+                    <apex:outputpanel >
+                        <apex:actionregion >
+                        <div class="radio-group" id="availableDays">
+                            <div class="requiredBlock"></div>
+                            <label class="input-label">Available Days<span class="required">*</span></label>
+                            <apex:selectCheckboxes value="{!selectedDay}" id="fullDay" onchange="saveCheckboxes();">
+                                <apex:selectOptions value="{!weekDays}" html-data-parsley-required="true"/>
+                            </apex:selectCheckboxes>
+                        </div>
+                        
+                        </apex:actionregion>
+                    </apex:outputpanel>
+                    <apex:outputpanel id="chmDesc1" >
+                        <br/><label class="input-label">From<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.Start_Time_Full_day_program__c}" html-data-parsley-required="true"/><br/>
+                            <label class="input-label">To<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.End_Time_Full_day_program__c}" html-data-parsley-required="true"/>  
+                    </apex:outputpanel>
+                </apex:pageBlock>
+        </div>
+        
+            <!-- Operation Period - Half Day Morning Program-->
+        <div layout="row" layout-wrap="true">
+            <h3 class="md-title" flex="100">Operation Period - Half Day Morning Program</h3>
+                <apex:pageBlock >    
+                    <apex:outputpanel >
+                        <apex:actionregion >
+                        <div class="radio-group" id="halfDays">
+                            <div class="requiredBlock"></div>
+                            <label class="input-label">Available Days<span class="required">*</span></label>
+                            <apex:selectCheckboxes value="{!selectedHalfDay}" onchange="saveHalfCheck();">
+                                <apex:selectOptions value="{!weekHalfDays}" html-data-parsley-required="true"/>
+                            </apex:selectCheckboxes>
+                        </div>
+                        </apex:actionregion>
+                    </apex:outputpanel>
+                    <apex:outputpanel id="chmDesc2" >
+                        <br/><label class="input-label">From<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.Start_Time_Morning_program__c}" html-data-parsley-required="true"/> <br/> 
+                            <label class="input-label">To<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.End_Time_Morning_program__c}" html-data-parsley-required="true"/>  
+                    </apex:outputpanel>
+                </apex:pageBlock>
+        </div>
+            
+            <!-- Operation Period - Half Day Afternoon Program-->
+            
+        <div layout="row" layout-wrap="true">
+            <h3 class="md-title" flex="100">Operation Period - Half Day Afternoon Program</h3>
+                <apex:pageBlock >    
+                    <apex:outputpanel >
+                        <apex:actionregion >
+                        <div class="radio-group" id="halfaDays">
+                            <div class="requiredBlock"></div>
+                            <label class="input-label">Available Days<span class="required">*</span></label>
+                            <apex:selectCheckboxes value="{!selectedHalfAfterDay}" onchange="saveHalfACheck();">
+                                <apex:selectOptions value="{!weekHalfAfterDays}" html-data-parsley-required="true"/>
+                            </apex:selectCheckboxes>
+                        </div>
+                        </apex:actionregion>
+                    </apex:outputpanel>
+                    <apex:outputpanel id="chmDesc3" >
+                       <br/><label class="input-label">From<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.Start_Time_Afternoon_program__c}" html-data-parsley-required="true"/> <br/> 
+                            <label class="input-label">To<span class="required">*</span></label>
+                            <apex:inputfield styleclass="form-control" value="{!licenseTransation.End_Time_Afternoon_program__c}" html-data-parsley-required="true"/>  
+                    </apex:outputpanel>
+                </apex:pageBlock>
+        </div>  
+            
+            <!-- Operation Period - Extended Days-->
+            
+           <div layout="row" layout-wrap="true">
+                <h3 class="md-title" flex="100">Operation Period - Extended Days</h3>
+                <apex:pageBlock >    
+                    <apex:outputpanel >
+                        <apex:actionregion >
+                        <div class="radio-group">
+                            <div class="requiredBlock"></div>
+                            <label class="input-label">Do you provide Extended Days option<span class="required">*</span> </label>
+                            <apex:selectRadio value="{!licenseTransation.Provide_Extended_Days1__c}" html-data-parsley-required="true" >
+                                <apex:selectOptions value="{!items}"/>
+                                <apex:actionSupport event="onchange" action="{!showLSDesc}" reRender="chmDesc4" />
+                            </apex:selectRadio>
+                        </div>
+                        </apex:actionregion>
+                    </apex:outputpanel>
+                    <apex:outputpanel id="chmDesc4" >
+                        <apex:outputpanel rendered="{!licenseTransation.Provide_Extended_Days1__c == 'Yes'}">
+                            <label class="input-label">Available Days <span class="required">*</span></label>
+                           <apex:selectCheckboxes >
+                                <apex:selectOptions value="{!weekExtendDays}"/>
+                  </apex:selectCheckboxes> 
+                        </apex:outputpanel>
+                    </apex:outputpanel>
+                </apex:pageBlock>
+        </div>  
+            <!-- Other Service Provided-->
+            <div layout="row" layout-wrap="true">
+                <h3 class="md-title" flex="100">Other Service Provided</h3> 
+            
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Drop_in_Service1__c==null,false,true)}}">
+                  <div class="radio-group"><br/>
+                  <label class="input-label">Drop-in Service Provided?<span class="required">*</span></label>
+                  <apex:selectRadio value="{!licenseTransation.Drop_in_Service1__c}">
+                      <apex:selectOptions value="{!items}" html-data-parsley-required="true"/>
+                  </apex:selectRadio>
+                  </div>
+                </div>
+                
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Evenings_Service1__c==null,false,true)}}">
+                  <div class="radio-group"><br/>
+                  <label class="input-label">Evenings Service Provided?<span class="required">*</span></label>
+                  <apex:selectRadio value="{!licenseTransation.Evenings_Service1__c}">
+                      <apex:selectOptions value="{!items}" html-data-parsley-required="true"/>
+                  </apex:selectRadio>
+                  </div>
+                </div>
+                
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Summer_Camp_Service1__c==null,false,true)}}">
+                  <div class="radio-group"><br/>
+                  <label class="input-label">Will you provide Summer Camp Service?<span class="required">*</span></label>
+                  <apex:selectRadio value="{!licenseTransation.Summer_Camp_Service1__c}">
+                      <apex:selectOptions value="{!items}"  html-data-parsley-required="true"/>
+                  </apex:selectRadio>
+                  </div>
+                </div>
+                
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Cafeteria_Used_During_Program_Hours1__c==null,false,true)}}">
+                  <div class="radio-group"><br/>
+                  <label class="input-label">Do you have a cafeteria that will be used during program hours?<span class="required">*</span></label>
+                  <apex:selectRadio value="{!licenseTransation.Cafeteria_Used_During_Program_Hours1__c}">
+                      <apex:selectOptions value="{!items}"  html-data-parsley-required="true"/>
+                  </apex:selectRadio>
+                  </div>
+                </div>
+                
+                <div flex="50" ng-class="{'md-input-has-value' : {!IF(licenseTransation.Gym_Facility_Used_During_Program_Hours1__c==null,false,true)}}">
+                  <div class="radio-group"><br/>
+                  <label class="input-label">Do you have a gym facility that will be used during program hours?<span class="required">*</span></label>
+                  <apex:selectRadio value="{!licenseTransation.Gym_Facility_Used_During_Program_Hours1__c}">
+                      <apex:selectOptions value="{!items}"  html-data-parsley-required="true"/>
+                  </apex:selectRadio>
+                  </div>
+                </div>
+            </div>
+          
+                
+          
+
+           <!-- Navigation Buttons -->
+           <md-content class="navigation-buttons" style="margin-top:50px;" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+                <apex:commandLink styleClass="md-button md-raised md-eec save-btn" value="Save and Previous" onclick="if(!form.validate()){return false;}" action="{!SaveAndPreviousOperation}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+               <apex:commandLink styleClass="md-button md-raised md-eec save-btn" value="Save and Next" onclick="if(!form.validate()){return false;}" action="{!SaveAndNextOperation}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+            </md-content>
+            <md-content class="navigation-buttons" layout="column" layout-lg="row" layout-align="space-between center" layout-gt-lg="row" layout-align-sm="center center" layout-align-md="center center">    
+                <apex:commandLink styleClass="md-button md-raised"   immediate="true" action="{!CancelTransaction}" value="Cancel {!formattedLicenseRecordTypeLabel} Transaction"  onclick="return confirm('Are you sure to cancel the transaction?');" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                <apex:commandLink styleClass="md-button md-raised save-btn" value="{!saveAndReturnLabel}" onclick="if(!form.validate()){return false;}" action="{!saveAndReturnOperation}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+            </md-content> 
+          </apex:pageBlock>
+        </apex:outputPanel>
+                                <apex:actionFunction action="{!SaveAndNextOperation}" name="SaveNext"/>
+                               <apex:actionFunction action="{!SaveAndPreviousOperation}" name="SavePrevious" oncomplete="addMargin();">
+                               <apex:param name="previousPage" assignTo="{!previousPageName}" value=""/>
+                        </apex:actionFunction>
+      </apex:form>
+       
+      <eec-wizard btn-progress-color="#fff" class="col-lg-3" flex="30" passed-btn-bg-color="#4CAF50" btn-bg-color="#FAFAFA" active-btn-bg-color="#0288D1" hide="true" show-gt-md="true">
+        <c:EEC_Navigation current="Operation details Information"
+                                                 recordTypeDeveloperName="{!LicenseRecordTypeName}"
+                                                 providerRecordType="{!providerRecordType}"> 
+           </c:EEC_Navigation>
+      </eec-wizard>  
+    </div>
+      
+    <c:EEC_Site_Footer id="siteFooter" /> 
+    
+    <script>
+         var form = j$(".transaction-parsley-form").parsley({
+                        errorsWrapper: '<div class="parsley-errors-list"></div>',
+                        errorTemplate: '<p class="errorMsg"></p>'    
+                      });
+      
+      jQuery(window).load(function() {
+        _.each(jQuery('[id*=lookup'), function(value,key) { 
+          jQuery(value).off('click'); 
+          jQuery(value).attr('href', '');
+          jQuery(value).css('text-decoration', 'none');
+          jQuery(value).css('cursor', 'not-allowed');
+          jQuery(value).css('color', 'black');
+          jQuery(value).hover(function() {
+          jQuery(this).css('color', 'black');
+          jQuery(this).css('cursor', 'not-allowed');  
+          jQuery(this).css('text-decoration', 'none');
+          });
+        }); 
+      });
+    </script>
+      
+    <script>
+    function addMargin(){
+            j$(".required-input").addClass("required-input-with-error");
+        }
+      app.controller('TransactionController', ['$scope', '$location', 'Util', function($scope, $location, Util) {
+        // Instance of controller.
+        var tranCtrl = this;
+        // Controller level variables.
+        tranCtrl.data = {};
+        tranCtrl.data.addressCheckbox = "{!provider.Live_at_this_address__c}";
+        tranCtrl.wizardElements = Util.generateWizardElements("{!licenseRecordTypeName}", 'Transaction/Provider Info');
+        tranCtrl.selected = [];
+        //  Function to toggle the checkbox.
+        tranCtrl.toggle = function (item, list) {
+          var idx = list.indexOf(item);
+          if (idx > -1) list.splice(idx, 1);
+          else list.push(item);
+        };
+        // Function to check if checkbox is already checked.
+        tranCtrl.exists = function (item, list) {
+          return list.indexOf(item) > -1;
+        };  
+        // Function to check for messages available due to errors.
+        tranCtrl.checkForMessages = function() {
+          // TODO: Switch this to use Angular and now jQuery.            
+          var ele = jQuery('[id*="showmsg"]');
+          if (ele.children().length > 0) {
+            return true;   
+          }
+          return false;
+        };
+      }]);
+      // TODO: Attempt this in Angular over jQuery.     
+      // If a dateformat is clicked - generated by SForce - then attach input-has-value class.
+      jQuery('.dateFormat').on('click', function() { jQuery(this).parent().parent().parent().addClass('md-input-has-value'); });
+      function doNavigate(previousPage, nextPage){
+         if(nextPage != ''){
+          if(!form.validate()){
+           return false;
+          }
+          else{
+           SaveNext();
+          }
+         }
+         else if(previousPage != ''){
+          if(!form.validate()){
+           return false;
+          }
+          else{
+           SavePrevious(previousPage);
+          }
+         }
+        }
+    </script>
+  </body>
+</apex:page>

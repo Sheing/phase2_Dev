@@ -1,0 +1,102 @@
+<apex:page standardController="Contact" extensions="EEC_GenerateLoginHistoryExtension" applyBodyTag="false" renderas="pdf">
+<head>
+    <style type="text/css">
+        .removeLastPage:last-child {
+             position: absolute;
+             bottom: 0;
+        }
+        .removeLastPage { 
+            font-family: "Times New Roman";
+            font-size: 11pt;
+            display:table;
+            table-layout:fixed;
+            width: 100%;
+        }
+        
+        @page {
+            size:landscape;
+        }
+        
+        table {
+            -fs-table-paginate: paginate !important;
+        }
+       
+        table tr {
+            page-break-inside:avoid !important;
+        } 
+              
+        div.row {
+            margin-left: 25px;
+        }
+        
+        div.row .title {
+            width: 110px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        div.section {
+            width: 49%;
+            display:  table-cell;
+        }
+        div.section .header {
+            height: 40px;
+        }
+        
+       
+        .container {
+            display: table;
+            width: 100%;
+        }
+       
+       
+    </style>
+</head>
+<apex:variable var="provider" value="{! Contact.Account }" /> 
+<div class="removeLastPage">
+    <div class="container">
+        <div><center><b>Provider Portal Login History Report</b></center></div>
+    	<br/>
+        <div class="col">
+            <div class="row">
+                <div class="title">Provider Name: </div>
+                {! provider.Name }
+            </div>
+            <div class="row">
+                <div class="title">Provider Num: </div>
+                {!IF(provider.Use_Legacy_Prov_Number__c == true , provider.Provider_No__c,provider.Provider_Number__c)}
+            </div>
+            <div class="row">
+                <div class="title">Contact Name: </div>
+                {! Contact.Name }
+            </div>
+            <div class="row">
+                <div class="title">Report Date: </div>
+                <c:EEC_DateFormat date="{! Today()  }" />
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <br/>
+        <br/>
+        <apex:dataTable headerClass="table-header" border="1" style="table-layout: fixed; border-style: solid;" styleClass="table" columnsWidth="35%, 20%, 20%, 25%" cellpadding="3" width="100%" value="{! LoginHistory }" var="item">
+            <apex:column >
+                <apex:facet name="header"><center>Login Time</center></apex:facet>
+                <c:EEC_DateTimeFormat datetime="{! item.LoginTime__c }" />
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header"><center>Status</center></apex:facet>
+                <apex:outputText value="{! item.Status__c  }"/>
+            </apex:column> 
+            <apex:column >
+                <apex:facet name="header"><center>Browser</center></apex:facet>
+                <apex:outputText value="{! item.Browser__c  }"/>
+            </apex:column> 
+            <apex:column >
+                <apex:facet name="header"><center>Platform</center></apex:facet>
+                <apex:outputText value="{! item.Platform__c  }"/>
+            </apex:column> 
+    	</apex:dataTable>
+        
+    </div>
+</div>
+</apex:page>

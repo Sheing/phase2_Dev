@@ -1,0 +1,87 @@
+<apex:page showHeader="false"
+      sidebar="false"
+      standardStylesheets="false"
+      applyHtmlTag="false"
+      applyBodyTag="false">
+
+      <head>
+            <title>EEC : Portal Provider Page</title>
+            <c:EEC_Header id="pageHeader" />
+            <apex:stylesheet value="{! URLFOR($Resource.iffIntakeResources, 'vendor.css') }" />
+            <apex:stylesheet value="{! URLFOR($Resource.iffIntakeResources, 'app.css') }" />
+          <style>
+            .navbar-fixed-bottom {
+                position: inherit;
+                min-height : 1080px;
+            }
+          </style>
+      </head>
+
+      <body>
+        <c:EEC_Nav_Bar id="navBar" />    
+          <apex:remoteObjects jsNamespace="SObjectModel">
+            
+              <apex:remoteObjectModel name="FormVersion__c"
+                fields="Name,Id,Form__c"
+              />
+            
+              <apex:remoteObjectModel name="FormComponent__c"
+                fields="Name,Id,Component__c,FormVersion__c,ParentFormComponent__c,Type__c,ComponentType__c,Order__c,UUID__c,ParentFormComponentUUID__c"
+              />
+            
+              <apex:remoteObjectModel name="Component__c"
+                fields="Id,Type__c,Name"
+              />
+            
+              <apex:remoteObjectModel name="Form__c"
+                fields="Id,Name,ActiveVersion__c,UUID__c"
+              />
+            
+              <apex:remoteObjectModel name="ComponentProperty__c"
+                fields="Id,Component__c,Property__c"
+              />
+            
+              <apex:remoteObjectModel name="FormComponentProperty__c"
+                fields="Id,Name,FormComponent__c,ComponentProperty__c,Conditions__c,PropertyName__c,FormComponentUUID__c,UUID__c"
+              />
+            
+              <apex:remoteObjectModel name="Property__c"
+                fields="Id,Name,DeveloperName__c"
+              />
+            
+              <apex:remoteObjectModel name="Intake__c"
+                fields="Id,Name,FormVersion__c"
+              />
+            
+              <apex:remoteObjectModel name="Response__c"
+                fields="Id,Name,Intake__c,FormComponent__c,Value__c"
+              />
+              
+              <apex:remoteObjectModel name="ProcessingStep__c"
+                fields="Id,Config__c,FormVersion__c,Type__c"
+              />
+            
+              <apex:remoteObjectModel name="ProcessingStepType__c"
+                fields="Id,Name,Type__c"
+              />
+            
+          </apex:remoteObjects>
+        
+
+        
+          <div id="app"></div>
+        
+
+        <script>
+          window['zipFileVar'] = '{! URLFOR($Resource.iffIntakeResources) }';
+          window['accessTokenVar'] = '{!$Api.Session_ID}';
+        </script>
+          
+            <script src="{! URLFOR($Resource.iffIntakeResources, 'manifest.js') }"></script>
+          
+            <script src="{! URLFOR($Resource.iffIntakeResources, 'vendor.js') }"></script>
+          
+            <script src="{! URLFOR($Resource.iffIntakeResources, 'app.js') }"></script>
+        <c:EEC_Site_Footer id="siteFooter" />
+      </body>
+    </apex:page>

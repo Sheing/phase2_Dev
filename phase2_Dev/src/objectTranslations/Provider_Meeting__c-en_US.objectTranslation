@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Provider Meeting</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Provider Meetings</value>
+    </caseValues>
+    <fields>
+        <label><!-- Additional Staff --></label>
+        <name>AdditionalStaff__c</name>
+        <relationshipLabel><!-- Provider Meetings (Additional Staff) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Attended - No. of participants --></label>
+        <name>Attended_No_of_participants__c</name>
+    </fields>
+    <fields>
+        <label><!-- Expected - No. of participants --></label>
+        <name>Expected_No_of_participants__c</name>
+    </fields>
+    <fields>
+        <label><!-- Language --></label>
+        <name>Language__c</name>
+        <picklistValues>
+            <masterLabel>Chinese</masterLabel>
+            <translation><!-- Chinese --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>English</masterLabel>
+            <translation><!-- English --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other Non-English</masterLabel>
+            <translation><!-- Other Non-English --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Portuguese</masterLabel>
+            <translation><!-- Portuguese --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spanish</masterLabel>
+            <translation><!-- Spanish --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Language for Portal --></label>
+        <name>Language_for_Portal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Leader --></label>
+        <name>Leader__c</name>
+        <relationshipLabel><!-- Provider Meetings (Leader) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Meeting Address --></label>
+        <name>Meeting_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Meeting Location Description --></label>
+        <name>Meeting_Location_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Meeting Region --></label>
+        <name>Meeting_Region__c</name>
+        <relationshipLabel><!-- Provider Meetings --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Meeting Status --></label>
+        <name>Meeting_Status__c</name>
+        <picklistValues>
+            <masterLabel>Cancelled</masterLabel>
+            <translation><!-- Cancelled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Closed for registration</masterLabel>
+            <translation><!-- Closed for registration --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Open for registration</masterLabel>
+            <translation><!-- Open for registration --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Meeting Type --></label>
+        <name>Meeting_Type__c</name>
+        <picklistValues>
+            <masterLabel>PPM (FCC)</masterLabel>
+            <translation><!-- PPM (FCC) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PPM (GSA)</masterLabel>
+            <translation><!-- PPM (GSA) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Renewal (GSA)</masterLabel>
+            <translation><!-- Renewal (GSA) --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Meeting Type for Certificate --></label>
+        <name>Meeting_Type_for_Certificate__c</name>
+    </fields>
+    <fields>
+        <label><!-- No. of seats available --></label>
+        <name>No_of_seats_available__c</name>
+    </fields>
+    <fields>
+        <label><!-- Number of Remaining Spots --></label>
+        <name>Number_of_Remaining_Spots__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Language --></label>
+        <name>Other_Language__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled End --></label>
+        <name>Scheduled_End__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Start --></label>
+        <name>Scheduled_Start__c</name>
+    </fields>
+    <layouts>
+        <layout>Provider Meeting Layout</layout>
+        <sections>
+            <label><!-- Addtional Meeting Details --></label>
+            <section>Addtional Meeting Details</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- General Information --></label>
+            <section>General Information</section>
+        </sections>
+        <sections>
+            <label><!-- Meeting Speaker --></label>
+            <section>Meeting Speaker</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- You must update the participants with &quot;Attended&quot; status prior to changing the status of the meeting to Completed. --></errorMessage>
+        <name>Cannot_change_meeting_status_Completed</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Meeting Status can not be changed to &quot;Completed&quot; if the Scheduled End Date is in the future --></errorMessage>
+        <name>Changing_Meeting_status_to_Completed</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Scheduled End Time must be AFTER the Scheduled Start Time --></errorMessage>
+        <name>End_Time_greater_than_Start_Time</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Mandatory if Language = &quot;Other Non-English&quot; --></errorMessage>
+        <name>Field_other_language_Mandatory</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot change No. of seats when Status = &quot;Closed for Registration&quot;. --></errorMessage>
+        <name>Number_of_seats_cannot_be_changed</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Generate_Participant_Certificates --></label>
+        <name>Generate_Participant_Certificates</name>
+    </webLinks>
+</CustomObjectTranslation>

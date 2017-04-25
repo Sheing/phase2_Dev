@@ -1,0 +1,56 @@
+<apex:page sidebar="false" showheader="false" 
+           standardstylesheets="false" 
+           docType="html-5.0" 
+           controller="PortalDocumentLibraryCtrl">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+      <title>EEC</title>
+      <c:EEC_HomePageStyles />
+        
+      <style>
+        .dl-container {
+          padding: 45px 40px 20px 40px;
+        }
+        
+        .dl-main-title {
+          margin-bottom: 20px;  
+        }
+        
+        .dl-container .slds-media__body p {
+          margin-left: 5px;  
+        }
+        
+        .svg-sort-header path {
+          fill: #000000; 
+        }
+        
+        .document-container {
+          margin-top: 10px;
+        }
+        
+        .dl-container .slds-button-group {
+          max-height: 30px;    
+        }
+          
+        .dl-add-button {
+          top: 8.5px;
+          position: relative;  
+        }
+      </style>
+    </head>
+        
+    <body>
+      <c:EEC_Nav_Bar_2 id="navBar" />
+        
+      <apex:outputPanel rendered="{!ISBLANK(mode)}">
+        <c:DocumentLibrary />  
+      </apex:outputPanel>  
+        
+      <apex:outputPanel rendered="{!isModifyMode}">
+        <c:DocumentModification />  
+      </apex:outputPanel>  
+      
+      <div><c:EEC_Site_Footer id="siteFooter" /></div>
+    </body>      
+  </html>
+</apex:page>

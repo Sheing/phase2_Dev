@@ -1,0 +1,46 @@
+<apex:page controller="EEC_LEADAdminToolsController">
+<apex:form >
+ 
+<apex:pageBlock title="Load Differential Licensing Tools">
+
+		<center><apex:pageMessages ></apex:pageMessages></center>
+		<apex:pageBlockSection title="FCC DL Tools" collapsible="false" columns="2">
+			<div>
+			   <b>Load FCC Progress/Monitoring/Enhanced Tools</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Load FCC DL Tools" action="{!loadFCCDLTools}"/>
+			</div>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="GSA DL Tools" collapsible="false" columns="2">
+			<div>
+			   <b>Load GSA Large/Small Group Monitoring/Enhanced Tools</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Load GSA DL Tools" action="{!loadGSADLTools}"/>
+			</div>
+		
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Residential DL Tools" collapsible="false" columns="2">
+			<div>
+			   <b>Load Residential Monitoring/Enhanced Tools</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Load Residential DL Tools" action="{!loadResidentialDLTools}"/>
+			</div>
+		
+		</apex:pageBlockSection>
+		<apex:pageBlockSection title="Placement DL Tools" collapsible="false" columns="2">
+			<div>
+			   <b>Load Adoption/Foster Care Monitoring/Enhanced Tools</b>
+			</div>
+			<div>
+			   <apex:commandButton value="Load Placement DL Tools" action="{!loadPlacementDLTools}"/>
+			</div>
+		
+		</apex:pageBlockSection>
+</apex:pageBlock>
+
+
+</apex:form>
+</apex:page>

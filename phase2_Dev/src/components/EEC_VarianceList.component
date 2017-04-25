@@ -1,0 +1,237 @@
+<apex:component controller="EEC_VarianceListCtrl">
+  <style>
+    .slds {
+      color: rgba(0,0,0,.87);
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif;
+    }
+
+    .slds .slds-table--bordered {
+      border: 1px solid #d8dde6;
+    }
+      
+    .slds .slds-text-heading--label {
+      color: rgba(0,0,0,.87);
+    }
+
+    .eec-header-style {
+      font-size: 14px;
+      text-transform: capitalize;
+      font-weight: bold !important;
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+    }
+    .eec-subhead {
+            font-size: 14px; 
+        	margin-left: 0px;
+        	font-weight: bold !important;
+            font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+          }
+          
+     .eec-subInfoText {
+            font-weight: 600;
+            margin-right: 15px;
+            line-height: 20px; 
+            color: rgba(0,0,0,0.54);
+          }
+
+    .dropdown-input {
+      margin-left: 25px;
+      position: relative;
+      top: 10px;
+    }
+
+    .top-level-label {
+      font-weight: 600;
+      margin-right: 3px;
+      line-height: 20px;
+      color: rgba(0,0,0,0.54);
+    }
+
+    .empty-input {
+      margin-bottom: 30px;
+    }
+
+    button {
+      font-family: RobotoDraft,Roboto,'Helvetica Neue',sans-serif !important;
+      font-weight: 500 !important;
+    }
+
+    .card-row-item {
+      margin-bottom: 10px;
+    }
+    
+    .overflowDesc{
+    display: block;
+    height: 50px;
+    overflow: auto;
+    }    
+	::-webkit-scrollbar {
+	    -webkit-appearance: none;
+	    width: 7px;
+	}
+	::-webkit-scrollbar-thumb {
+	    border-radius: 4px;
+	    background-color: rgba(0,0,0,.5);
+	    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+  </style>
+
+  <apex:attribute type="EEC_VarianceInterface" name="varianceInterface" assignTo="{!vif}" description="Interface reference for controller." />
+  <apex:attribute type="Boolean" name="isEditible" required="true" description="This will determine if adding a variance is allowed." />
+  <apex:attribute type="Boolean" name="isTable" description="This boolean will determine if the view should be a table or cards." />
+  <apex:attribute type="Account" name="currentAccount" assignTo="{!mAccount}" description="If this component is used on a non transaction page it requires the account information to obtain the variances." />
+  <apex:attribute type="String" name="introText" description="This is the introduction text featured at the top of the Variance List." />
+ 
+ <apex:actionfunction action="{!addVarianceToList}" name="addVarianceToList" rerender="variance-list">
+    <apex:param name="regulationId" value="" />
+  </apex:actionfunction>
+  <apex:outputpanel rendered="{!isEditible}" layout="block"><h3 class="variance-list-header-title eec-subhead slds-text-heading--medium">Variances List</h3></apex:outputpanel>
+  <apex:outputpanel rendered="{!isEditible}" layout="block"><div class="eec-subInfoText">If you are requesting any regulation variances or you have any existing / approved variances for which you will be seeking renewal (they will appear below in their current state), please fill the fields below and attach any additional information. In order to receive a variance, you must submit clear evidence, to the satisfaction of the Department, that your variance proposal meets the spirit and intent of EEC regulations.  Please note:<br/>
+1.        The Variance requested must be adequate to protect the health and safety of children.<br/>
+2.        The Variance requested must not contradict other applicable regulations.<br/>
+3.        The maximum amount of time for which a variance will be granted is the duration of the licensing period.<br/>
+4.        The Variance is not transferable to another licensee or another location.<br/>
+		</div></apex:outputpanel>
+
+    <apex:outputpanel id="variance-list" layout="block" styleclass="variances-list-container">
+    <apex:outputtext rendered="{!!isEditible && introText == ''}"><p class="variance-header-text">Listed below are the Variances attached to the Provider:</p></apex:outputtext>
+   
+  
+   <!-- Card View -->
+    <apex:outputpanel layout="block" rendered="{!VariancesListCount && (isTable == null || !isTable)}">
+      <div layout="row" layout-wrap="true">
+        <apex:repeat value="{!VariancesList}" var="varianceWrapper">
+          <div class="col-md-12 col-sm-18" style="padding: 0;">
+            <div class="slds-box slds-box--x-small" layout="column" layout-padding="true" layout-margin="true">
+              <div layout="row" layout-wrap="true">
+                <div class="card-row-item col-md-12 col-sm-14">
+                  <p class="top-level-label">Identify the regulation, by number and title, for which a variance is being requested</p>
+                  <p class="{!IF(varianceWrapper.varianceReg.Associated_Regulation__r.Regulation_Number__c != null, '', 'empty-input')}">{!IF(varianceWrapper.varianceReg.Associated_Regulation__r.Regulation_Number__c != null, varianceWrapper.varianceReg.Associated_Regulation__r.Regulation_Number__c, varianceWrapper.regInfo.Regulation_Number__c)}</p>
+                </div>
+                <div class="card-row-item col-md-12 col-sm-12">
+                  <p class="top-level-label">Regulation Article</p>
+                  <apex:outputText styleclass="overflowDesc" value="{!IF(varianceWrapper.varianceReg.Associated_Regulation__r.Article__c != null, varianceWrapper.varianceReg.Associated_Regulation__r.Article__c, varianceWrapper.regInfo.Article__c)}" escape="false" />
+                </div>
+                 <div class="card-row-item col-md-12 col-sm-14">
+                  <p class="top-level-label">Describe your understanding of the regulation and the intent of the regulation 
+                  <apex:outputpanel rendered="{!isEditible}"><span class="required">*</span></apex:outputpanel></p>
+                  <apex:inputTextarea styleClass="slds-input" rendered="{!isEditible}" value="{!varianceWrapper.varianceReg.Provider_Understanding_of_Regulation__c}" rows="6" html-data-parsley-required="true"/>
+                   <apex:outputpanel rendered="{!!isEditible}">
+                   <p>{!IF(varianceWrapper.varianceReg.Provider_Understanding_of_Regulation__c != null, varianceWrapper.varianceReg.Provider_Understanding_of_Regulation__c, '')}</p>
+                   </apex:outputpanel>
+         
+                </div>  
+                 <div class="card-row-item col-md-12 col-sm-14">
+                  <p class="top-level-label"></p>
+                  <p></p>
+                </div> 
+                 <div class="card-row-item col-md-12 col-sm-14">
+                  <p class="top-level-label">Describe your alternative method of compliance. Be specific, explaining how your method meets the regulation.
+                  &nbsp; <apex:outputpanel rendered="{!isEditible}">See reference at 102 CMR 
+                  <apex:commandlink onclick="window.open('/apex/EEC_RegulationView?id=3.03(03)(a)','_blank','width=500, height=400');return false;" value="3.03(03)(a)" />,&nbsp;
+                  <apex:commandlink onclick="window.open('/apex/EEC_RegulationView?id=3.03(03)(b)','_blank','width=500, height=400');return false;" value="3.03(03)(b)" />,&nbsp;
+                  <apex:commandlink onclick="window.open('/apex/EEC_RegulationView?id=5.03(06)','_blank','width=500, height=400');return false;" value="5.03(06)" />,&nbsp;
+                  <apex:commandlink onclick="window.open('/apex/EEC_RegulationView?id=7.03(06)','_blank','width=500, height=400');return false;" value="7.03(06)" />,&nbsp;
+                  <apex:commandlink onclick="window.open('/apex/EEC_RegulationView?id=8.03(10)','_blank','width=500, height=400');return false;" value="8.03(10)" />
+                 <span class="required">*</span></apex:outputpanel> </p>
+                   <apex:inputTextarea styleClass="slds-input" rendered="{!isEditible}" value="{!varianceWrapper.varianceReg.Provider_Alternative_Method_to_Comply__c}" rows="6" html-data-parsley-required="true"/>
+                   <apex:outputpanel rendered="{!!isEditible}">
+                   <p>{!IF(varianceWrapper.varianceReg.Provider_Alternative_Method_to_Comply__c != null, varianceWrapper.varianceReg.Provider_Alternative_Method_to_Comply__c, '')}</p>
+                   </apex:outputpanel>
+                </div>
+                 <div class="card-row-item col-md-12 col-sm-14">
+                  <p class="top-level-label"></p>
+                  <p></p>
+                </div>  
+               <div class="card-row-item col-md-12 col-sm-14">
+                <p class="top-level-label">
+               In the next page, you will also be able to attach any supportive material that you feel will help with your explanation, including diagrams, photographs, policies, forms, expert opinions, etc.		
+               </p></div>
+                <apex:outputpanel layout="block" rendered="{!varianceWrapper.isNew && isEditible}" html-flex="50" style="text-align: right;" styleClass="card-row-item">
+                  <apex:commandbutton action="{!removeAddedVariance}" rerender="variance-list" value="Delete" styleclass="md-button md-eec md-raised">
+                    <apex:param name="wrapperId" value="{!varianceWrapper.wrapperId}" />
+                  </apex:commandbutton>
+                </apex:outputpanel>
+              </div>
+            </div>
+          </div>
+        </apex:repeat>
+      </div>
+    </apex:outputpanel>
+  <!-- Table View -->
+    <apex:outputpanel layout="block" rendered="{!VariancesListCount && (isTable != null && isTable)}">
+      <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
+        <thead>
+          <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Identify the regulation, by number and title, for which a variance is being requested</span></th>
+           </tr>
+          <tr class="slds-text-heading--label"> 
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Regulation Article</span></th>
+          </tr>
+          <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Describe your understanding of the regulation and the intent of the regulation</span></th>
+           </tr>
+           <tr class="slds-text-heading--label">
+            <th scope="col" class="slds-cell-wrap eec-header-style"><span class="slds-wrap">Describe your alternative method of compliance. Be specific, explaining how your method meets the regulation.</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <apex:repeat value="{!VariancesList}" var="varianceWrapper">
+            <tr class="slds-hint-parent">
+              <th data-label="variance-reg" role="row"><span class="slds-wrap">{!IF(varianceWrapper.varianceReg.Associated_Regulation__r.Regulation_Number__c != null, varianceWrapper.varianceReg.Associated_Regulation__r.Regulation_Number__c, varianceWrapper.regInfo.Regulation_Number__c)}</span></th>
+             </tr>
+             <tr class="slds-hint-parent">
+              <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(varianceWrapper.varianceReg.Associated_Regulation__r.Article__c != null, varianceWrapper.varianceReg.Associated_Regulation__r.Article__c, varianceWrapper.regInfo.Article__c)}</span></td>
+              </tr>
+             <tr class="slds-hint-parent">
+              <td class="slds-cell-wrap" data-label="variance-regulation"><span class="slds-wrap">{!IF(varianceWrapper.varianceReg.Provider_Alternative_Method_to_Comply__c != null, varianceWrapper.varianceReg.Provider_Alternative_Method_to_Comply__c, '')}</span></td>
+              </tr>
+              <tr class="slds-hint-parent">
+              <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap">{!IF(varianceWrapper.varianceReg.Provider_Understanding_of_Regulation__c != null, varianceWrapper.varianceReg.Provider_Understanding_of_Regulation__c, '')}</span></td>
+              </tr>
+             
+              <tr class="slds-hint-parent">
+              <td class="slds-cell-wrap" data-label="variance-"><span class="slds-wrap"></span></td>
+              </tr>
+              <tr class="slds-hint-parent">
+              
+              <td class="slds-cell-wrap">
+                <apex:outputpanel layout="block" rendered="{!varianceWrapper.isNew && isEditible}" html-flex="50" style="text-align: right;">
+                  <apex:commandbutton action="{!removeAddedVariance}" rerender="variance-list" value="Delete" styleclass="md-button md-eec md-raised">
+                    <apex:param name="wrapperId" value="{!varianceWrapper.wrapperId}" />
+                  </apex:commandbutton>
+                </apex:outputpanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </tbody>
+      </table>
+    </apex:outputpanel>
+    <apex:outputpanel rendered="{!!VariancesListCount}">
+      <div class="slds-box slds-box--x-small" layout-padding="true" layout-margin="true">There are currently no variances available for the provider.</div>
+    </apex:outputpanel>
+    <apex:outputpanel rendered="{!isEditible}">
+      <div style="width: 100%; margin: 0px -22px; text-transform: uppercase;" layout="row" layout-align="end end">
+        <button id="add-new-variance" type="button" style="text-transform: uppercase;" class="md-button md-eec md-raised">Add New Variance</button>
+      </div>
+    </apex:outputpanel>
+    </apex:outputpanel>
+     <script>
+    // Callback function for lookup popups.
+      var handleParentLookup = function(objType, resultId, resultName) {
+        console.log(objType + ' <= Type, ' + resultId + ' <= Result Id, ' + resultName + ' <= Result Name');
+
+        // Send the id to the controller and rerender the list.
+        addVarianceToList(resultId);
+      }
+
+      // Case Parent lookup popup call.
+      j$('body').on('click', '#add-new-variance', function() {
+        var lookupWindow = null;
+          lookupWindow = window.open(
+            '/apex/EEC_Lookup?sobject=Regulation__c&rtype={!programRecordType}',
+            'Lookup',
+            'height=500,width=500'
+          );
+      });
+  </script>
+</apex:component>

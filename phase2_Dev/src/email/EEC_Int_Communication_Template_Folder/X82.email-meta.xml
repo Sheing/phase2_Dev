@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>82 - Notification to supervisor that visit tool to be used is not the recommended one</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>82 - Notification to supervisor that visit tool to be used is not recommended</name>
+    <style>none</style>
+    <subject>{!Inspection__c.Name} has been set to use a visit tool different than the tool suggested for a {!Inspection__c.Type_of_Visit__c} visit</subject>
+    <type>text</type>
+</EmailTemplate>

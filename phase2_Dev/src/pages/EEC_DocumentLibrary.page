@@ -1,0 +1,476 @@
+<apex:page controller="EEC_DocumentLibraryController" applyhtmltag="false" applybodytag="false" action="{!doCreateDocs}" showheader="false" sidebar="false" standardstylesheets="false" readonly="false">
+<html lang="en" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+      <c:EEC_Header id="pageHeader" /> 
+    <!--<meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />-->
+    <title>EEC: Document Library</title>
+
+  <style>
+      html {
+        font: 100%/1.5 "Salesforce Sans", Arial, sans-serif !important;
+        background: white !important;
+        color: #16325c !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+
+      body {
+        font-size: 0.875rem !important;
+        font-family: "Salesforce Sans", Arial, sans-serif !important;
+        background: transparent !important;
+      }
+	  .md-button.md-raised.md-eec, .md-button.md-raised.md-eec {
+        color: rgb(250,250,250);
+        background-color: #853F3F;
+      }
+
+      .md-button.md-raised.md-eec:hover, .md-button.md-raised.md-eec:hover {
+          color: rgb(250,250,250);
+          background-color: #703E3E;
+      }
+
+      .md-button.md-raised, .md-button.md-raised {
+        background-color: #f7f7f7;
+      }
+
+      .md-button span {
+        padding: 6px;
+      }
+      
+      .loading-status {
+        line-height: 32px;
+      }
+
+      .loading-status:before {
+          content: " ";
+          width: 30px;
+          height: 60px;
+          float: left;
+          display: block;
+          position: relative;
+          background: url("{!URLFOR($Resource.SLDS0120, 'assets/images/spinners/slds_spinner_brand.gif')}") top center no-repeat;
+          background-size: 100%;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff')}") format("woff");
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff')}") format("woff");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff')}") format("woff");
+        font-weight: 700;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .slds-container {
+        padding-bottom: 30px;
+        margin-left: 20px;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .button-container {
+        margin-top: 21px;
+        padding-left: 5px;
+      }
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+
+      .requiredInput2 {
+      	margin-left: 0px;
+      }
+            
+      .requiredInput1 {
+              margin-left: 0px;
+      }
+            
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+      
+      .sr-item-row {
+        cursor: pointer;
+        padding: 10px;
+      }
+
+      .sr-item-row:hover {
+          background: rgba(225,225,225,0.8);
+          cursor: pointer;
+      }
+
+      .top-level-label {
+        font-weight: 600;
+        margin-right: 3px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+        
+      .inner-label {
+        color: black;
+        font-weight: normal;
+        line-height: initial;
+        white-space: nowrap;
+      }
+
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {
+      	width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .transprovider-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            margin-bottom: 15px;
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+      
+        
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+       .requiredInput2 {
+         margin-left: 0px;
+       }
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        margin: -1px 0px -2px;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+      .requiredInput1 {
+              margin-left: 0px;
+            }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      .top-level-label {
+          font-weight: 600;
+          margin-right: 5px;
+          line-height: 20px; 
+          color: rgba(0,0,0,0.54);
+       }
+
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+      
+      /*New Style*/
+      .transaction-info-row {
+            margin-left: 0px; 
+          }
+      .reasonErrorMessage{
+            display : none;
+          }
+      .visible{
+            display : block;
+         }
+          
+    </style>
+
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/svg4everybody/2.0.0/svg4everybody.min.js" />
+  </head>
+  <body>
+  <c:EEC_Nav_Bar id="navBar" />
+    <apex:messages id="showmsg" styleClass="error-container" style="color: #FF0000; font-weight: bold;"/>
+    <div class="container" style="width:100%;padding-right:50px;" layout-padding="true" layout-margin="true" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column">
+	<apex:form id="idForm" html-layout="column" html-layout-padding="true" style="margin-bottom:100px;padding-left: 50px;" >
+
+      <h3 class="md-display-1">Document Library</h3>
+      
+      <md-divider layout-align="center center"></md-divider><br/> 
+      <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Introduction</h3>
+           </div>
+           <div class="panel-body">
+            <apex:outputText value="{!leadConfiguration.Library_Introduction__c}" escape="false" />            
+           </div>
+      </div>
+      
+       <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Library Document Types</h3>
+           </div>
+           <div class="panel-body" style="padding-bottom: 0px;">
+            <apex:outputpanel layout="block" id="idDocuments" rendered="{!listDocument.size > 0}">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col" style="width:10%"><span ><b>Type</b></span></th>
+                        <th scope="col" style="width:25%"><span ><b>Description</b></span></th>
+                        <th scope="col" style="width:10%"><span ><b>Attachment Status</b></span></th>
+                        <th scope="col" style="width:10%"><span ><b>Document Name</b></span></th>
+                        <th scope="col" style="width:25%"><span ><b>Notes and Comments</b></span></th>
+                        <th scope="col" style="width:6%;text-align:center"><span ><b>Attach Document(s)</b></span></th>
+                        <th scope="col" style="width:7%;text-align:center"><span ><b>View and Update Document(s)</b></span></th>
+                        <th scope="col" style="width:6%;text-align:center"><span ><b>Mark as out-of-date</b></span></th>          
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!listDocument}" var="document">
+                            <tr>
+                              <td scope="col" style="padding-top: 20px;width:10%"><span ><apex:outputText value="{!document.Document_Type__r.Name}"/></span></td>
+                              <td scope="col" style="padding-top: 20px;width:25%"><span ><apex:outputText escape="false" value="{!document.Document_Type__r.Description__c}"/></span></td>
+                              <td scope="col" style="padding-top: 20px;width:10%"><span ><apex:outputText escape="false" value="{!document.Attachment_Status__c}"/></span></td>
+                              <td scope="col" style="padding-top: 20px;width:10%"><span ><apex:outputText escape="false" value="{!document.Document_Name__c}"/></span></td>
+                              <td scope="col" style="padding-top: 20px;width:25%"><span ><apex:outputText escape="false" value="{!document.Notes__c}"/></span></td>
+                              
+                              <td scope="col" style="width:6%">
+                                  <apex:commandbutton rendered="{!document.Valid_From__c == null}" style="font-size: 12px;font-weight: bold;" styleclass="md-button md-raised md-eec" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" onclick="window.open('/apex/EEC_AttachmentSelection?id={!document.Id}','_blank','width=800, height=600');return false;" value="Attach Document(s)" />
+                              </td>
+                              <td scope="col" style="width:7%">
+                                  <apex:commandbutton rendered="{!document.Valid_From__c != null}"  style="font-size: 12px;font-weight: bold;" styleclass="md-button md-raised md-eec" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" onclick="window.open('/apex/EEC_AttachmentSelection?id={!document.Id}','_blank','width=800, height=600');return false;" value="View and Update Document(s)" /> 
+                              </td>
+                              <td scope="col" style="width:6%">
+                                  <apex:commandbutton rendered="{!document.Valid_From__c != null}" style="font-size: 12px;font-weight: bold;"  styleclass="md-button md-raised md-eec" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true" rerender="idForm,idDocuments" action="{!doMarkAsOutOfDate}" value="Mark as out-of-date">
+                                    <apex:param name="documentId" value="{!document.Id}" assignTo="{!selectedDocumentId}"/>
+                                  </apex:commandbutton>  
+                              </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputpanel>
+           </div>
+       </div>
+        <div class="row" style="text-align:center">
+            <apex:commandLink styleClass="md-button md-raised md-eec" value="Home" action="{!doBack}" style="font-size: 12px;font-weight: bold;" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+        </div>
+		<apex:actionFunction name="updateDocuments" action="{!doCreateDocs}" rerender="idDocuments" />
+    </apex:form>
+   </div>
+   <c:EEC_Site_Footer id="siteFooter" />
+   <script>
+      	window.closeModal = function(){
+	        updateDocuments();
+	    };
+      </script>
+  </body>
+  </html>
+</apex:page>

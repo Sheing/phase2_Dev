@@ -1,0 +1,41 @@
+<apex:component >
+    <style>
+        .news-card {
+          display: flex;
+          min-height: 200px;
+          box-shadow: 2px 2px 30px #888888;
+          margin-bottom : 20px;
+        }
+        .news-icon{
+            position: relative;
+        	text-align : center;
+        	flex: 0 0 30%;
+        	background-color: #cecece;
+            color: #fff;
+        }
+        .news-icon-wrapper{
+        	position: absolute;
+            top: 50%;
+            left: 50%;
+        	margin-right: -50%;
+            transform: translate(-50%, -50%);
+        }
+        .news-content{
+        	width: 70%;
+        	flex: 1;
+        	padding: 20px;
+        }
+    </style>
+    <apex:attribute type="String" name="news" description="This is the latest news content displayed on the homepage." />
+	<div class="news-card">
+        <div class="news-icon">
+            <div class="news-icon-wrapper">
+                <i class="fa fa-newspaper-o fa-4x"></i><br/>
+                <apex:outputLabel value="News"></apex:outputLabel>
+            </div>    
+        </div>
+        <div class="item news-content">
+				<apex:outputText style="font-size:1em;" value="{! news }" escape="false" ></apex:outputText>
+        </div>
+    </div>
+</apex:component>

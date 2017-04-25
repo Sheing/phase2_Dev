@@ -1,0 +1,343 @@
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="EEC_PortalNonCompliancePageController">
+ <head>
+    <title>EEC : Portal Provider Page</title>
+    <c:EEC_Header id="pageHeader" />
+
+    <script type="text/javascript">
+              j$(document).ready(function() {
+                  j$('.crtable').footable();
+                  j$('.footable-even').css('display', 'table-row');
+                  j$('.footable-odd').css('display', 'table-row');
+              });
+    </script>
+      <style type="text/css">
+         .input-group .form-control:first-child{
+            border-bottom-right-radius: 4px;
+        border-top-right-radius: 4px;
+          } 
+        .noncompliance-container{
+          margin-bottom : 100px; 
+        }  
+        .parsley-errors-list {
+            color: #d74c3b;
+            width : 100%;
+            bottom: -30px; 
+        }
+        thead{
+                background-color : #f5f5f5;
+        }
+        .table > thead:first-child > tr:first-child > th{
+            border-bottom: 0px;
+            border-top: 1px solid #dddddd;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .footable > thead > tr > th, .footable > thead > tr > td{
+              background-image: linear-gradient(to bottom, #f5f5f5, #f5f5f5);  
+        }
+        .table {
+            border-left : 1px solid #dddddd;
+            border-right : 1px solid #dddddd;
+            border-bottom : 1px solid #dddddd;
+         }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .footable-row-detail-name{
+        font-weight : bold;
+      }
+      .footable-row-detail-row{
+        padding-top : 7px;    
+      }    
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        min-height: 90px;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }
+         
+        .form-label{
+          font-weight: bold;
+          font-size:14px;
+        }
+          
+        .header-button {
+          margin-right: 3px; 
+        }
+        .not-visible{
+          display : none;
+         }
+         .visible{
+            display : inline;
+          }
+          .input-group{
+            width : 100%;
+          }
+      
+      .correction-textarea {
+        width: 50%;   
+      }
+          
+      @media only screen and (max-width: 992px) {
+        .correction-textarea {
+          width: 65%;   
+        }    
+      }
+          
+      @media only screen and (max-width: 800px) {
+     
+        #no-more-tables td { 
+          padding-left: 30%;
+        }
+      }
+      .panel-title{
+        font-weight : normal;   
+       }    
+          
+      </style>
+  </head>
+  <body>
+      <c:EEC_Nav_Bar id="navBar"/>
+      <div class="container">
+      <apex:form id="noncompliance-form" styleClass="noncompliance-form">
+      <apex:outputPanel id="userDetail">    
+            <br/><br/><br/>
+            <h2 class="pull-left">Submit Corrective Actions</h2>
+            <br/><br/><br/>
+          <apex:pageMessages id="msg"></apex:pageMessages>
+      </apex:outputPanel>
+        <apex:commandButton styleClass="md-button md-raised md-eec pull-right" action="{!returnProvider}" value="Back to Provider"></apex:commandButton>
+        <apex:commandButton id="saveAndReturn" html-data-parsley-excluded="true" value="Save and Return to Provider" rendered="{!iiWrapperList.size != 0}" styleClass="md-button md-raised md-eec pull-right" action="{!ReturnToProvider}"/>    
+        <apex:commandButton id="saveAndSubmit" onclick="if(!form.validate()){return false;}" value="Submit" rendered="{!iiWrapperList.size != 0}" styleClass="md-button md-raised md-eec pull-right" action="{!save}"/>  
+      <br/><br/><br/>
+      
+       <div id="NoncomplianceDetail" class="noncompliance-container">
+           <apex:outputPanel rendered="{!iiWrapperList.size == 0}">
+               <md-content style="margin-top: 20px;" layout="row" flex="100" layout-align="center center">   
+              <div class="panel panel-default">
+                  <div class="panel-body"> 
+                        Currently, there are no non-compliant items identified
+                  </div>
+               </div>
+               </md-content>
+           </apex:outputPanel>
+           <apex:outputPanel rendered="{!iiWrapperList.size != 0}">
+             <h3 class="panel-title">
+               Please provide your corrective action plan by responding 
+               to each area of non-compliance noted below. 
+               Be as detailed as possible in your response. 
+               Describe what you have done to bring that area into compliance 
+               and/or to prevent a similar non-compliance in the future. 
+               You must provide a date for each correction made. 
+               To submit the response to your licensor, press "submit." 
+               Your licensor will not receive an alert that your plan is 
+               available for review until all areas have been completed and submitted. 
+               Your licensor will be in touch with you if further 
+               information is needed in order for EEC to determine compliance. 
+               Once submitted, your response will become part of your licensing record.
+               </h3>  <br/><br/>
+           </apex:outputPanel>
+           <apex:outputPanel rendered="{!iiWrapperList.size > 0}">
+           <div class="panel panel-default" >
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Statement of Non-Compliance (click on "+" on each item to respond to the non-compliance)
+        </h3>
+      </div>
+            <div class="panel-body"> 
+                <div> 
+                  <table class="table table-hover crtable">
+                      <thead>
+                          <tr>    
+                            <th  style="width: 50%;">Visit Number</th>                                     
+                            <th style="width: 40%;">Visit Date</th>
+                            <th style="width: 10%;"></th>    
+                            <th data-hide="all"></th>  
+                          </tr>
+                       </thead>   
+                        <apex:repeat value="{!iiVisitWrapperList}" var="nonCompVisits"> 
+                            <tr>
+                              <td data-title="Visit Number">{!nonCompVisits.visitname}</td> 
+                                <td data-title="Date">{!nonCompVisits.dateofvisit}</td> 
+                                <td data-title="Link" style="text-align:right;"><a href="/EEC_VisitReportPage?visitID={!nonCompVisits.inspItem.Inspection_No__c}" target="_top" title="View"><i class="fa fa-search"></i></a></td>    
+                                <td data-title="">
+                                  <table class="table table-hover">
+                                      <thead>
+                                          <tr>    
+                                            <th style="width: 12%;">Associated Regulations</th>                                     
+                                            <th style="width: 28%;">Statement of Non-Compliance</th>
+                                            <th style="width: 28%;">Correction Plan</th>
+                                            <th style="width: 12%;">Date Correction Implemented</th> 
+                                            <th style="width: 30%;">Corrective Action EEC Feedback</th>    
+                                          </tr>
+                                       </thead>   
+                                          <apex:repeat value="{!allVisitNonComplianceItems[nonCompVisits.visitname]}" var="visit" >  
+                                              <tr>  
+                                                <td>  
+                                                  <apex:repeat value="{!visit.regulationMap}" var="iiName">
+                                                     <apex:commandlink onclick="window.open('/apex/EEC_PortalRegulationView?id={!visit.regulationMap[iiName]}','_blank','width=800, height=600,scrollbars=yes'); return false;" value="{!iiName}" />
+                                                  </apex:repeat>
+                                                </td>
+                                                <td>{!visit.observations}{!visit.Name}</td> 
+                                                <td>
+                                                    <apex:inputtextarea html-name="plan_{!visit.Id}" styleClass="form-control plan_{!visit.Id}" value="{!visit.correctionPlan}" rows="20"/><br/>
+                                                </td>                                
+                                                <td>
+                                                    <apex:input html-name="date_{!visit.Id}" styleClass="form-control date_{!visit.Id}" type="text" html-data-provide="datepicker" value="{!visit.implementdate}" >
+                                                    </apex:input>
+                                                </td>
+                                                <td>{!visit.viFeedback}</td>  
+                                              </tr>
+                                              <script>
+                                              /*j$('.date_{!visit.Id}').change(function() {
+                                                    if(j$(this).val().length !== 0){
+                                                        j$('.noncompliance-form').parsley().destroy();
+                                                        j$('.plan_{!visit.Id}').attr('data-parsley-required', 'true');
+                                                        j$('.noncompliance-form').parsley();
+                                                    }
+                                                    else{
+                                                        j$('.noncompliance-form').parsley().destroy();
+                                                        j$('.plan_{!visit.Id}').attr('data-parsley-required', 'true');
+                                                        j$('.noncompliance-form').parsley();
+                                                    }
+                                                });
+                                                j$('.plan_{!visit.Id}').change(function() {
+                                                    if(j$(this).val().length !== 0){
+                                                        j$('.noncompliance-form').parsley().destroy();
+                                                        j$('.date_{!visit.Id}').attr('data-parsley-required', 'true');
+                                                        j$('.noncompliance-form').parsley();
+                                                    }
+                                                    else{
+                                                        j$('.noncompliance-form').parsley().destroy();
+                                                        j$('.date_{!visit.Id}').attr('data-parsley-required', 'true');
+                                                        j$('.noncompliance-form').parsley();
+                                                    }
+                                                });*/
+                                            </script>
+                                          </apex:repeat>
+                                  </table>
+                                </td> 
+                            </tr>
+                        </apex:repeat>
+                  </table>  
+                  <table class="table table-hover crtable">
+                      <thead>
+                          <tr>    
+                            <th data-class="expand" style="width: 50%;">Investigation Number</th>                                     
+                            <th style="width: 40%;">Investigation Date</th>
+                            <th style="width: 10%;"></th>   
+                            <th data-hide="all"></th>  
+                          </tr>
+                       </thead>   
+                        <apex:repeat value="{!iiInvWrapperList}" var="nonCompInv" > 
+                            <tr>
+                              <td data-title="Investigation Number">{!nonCompInv.name}</td> 
+                                <td data-title="Date">{!nonCompInv.closedDate}</td> 
+                                <td data-title="Link" style="text-align:right;">
+                                    <a href="/EEC_PortalInvestigationPage?Id={!nonCompInv.invId}" target="_top" title="View"><i class="fa fa-search"></i></a>
+                                </td>  
+                                <td> 
+                                  <table class="table table-hover">
+                                      <thead>
+                                          <tr>    
+                                            <th style="width: 12%;">Associated Regulations</th>                                     
+                                            <th style="width: 28%;">Statement of Non-Compliance</th>
+                                            <th style="width: 28%;">Correction Plan</th>  
+                                            <th style="width: 12%;">Date Correction Implemented</th>    
+                                            <th style="width: 20%;">Corrective Action EEC Feedback</th>  
+                                          </tr>
+                                       </thead>   
+                                          <apex:repeat value="{!allInvNonComplianceItems[nonCompInv.name]}" var="invNonComp" >  
+                                              <tr>  
+                                                <td>  
+                                                  <apex:repeat value="{!invNonComp.regulationMap}" var="iiName">
+                                                     <apex:commandlink onclick="window.open('/apex/EEC_PortalRegulationView?id={!invNonComp.regulationMap[iiName]}','_blank','width=800, height=600,scrollbars=yes'); return false;" value="{!iiName}" />
+                                                  </apex:repeat>
+                                                </td>
+                                                <td>{!invNonComp.observations}</td> 
+                                                <td>
+                                                    <apex:inputtextarea html-name="plan_{!invNonComp.Id}" styleClass="form-control plan_{!invNonComp.Id}" value="{!invNonComp.correctionPlan}" rows="20" /><br/>
+                                                </td>                                
+                                                <td>
+                                                    <apex:input html-name="date_{!invNonComp.Id}" styleClass="form-control date_{!invNonComp.Id}" type="text" html-data-provide="datepicker" value="{!invNonComp.implementdate}" >
+                                                    </apex:input>
+                                                </td>
+                                                <td>{!IF(invNonComp.ncFeedback != null , invNonComp.ncFeedback, invNonComp.viFeedback)}</td>   
+                                              </tr>
+                                              <script>
+                                              /*j$('.date_{!invNonComp.Id}').change(function() {
+                                                        if(j$(this).val().length !== 0){
+                                                            j$('.noncompliance-form').parsley().destroy();
+                                                            j$('.plan_{!invNonComp.Id}').attr('data-parsley-required', 'true');
+                                                            j$('.noncompliance-form').parsley();
+                                                        }
+                                                        else{
+                                                          j$('.noncompliance-form').parsley().destroy();
+                                                            j$('.plan_{!invNonComp.Id}').attr('data-parsley-required', 'false');
+                                                            j$('.noncompliance-form').parsley();
+                                                        }
+                                                  });
+                                                  j$('.plan_{!invNonComp.Id}').change(function() {
+                                                        if(j$(this).val().length !== 0){
+                                                            j$('.noncompliance-form').parsley().destroy();
+                                                            j$('.date_{!invNonComp.Id}').attr('data-parsley-required', 'true');
+                                                            j$('.noncompliance-form').parsley();
+                                                        }
+                                                        else{
+                                                          j$('.noncompliance-form').parsley().destroy();
+                                                            j$('.date_{!invNonComp.Id}').attr('data-parsley-required', 'false');
+                                                            j$('.noncompliance-form').parsley();
+                                                        }
+                                                  });*/
+                                              </script>
+                                          </apex:repeat>
+                                  </table>
+                                </td> 
+                            </tr>
+                        </apex:repeat>
+                    </table>
+                  
+                </div>
+            </div>
+      
+            </div>
+           </apex:outputPanel>   
+    </div>
+  </apex:form>
+          
+  </div>
+   <c:EEC_Site_Footer id="siteFooter" />
+      
+   <script type="text/javascript">
+        j$( "input[id$=saveAndReturn]" ).click(function() {
+          j$('.noncompliance-form').off('submit.Parsley');
+        });
+        j$( "input[id$=saveAndSubmit]" ).click(function() {
+          j$('.noncompliance-form').on('submit.Parsley');
+        });
+        var nonCompform = j$(".noncompliance-form");
+      var form = j$(".noncompliance-form").parsley({
+        errorsWrapper: '<div class="parsley-errors-list"></div>',
+        errorTemplate: '<p class="errorMsg"></p>'    
+      });
+   </script>
+ </body>
+</apex:page>

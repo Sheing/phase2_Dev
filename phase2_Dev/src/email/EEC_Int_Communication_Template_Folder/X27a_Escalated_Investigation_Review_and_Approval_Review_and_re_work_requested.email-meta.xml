@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Escalated investigation: Email Communication to the Lead Investigator indicating that the Investigation has been rejected and must be re-worked.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>27a - Escalated Investigation Review and Approval: Review and re-work requested</name>
+    <style>none</style>
+    <subject>Investigation Review and Approval: Review and re-work requested</subject>
+    <type>text</type>
+</EmailTemplate>

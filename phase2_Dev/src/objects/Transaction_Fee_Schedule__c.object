@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Definition of the fee that apply to a transaction based on criteria</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Current__c</fullName>
+        <externalId>false</externalId>
+        <formula>AND( NOT(ISBLANK(Effect_Date__c)), Effect_Date__c   &lt;=  TODAY(),
+  OR( ISBLANK(Expiration_Date__c), (Expiration_Date__c   &gt;=  TODAY())
+  )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Current</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Effect_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Effect date of this fee</inlineHelpText>
+        <label>Effect Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Expiration date of this fee (when it&apos;s not applicable anymore)</inlineHelpText>
+        <label>Expiration Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Fee_Amount__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount of the fee to apply</inlineHelpText>
+        <label>Fee Amount</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_Placements_Higher_Limit__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply if the number of placement is inferior to this number. Keep this field blank if this fee does not depend of the number of placements. Only apply to Adoption Agency</inlineHelpText>
+        <label>Number of Placements Higher Limit</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Placements_Lower_Limit__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply if the number of placement is superior to this number. Keep this field blank if this fee does not depend of the number of placements. Only apply to Adoption Agency</inlineHelpText>
+        <label>Number of Placements Lower Limit</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Only_On_Capacity_Increase__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will only apply if the capacity requested is &gt; than the current capacity. Only work for R&amp;P and GSA.</inlineHelpText>
+        <label>Only On Capacity Increase</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Provider_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply only if the provider type associated with this transaction is the one selected. Keep this field blank if this fee does not depend of the type of provider</inlineHelpText>
+        <label>Provider Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Adoption Agency</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Family Child Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FCC Assistant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Foster Care Agency</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Large Group</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Small Group</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Temporary Shelter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Related_Transaction_Type__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Type of transaction this fee apply to</inlineHelpText>
+        <label>Related Transaction Type</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>LEAD_Configuration__c.RecordType.Name</field>
+                <operation>equals</operation>
+                <value>Per Transaction Type</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>LEAD_Configuration__c</referenceTo>
+        <relationshipLabel>Transaction Fee Schedules</relationshipLabel>
+        <relationshipName>Transaction_Fee_Schedules</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Requested_Capacity_Higher_Limit__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply if the capacity requested is inferior to this number (field Total License Capacity Requested, Requested capacity for R&amp;P). Keep this field blank if this fee does not depend of the capacity requested.</inlineHelpText>
+        <label>Requested Capacity Higher Limit</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Requested_Capacity_Lower_Limit__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply if the capacity requested is superior to this number (field Total License Capacity Requested for GSA, Requested capacity for R&amp;P). Keep this field blank if this fee does not depend of the capacity requested.</inlineHelpText>
+        <label>Requested Capacity Lower Limit</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Requested_License__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply only if the license requested is the one selected. Keep this field blank if this fee does not depend of the license requested</inlineHelpText>
+        <label>Requested License</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Regular Assistant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Certified Family Child Care Assistant (6)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Certified Family Child Care Assistant (8)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Certified Family Child Care Assistant (10)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Type_of_License__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This fee will apply only if the current type of license of the Provider is the one selected here. Keep this field blank if this fee does not depend of the type of license</inlineHelpText>
+        <label>Type of License</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Regular</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>First Provisional</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Second Provisional</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Probationary</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>First Prov. for Public Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Second Prov. for Public Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Regular Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Provisional</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Exempt</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Delegated</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Regular Public Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Enhanced Regular</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Public Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Waived_if_Informed_Before_Nb_of_Days__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Waive this fee if the agency is informed this number of day before moving date. Ex: if 15 is set, this fee will be waived if moving date is in more than 15 days. Keep this field blank if this fee does not depend on moving date</inlineHelpText>
+        <label>&quot;Waived if Informed Before&quot; Nb of Days</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Waived_if_State_Funded_Public_Company__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Waive this fee if the provider is state funded or a public company. The provider must have &quot;Public Approval&quot; checked to have the fee waived</inlineHelpText>
+        <label>Waived if State Funded / Public Company</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Transaction Fee Schedule</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Provider_Type__c</columns>
+        <columns>Related_Transaction_Type__c</columns>
+        <columns>Fee_Amount__c</columns>
+        <columns>Current__c</columns>
+        <columns>Effect_Date__c</columns>
+        <columns>Expiration_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>TFS-{0000000}</displayFormat>
+        <label>Transaction Fee Schedule Name</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Transaction Fee Schedules</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Expiration_date_GreaterThan_Effect_Date</fullName>
+        <active>true</active>
+        <description>Expiration Date Must be &gt; Effect Date</description>
+        <errorConditionFormula>Expiration_Date__c  &lt;=  Effect_Date__c</errorConditionFormula>
+        <errorDisplayField>Expiration_Date__c</errorDisplayField>
+        <errorMessage>Expiration Date Must be &gt; Effect Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Fee_amount_must_be_greater_than_0</fullName>
+        <active>true</active>
+        <description>Must be &gt;= 0</description>
+        <errorConditionFormula>Fee_Amount__c  &lt; 0</errorConditionFormula>
+        <errorDisplayField>Fee_Amount__c</errorDisplayField>
+        <errorMessage>Fee amount must be &gt;= 0</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Number_of_Placements_HigheLimit_required</fullName>
+        <active>true</active>
+        <description>Must not be empty if Number of Placements Lower Limit is filled</description>
+        <errorConditionFormula>AND( 
+NOT( ISNULL( Number_of_Placements_Lower_Limit__c ) ) , 
+ISNULL( Number_of_Placements_Higher_Limit__c ) )</errorConditionFormula>
+        <errorDisplayField>Number_of_Placements_Higher_Limit__c</errorDisplayField>
+        <errorMessage>If &quot;Number of Placements Lower Limit&quot; is filled, then &quot;Number of Placements Higher limit&quot; is required.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Number_of_Placements_LowerLimit_required</fullName>
+        <active>true</active>
+        <description>Must not be empty if Number of Placements Higher Limit is filled</description>
+        <errorConditionFormula>AND( 
+  NOT( ISNULL( Number_of_Placements_Higher_Limit__c ) ) ,
+  ISNULL( Number_of_Placements_Lower_Limit__c ) )</errorConditionFormula>
+        <errorDisplayField>Number_of_Placements_Lower_Limit__c</errorDisplayField>
+        <errorMessage>If &quot;Number of Placements Higher Limit&quot; is filled, then &quot;Number of Placements Lower limit&quot; is required.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Requested_Capacity_HigherLimit_mandatory</fullName>
+        <active>true</active>
+        <description>Must not be empty if Requested Capacity Lower Limit is filled</description>
+        <errorConditionFormula>AND( NOT( ISBLANK( Requested_Capacity_Lower_Limit__c ) ) , ISBLANK( Requested_Capacity_Higher_Limit__c ) )</errorConditionFormula>
+        <errorDisplayField>Requested_Capacity_Higher_Limit__c</errorDisplayField>
+        <errorMessage>If &quot;Requested Capacity Lower Limit&quot; is filled, then &quot;Requested Capacity Higher Limit&quot; is mandatory</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Requested_Capacity_Lower_Limit_not_empty</fullName>
+        <active>true</active>
+        <description>Must not be empty if Requested Capacity Higher Limit is filled</description>
+        <errorConditionFormula>AND(NOT( ISBLANK( Requested_Capacity_Higher_Limit__c ) ), ISBLANK( Requested_Capacity_Lower_Limit__c )  )</errorConditionFormula>
+        <errorDisplayField>Requested_Capacity_Lower_Limit__c</errorDisplayField>
+        <errorMessage>If &quot;Requested Capacity Higher Limit&quot; is filled, then &quot;Requested Capacity Lower Limit&quot; is mandatory</errorMessage>
+    </validationRules>
+</CustomObject>

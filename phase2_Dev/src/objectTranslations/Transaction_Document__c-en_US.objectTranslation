@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Transaction Document</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Transaction Documents</value>
+    </caseValues>
+    <fields>
+        <label><!-- Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Role --></label>
+        <name>Contact_Role__c</name>
+        <relationshipLabel><!-- Transaction Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Date Attached --></label>
+        <name>Date_Attached__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Attachment Status --></label>
+        <name>Document_Attachment_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Level Provider Notes --></label>
+        <name>Document_Level_Provider_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Level --></label>
+        <name>Document_Level__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Type --></label>
+        <name>Document_Type__c</name>
+        <relationshipLabel><!-- Transaction Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Document --></label>
+        <name>Document__c</name>
+        <relationshipLabel><!-- Transaction Documents (Document) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Last Status Date --></label>
+        <name>Last_Status_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Licensing Transaction --></label>
+        <name>Licensing_Transaction__c</name>
+        <relationshipLabel><!-- Transaction Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Mode --></label>
+        <name>Mode__c</name>
+        <picklistValues>
+            <masterLabel>Additional</masterLabel>
+            <translation><!-- Additional --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Individual</masterLabel>
+            <translation><!-- Individual --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Optional</masterLabel>
+            <translation><!-- Optional --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Required</masterLabel>
+            <translation><!-- Required --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Variance</masterLabel>
+            <translation><!-- Variance --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Note For Revision --></label>
+        <name>Note_For_Revision__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider --></label>
+        <name>Provider__c</name>
+    </fields>
+    <fields>
+        <label><!-- S3 File --></label>
+        <name>S3_File__c</name>
+        <relationshipLabel><!-- Transaction Documents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Approved</masterLabel>
+            <translation><!-- Approved --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Rejected</masterLabel>
+            <translation><!-- Rejected --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Returned for Revision</masterLabel>
+            <translation><!-- Returned for Revision --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Submitted - EEC to Review</masterLabel>
+            <translation><!-- Submitted - EEC to Review --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>To Submit</masterLabel>
+            <translation><!-- To Submit --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>To Upload</masterLabel>
+            <translation><!-- To Upload --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Transaction Notes --></label>
+        <name>Transaction_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Variance on Regulation --></label>
+        <name>Variance_on_Regulation__c</name>
+        <relationshipLabel><!-- Transaction Documents --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Transaction Document Layout</layout>
+        <sections>
+            <label><!-- Contact Role Information --></label>
+            <section>Contact Role Information</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Document Information --></label>
+            <section>Document Information</section>
+        </sections>
+        <sections>
+            <label><!-- EEC Notes --></label>
+            <section>EEC Notes</section>
+        </sections>
+        <sections>
+            <label><!-- Preview --></label>
+            <section>Preview</section>
+        </sections>
+        <sections>
+            <label><!-- Transaction Information --></label>
+            <section>Transaction Information</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Document Type is required if mode is set to &apos;Required&apos; or &apos;Optional&apos;. --></errorMessage>
+        <name>Doc_Type_required_on_mode_selection</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- &quot;Status&quot; can not be changed to &quot;Rejected&quot; if &quot;Note for Revision&quot; is empty --></errorMessage>
+        <name>Note_Required_If_Rejected</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A note is required if the Transaction Document&apos;s Status is &quot;Returned for Revision&quot;. --></errorMessage>
+        <name>Note_required_if_returned_for_revision</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Promote_to_Umbrella --></label>
+        <name>Promote_to_Umbrella</name>
+    </webLinks>
+</CustomObjectTranslation>

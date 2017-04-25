@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email communication sent to the original assignee to inform them that a case has been sent to Triage and requires their review</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>18 - Case Escalated - New Case sent to Triage for Original Assignee</name>
+    <style>none</style>
+    <subject>New Case in Triage for {!Case.Provider_Name_For_Email_Merge__c}</subject>
+    <type>text</type>
+</EmailTemplate>

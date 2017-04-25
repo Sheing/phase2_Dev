@@ -1,0 +1,633 @@
+<apex:page controller="EEC_MeetingRegistrationController" applyhtmltag="false" applybodytag="false" showheader="false" sidebar="false" standardstylesheets="false" readonly="false">
+<html lang="en" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+      <c:EEC_Header id="pageHeader" /> 
+    <!--<meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />-->
+    <title>Meeting Registration</title>
+    
+    <!-- Lightning Styles -->
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS0120, 'assets/styles/salesforce-lightning-design-system.min.css')}" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  <style>
+         html {
+        font: 100%/1.5 "Salesforce Sans", Arial, sans-serif !important;
+        background: white !important;
+        color: #16325c !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+
+      body {
+        font-size: 0.875rem !important;
+        font-family: "Salesforce Sans", Arial, sans-serif !important;
+        background: transparent !important;
+      }
+
+      .loading-status {
+        line-height: 32px;
+      }
+
+        .loading-status:before {
+          content: " ";
+          width: 30px;
+          height: 60px;
+          float: left;
+          display: block;
+          position: relative;
+          background: url("{!URLFOR($Resource.SLDS0120, 'assets/images/spinners/slds_spinner_brand.gif')}") top center no-repeat;
+          background-size: 100%;
+        }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Light.woff')}") format("woff");
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-LightItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Regular.woff')}") format("woff");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Italic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-Bold.woff')}") format("woff");
+        font-weight: 700;
+      }
+
+      @font-face {
+        font-family: "Salesforce Sans";
+        src: url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff2')}") format("woff2"), url("{!URLFOR($Resource.SLDS0120, 'assets/fonts/webfonts/SalesforceSans-BoldItalic.woff')}") format("woff");
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .slds-container {
+        padding-bottom: 30px;
+        margin-left: 20px;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .button-container {
+        margin-top: 21px;
+        padding-left: 5px;
+      }
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+
+        .requiredInput2 {
+              margin-left: 0px;
+            }
+            
+            .requiredInput1 {
+              margin-left: 0px;
+            }
+            
+        .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+      
+      .sr-item-row {
+        cursor: pointer;
+        padding: 10px;
+      }
+
+        .sr-item-row:hover {
+          background: rgba(225,225,225,0.8);
+          cursor: pointer;
+        }
+
+      .top-level-label {
+        font-weight: 600;
+        margin-right: 3px;
+        line-height: 20px;
+        color: rgba(0,0,0,0.54);
+      }
+        
+      .inner-label {
+        color: black;
+        font-weight: normal;
+        line-height: initial;
+        white-space: nowrap;
+      }
+      
+      
+      
+      
+      .bPageBlock .requiredInput .requiredBlock {
+        background-color: #c00;
+        position: absolute;
+        left: -4px;
+        width: 3px;
+        top: 1px;
+        bottom: 1px;
+        top: 20px;
+        display: none;
+      }  
+        
+      .parsley-errors-list {
+        
+        width:50%;
+      }
+        
+      .parsley-error {
+        border: 2px solid #c00;
+      }
+      .my_error_container{
+        position:absolute;
+        bottom: 90px; 
+        width:50%;
+      }  
+        
+      .errorMsg {
+        color: #d74c3b; 
+      }
+        
+      .message[class*='error'] {
+        background-color: #eee;
+        padding: 0 20px 10px;
+        margin-bottom: 25px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+        box-shadow: 0px 0px 5px 0px rgba(204,0,0,0.4);
+      }
+        
+      .message[class*='error'] .messageTable {
+        width: 100%;
+      }
+        
+      .message[class*='error'] .messageText {
+        border-bottom: 1px solid grey;
+        height: 30px; 
+      }  
+      .transprovider-info-container {
+        margin-bottom: 120px; 
+      }
+        
+      md-input-container {
+        padding-top: 15px; 
+      }
+      .md-title, .md-toolbar-tools {
+            margin-bottom: 15px;
+      }  
+  
+      md-input-container .input-label {
+        /*top: -50px;*/
+      }
+        
+      md-input-container .input-label-date-picklist {
+        top: -25px;
+      }
+        
+      .base-info {
+        margin-top: 10px; 
+      }
+      .input-label{
+        color: rgba(0,0,0,0.54);  
+      }  
+        
+      .base-info md-content {
+        margin-bottom: 20px; 
+      }
+        
+      .provider-checkbox {
+        margin-top: -25px;
+        margin-left: -5px; 
+        overflow: visible;
+      }
+      .radio-group .parsley-errors-list {
+            margin-top: 20px;
+            margin-left: -50px;
+            position: absolute;
+            width:50%;
+       }
+       .radio-group .parsley-error {
+            border: 0px; 
+       }
+        
+      .new-address-live-at-address {
+        margin-top: 29px;
+      }
+      md-input-container:not(.md-input-invalid).md-input-has-value label{
+          transform: translate3d(0,6px,0) scale(1);
+      }
+      
+        
+      /* @see Angular Material - Input */
+      .requiredInput, md-input-container span {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        display: block;
+        background: 0 0;
+        padding: 2px 2px 1px;
+        border-width: 0 0 1px;
+        line-height: 26px;
+        -ms-flex-preferred-size: 26px;
+        border-radius: 0; 
+      }
+       .requiredInput2 {
+              margin-left: 0px;
+            }
+      .other-checkbox {
+         padding-top: 20px;
+      }
+      input[type="radio"], input[type="checkbox"] {
+              margin: 4px 7px 0;
+      } 
+      .radio-group label{
+        font-weight : normal;  
+      }
+        
+      .commandBtn {
+        -webkit-appearance: none;
+        border: none;
+        box-shadow: none;
+        background: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: inherit;
+        font-variant: inherit;
+        font-family: inherit;
+        outline: none;
+        letter-spacing: .01em;
+        margin: 3px 0px;
+        white-space: normal;
+      }
+      input[type="text"] {
+        width: 70%;
+        margin-bottom : 10px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      textarea.form-control {
+        width: 70%;
+        margin-bottom : 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }  
+        
+      .navigation-buttons .md-button label {
+        white-space: normal;
+      }
+        
+      .base-label {
+        color: rgba(0,0,0,0.54); 
+      }
+      .md-input-has-value{
+        
+      }  
+        
+      md-input-container input, md-input-container .md-input {
+        max-width: 200px; 
+      }
+      p{
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: bold;  
+      }
+        
+      .readonly-input {
+        border-bottom: none;
+        cursor: not-allowed; 
+      }
+      .read-only-input{
+        cursor: not-allowed; 
+        background : rgba(0,0,0,0.54);
+      }  
+      
+      /* TODO: Remove this and use md-select with new Validation. */
+      select {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ddd; 
+      }
+        
+      .errorMsg {
+        color: red; 
+      }
+      .requiredInput1 {
+              margin-left: 0px;
+            }
+        
+      .city-outputfield {
+        outline: none;
+        text-decoration: none;
+      }
+        
+      .top-level-label {
+          font-weight: 600;
+          margin-right: 5px;
+          line-height: 20px; 
+          color: rgba(0,0,0,0.54);
+       }
+          
+          
+          
+      @media only screen and (min-width: 0px) and (max-width: 959px) {
+        .navigation-buttons .md-button {
+          width: 100%;
+        }
+        
+        .navigation-buttons md-content {
+          width: 100%;
+        }
+        
+        md-input-container input {
+          max-width: none;
+        }
+      }
+      .base-info{
+        margin-bottom : 20px;  
+      }
+      
+      /*New Style*/
+      .transaction-info-row {
+            margin-left: 0px; 
+          }
+      .reasonErrorMessage{
+            display : none;
+          }
+      .visible{
+            display : block;
+         }
+          
+    </style>
+
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/svg4everybody/2.0.0/svg4everybody.min.js" />
+  </head>
+  <body>
+    <apex:messages id="showmsg" styleClass="error-container" style="color: #FF0000; font-weight: bold;"/>
+    <div class="container" layout-padding="true" layout-margin="true" layout-wrap="true" layout-lg="row" layout-gt-lg="row" layout="column">
+<apex:form id="idForm" html-layout="column" html-layout-padding="true" styleClass="col-lg-12 col-md-12 col-sm-12" style="margin-bottom:100px;padding-left: 50px;" >
+
+      <apex:actionFunction name="doOpenMeetingModal" action="{!doViewMeetingDetail}" rerender="idform,idMeetingModal" oncomplete="j$('#meetingModal').modal('show');">
+            <apex:param name="meetingId" value="meetingId" assignTo="{!selectedMeetingId}"/>
+            <apex:param name="viewOnly" value="viewOnly" assignTo="{!viewOnly}"/>
+            <apex:param name="participantId" value="participantId" assignTo="{!selectedParticipantId}"/>
+        </apex:actionFunction>
+        
+      <h3 class="md-display-1">Meeting Registration</h3>
+      
+      <md-divider layout-align="center center"></md-divider><br/> 
+      <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Instructions</h3>
+           </div>
+           <div class="panel-body">
+            <apex:outputText value="{!leadConfiguration.Registration_Page_Instruction__c}" escape="false" />            
+           </div>
+      </div>
+      
+       <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Current Registration for upcoming meetings</h3>
+           </div>
+           <div class="panel-body">
+           <apex:outputPanel id="idParticipants">
+            <apex:outputpanel layout="block" id="idlistParticipant" rendered="{!listMeetingParticipant.size > 0}">
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                    <thead>
+                      <tr class="slds-text-title--caps">
+                        <th scope="col" class="slds-truncate"><span ><b>Participant Name</b></span></th>
+                        <th scope="col" class="slds-truncate"><span ><b>Meeting Date and Time</b></span></th>
+                        <th scope="col" class="slds-truncate"><span ><b>Meeting Address</b></span></th>
+                        <th scope="col" class="slds-truncate" style="text-align: left;padding-left: 32px;"><span ><b>Detail</b></span></th>
+                        <th scope="col" class="slds-truncate" style="text-align: left;padding-left: 32px;"><span ><b>Cancel Registration</b></span></th>          
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!listMeetingParticipant}" var="obj">
+                            <tr class="slds-hint-parent">
+                              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.GSA_Renewal_Participant__r.Name}"/></span></td>
+                              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Scheduled_Start_Time__c}"/></span></td>
+                              <td scope="col" class="slds-truncate"><span ><apex:outputText escape="false" value="{!obj.Provider_Meeting__r.Meeting_Address__c}"/></span></td>
+                              <td scope="col" class="slds-truncate">
+                                  <button id="add-new-document" onClick="openMeetingModal(this, '{!obj.Provider_Meeting__c}', 'yes','{!obj.Id}');" type="button" class="md-button md-eec md-raised">Detail</button>
+                              </td>
+                              <td scope="col" class="slds-truncate">
+                                  <apex:commandbutton styleclass="md-button md-raised md-eec" rerender="idForm, idParticipants,idMeetings" action="{!doCancelRegistration}" value="Cancel Registration">
+                                    <apex:param name="participantId" value="{!obj.Id}" assignTo="{!selectedParticipantId}"/>
+                                  </apex:commandbutton> 
+                              </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputpanel>
+            <apex:outputPanel rendered="{!listMeetingParticipant.size == 0 && errorParticipantMessage != ''}">
+              <div class="slds-box slds-box-small">  
+                <p>{!errorParticipantMessage}</p>  
+              </div>
+            </apex:outputPanel>
+            </apex:outputPanel>
+           </div>
+       </div>
+       
+       <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Upcoming Meetings</h3>
+           </div>
+           <div class="panel-body">
+           <apex:outputPanel id="idMeetings">
+            <apex:outputpanel layout="block" id="idlistMeeting" rendered="{!listMeeting.size > 0}">
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                    <thead>
+                      <tr class="slds-text-title--caps">
+                        <th scope="col" class="slds-truncate"><span ><b>Meeting Date and Time</b></span></th>
+                        <th scope="col" class="slds-truncate"><span ><b>Meeting Address</b></span></th>
+                        <th scope="col" class="slds-truncate"><span ><b>Meeting Language</b></span></th>
+                        <th scope="col" class="slds-truncate"><span ><b>Number of Remaining Spots</b></span></th>
+                        <th scope="col" class="slds-truncate" style="text-align: left;padding-left: 32px;"><span ><b>Register</b></span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!listMeeting}" var="obj">
+                            <tr class="slds-hint-parent">
+                              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Scheduled_Start__c}"/></span></td>
+                              <td scope="col" class="slds-truncate"><span ><apex:outputText escape="false" value="{!obj.Meeting_Address__c}"/></span></td>
+                              <td scope="col" class="slds-truncate"><span ><apex:outputText value="{!obj.Language__c}"/></span></td>
+                              <td scope="col" class="slds-truncate" style="text-align: right;padding-right: 50px;"><span><apex:outputText value="{!obj.Number_of_Remaining_Spots__c}"/></span></td>
+                              <td scope="col" class="slds-truncate">
+                                 <button id="add-new-document" onClick="openMeetingModal(this, '{!obj.Id}', 'no','');" type="button" class="md-button md-eec md-raised">Register</button>
+                              </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputpanel>
+            <apex:outputPanel rendered="{!listMeeting.size == 0 && errorMeetingMessage != ''}">
+              <div class="slds-box slds-box-small">  
+                <p>{!errorMeetingMessage}</p>  
+              </div>
+            </apex:outputPanel>
+           </apex:outputPanel>
+           </div>
+       </div>
+       
+        <div class="row" style="text-align:center">
+            <apex:commandLink styleClass="md-button md-raised md-eec" value="Back" action="{!doBack}" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+        </div>
+
+        <apex:outputPanel id="idMeetingModal">
+            <div class="modal fade" id="meetingModal" tabindex="-1" role="dialog" aria-labelledby="meetingModal" aria-hidden="true" >
+                <apex:outputPanel layout="block" styleClass="modal-dialog modal-lg">
+                    <apex:outputPanel layout="block" styleClass="modal-content">
+                        <apex:outputPanel layout="block" styleClass="modal-header">
+                            <h3 class="modal-title">Meeting Detail</h3>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="modal-body">
+                     	
+                     	<apex:outputPanel >
+                     		{!errorMessage}
+                     	</apex:outputPanel>
+                     	<apex:outputPanel id="meetingdetailSection" rendered="{errorMessage == ''}">
+                        <h3 class="modal-title">Meeting Detail</h3>
+                        <div class="slds-form--horizontal" style="padding-top: 20px;">
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Meeting Start Date and Time:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="{!providerMeeting.Scheduled_Start__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Meeting End Date and Time:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="{!providerMeeting.Scheduled_End__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Meeting Address:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="{!providerMeeting.Meeting_Address__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Meeting Language:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="{!providerMeeting.Language__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Additional Details:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel escape="false" styleClass="slds-form-element__label" value="{!providerMeeting.Meeting_Location_Description__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Regional Office Phone Number:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="{!providerMeeting.Meeting_Region__r.Phone__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="slds-form-element " >
+                                <apex:outputLabel styleClass="slds-form-element__label" value="Regional Office Email:"  ></apex:outputLabel>
+                                <div class="slds-form-element__control">
+                                <apex:outputLabel styleClass="slds-form-element__label" value="{!providerMeeting.Meeting_Region__r.Email__c}"  ></apex:outputLabel>
+                                </div>
+                            </div>
+                        </div>
+                        </apex:outputPanel>
+                    <br/>
+                    	<apex:outputPanel id="participantSection" rendered="{!!isViewOnly && errorMessage == ''}">
+	                        <h3 class="modal-title">Participant</h3>
+	                        <div class="slds-form--horizontal" style="padding-top: 20px;">
+	                            <div class="slds-form-element " >
+	                                <apex:outputLabel styleClass="slds-form-element__label" value="Participant Name:"  ></apex:outputLabel>
+	                                <div class="slds-form-element__control">
+	                                <apex:SelectList value="{!selectedContact}" styleClass="form-control" size="1">
+	                                    <apex:selectOptions value="{!listContacts}"/>
+	                                </apex:SelectList>
+	                                </div>
+	                            </div>
+	                        </div>
+                        </apex:outputPanel>  
+                    <br/>     
+                    <div class="slds-form-element" style="text-align: center;">
+	                    <apex:commandButton styleclass="md-button md-eec md-raised" rendered="{!!isViewOnly && errorMessage == ''}" value="Register" action="{!doRegistration}" rerender="idParticipants,idMeetings" oncomplete="closeMeetingModal();" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+	                    <apex:commandButton styleclass="md-button md-eec md-raised" rendered="{!isViewOnly}" value="Cancel Registeration" action="{!doCancelRegistration}" rerender="idParticipants,idMeetings"  oncomplete="closeMeetingModal();" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+	                    <apex:commandButton styleclass="md-button md-eec md-raised" rendered="{!isViewOnly}" value="Close"  onclick="j$('#meetingModal').modal('hide'); return false;" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+	                    <apex:commandButton styleclass="md-button md-eec md-raised" rendered="{!!isViewOnly}" value="Cancel"  onclick="j$('#meetingModal').modal('hide'); return false;" html-layout-padding="true" html-flex-order-sm="1" html-flex-order-md="1" html-md-button="true"/>
+                    </div>
+            </apex:outputPanel>
+                	</apex:outputPanel>
+                </apex:outputPanel>
+            </div>
+        </apex:outputPanel>
+        
+    </apex:form>
+   </div>
+  </body>
+  <script>
+    function openMeetingModal(param, meetingId, viewOnly, participantId){
+        /*if(maxParticipant != "" && expectedParticipant >= maxParticipant){
+            alert('You have reached the limit of allowed number of participants for this meeting. Please contact your regional office if you need to register more participants.');
+            return false;
+        }
+        else{*/
+            doOpenMeetingModal(meetingId, viewOnly, participantId);
+        //}
+    }
+    
+    function closeMeetingModal(){
+    	j$('#meetingModal').modal('hide');
+    	return false;
+    }
+    
+    j$( document ).ready(function() {
+        j$('.modal').modal({ backdrop: 'static', keyboard:false,show:false }) 
+    });
+  </script>
+  </html>
+</apex:page>

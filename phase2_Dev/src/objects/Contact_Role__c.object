@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This is a junction object between a provider and contact. A single contact may play multiple roles for a provider like Owner, Administrator etc.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <description>Contact to which contact role is associated with.</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Contact Roles</relationshipLabel>
+        <relationshipName>Contact_Roles</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Current_Formula__c</fullName>
+        <externalId>false</externalId>
+        <formula>AND (
+OR ( ISBLANK(Start_Role_Licensing_Transaction__c),  ISPICKVAL(Start_Role_Licensing_Transaction__r.Status__c, &quot;Closed (License Issued / Updated)&quot;), ISPICKVAL(Start_Role_Licensing_Transaction__r.Status__c, &quot;Closed (Processed)&quot;))
+,
+OR(
+AND(ISBLANK( Start_Date__c ), ISBLANK( End_Date__c )),
+AND(ISBLANK( End_Date__c), Start_Date__c &lt;= TODAY()),
+AND(Start_Date__c &lt;= TODAY(), End_Date__c &gt;= TODAY())
+))</formula>
+        <label>Current</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <description>Date when a certain contact role is no longer effective.</description>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>End_Role_Licensing_Transaction__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Licensing transaction ending a contact role.</description>
+        <externalId>false</externalId>
+        <label>End Role Licensing Transaction</label>
+        <referenceTo>Licensing_Transaction__c</referenceTo>
+        <relationshipLabel>Ownership/Administrator End</relationshipLabel>
+        <relationshipName>Contact_Roles_End</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Portal_Access__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Checked if contact related to this contact role should have portal access.</description>
+        <externalId>false</externalId>
+        <label>Portal Access</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Provider__c</fullName>
+        <description>Account to which the contact is associated with.</description>
+        <externalId>false</externalId>
+        <label>Provider / Umbrella</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Contact Roles</relationshipLabel>
+        <relationshipName>Contact_Roles</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Role__c</fullName>
+        <description>Role that the contact plays for the provider associated.</description>
+        <externalId>false</externalId>
+        <label>Role</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Executive Director</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Program Director / Administrative Head</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Administrative Designee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Infant / Toddler Responsible</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Board Chair</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Funding Source</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Main Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Schedule_Administrative_Hours__c</fullName>
+        <description>Schedule Administrative Hours (approximate number hours per week)</description>
+        <externalId>false</externalId>
+        <label>Schedule Administrative Hours</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Schedule_Teaching_Hours__c</fullName>
+        <description>Schedule Teaching Hours  (approximate number hours per week)</description>
+        <externalId>false</externalId>
+        <label>Schedule Teaching Hours</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <description>Date when a certain contact role became effective.</description>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Role_Licensing_Transaction__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Licensing transaction during which the role started.</description>
+        <externalId>false</externalId>
+        <label>Start Role Licensing Transaction</label>
+        <referenceTo>Licensing_Transaction__c</referenceTo>
+        <relationshipLabel>Ownership/Administrator Start</relationshipLabel>
+        <relationshipName>Contact_Roles</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Contact Role</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CR-{000000}</displayFormat>
+        <label>Contact Role Name</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Contact Roles</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Asoc_Prov_cant_be_FCC_FCC_Ast_or_Unlic</fullName>
+        <active>true</active>
+        <description>Associated Provider cannot be Family Child Care, FCC Assistant, or Unlicensed Provider</description>
+        <errorConditionFormula>OR( 
+Provider__r.RecordType.Name = &quot;Family Child Care&quot;,
+Provider__r.RecordType.Name = &quot;FCC Assistant&quot;,
+Provider__r.RecordType.Name = &quot;Unlicensed Provider&quot;
+)</errorConditionFormula>
+        <errorDisplayField>Provider__c</errorDisplayField>
+        <errorMessage>Associated Provider cannot be Family Child Care, FCC Assistant, or Unlicensed Provider</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Date_Greater_Than_Start_Date</fullName>
+        <active>true</active>
+        <description>End Date must be greater than the Start Date</description>
+        <errorConditionFormula>End_Date__c  &lt;   Start_Date__c</errorConditionFormula>
+        <errorDisplayField>End_Date__c</errorDisplayField>
+        <errorMessage>End Date must be greater than the Start Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Date_must_be_greater_than_Today</fullName>
+        <active>false</active>
+        <description>End Date must be greater than Today</description>
+        <errorConditionFormula>End_Date__c &lt; TODAY()</errorConditionFormula>
+        <errorDisplayField>End_Date__c</errorDisplayField>
+        <errorMessage>End Date must be greater than or equal to Today</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Exec_Director_for_Umbrella_only</fullName>
+        <active>true</active>
+        <description>Executive Director role can only be used if Provider is an Umbrella</description>
+        <errorConditionFormula>Provider__r.RecordType.Name != &quot;Umbrella&quot;
+
+&amp;&amp;
+
+ISPICKVAL( Role__c, &quot;Executive Director&quot;)</errorConditionFormula>
+        <errorDisplayField>Role__c</errorDisplayField>
+        <errorMessage>Executive Director role can only be used if Provider is an Umbrella</errorMessage>
+    </validationRules>
+</CustomObject>

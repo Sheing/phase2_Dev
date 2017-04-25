@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Additional Information</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Additional Information</value>
+    </caseValues>
+    <fields>
+        <label><!-- Address of Licensing authority --></label>
+        <name>Address_of_Licensing_authority__c</name>
+    </fields>
+    <fields>
+        <label><!-- Address of court/administrative body --></label>
+        <name>Address_of_court__c</name>
+    </fields>
+    <fields>
+        <label><!-- Caption --></label>
+        <name>Caption__c</name>
+    </fields>
+    <fields>
+        <label><!-- Disposition --></label>
+        <name>Disposition__c</name>
+    </fields>
+    <fields>
+        <label><!-- Docket Number --></label>
+        <name>Docket_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Number --></label>
+        <name>License_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- Licensing Transaction --></label>
+        <name>Licensing_Transaction__c</name>
+        <relationshipLabel><!-- Additional Information --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Name --></label>
+        <name>Name_Admin_civil_criminal_action__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name of Applicant --></label>
+        <name>Name_of_Applicant__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name of Licensee --></label>
+        <name>Name_of_Licensee__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name of Licensing Authority --></label>
+        <name>Name_of_Licensing_Authority__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name of Person/Agency Investigated --></label>
+        <name>Name_of_Person_Agency_Investigated__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name of court or administrative body --></label>
+        <name>Name_of_court_or_administrative_body__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nature of Investigation --></label>
+        <name>Nature_of_Investigation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nature of Proceedings --></label>
+        <name>Nature_of_Proceedings__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone No. of Licensing Authority --></label>
+        <name>Phone_No_of_Licensing_Authority__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider --></label>
+        <name>Provider__c</name>
+        <relationshipLabel><!-- Additional Information --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- State/Country Issuing the License --></label>
+        <name>State_Country_Issuing_the_License__c</name>
+    </fields>
+    <fields>
+        <label><!-- State/Country of Applicant --></label>
+        <name>State_Country_of_Applicant__c</name>
+    </fields>
+    <fields>
+        <label><!-- State and/or Federal Agency --></label>
+        <name>State_and_or_Federal_Agency__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status of Application --></label>
+        <name>Status_of_Application__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type of License --></label>
+        <name>Type_of_License__c</name>
+    </fields>
+    <layouts>
+        <layout>Admin/Civil/Criminal Action Detail</layout>
+        <sections>
+            <label><!-- Admin/Civil/Criminal Action Details --></label>
+            <section>Admin/Civil/Criminal Action Details</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Other License Applications</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+        <sections>
+            <label><!-- Other License Applications --></label>
+            <section>Other License Applications</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Other Licenses Held</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+        <sections>
+            <label><!-- Other License Detail --></label>
+            <section>Other License Detail</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>State/Federal Investigation Details</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+        <sections>
+            <label><!-- State/Federal Investigation Details --></label>
+            <section>State/Federal Investigation Details</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label><!-- Admin/civil/criminal action detail --></label>
+        <name>Admin_civil_criminal_action_detail</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Other License Applications --></label>
+        <name>Other_License_Applications</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Other Licenses Held --></label>
+        <name>Other_Licenses_Held</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- State/federal investigation detail --></label>
+        <name>State_federal_investigation_detail</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

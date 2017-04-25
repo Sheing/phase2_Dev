@@ -1,0 +1,8 @@
+Hello,
+
+{!Inspection__c.Inspector_del__c} chose to use the '{!Inspection__c.Visit_Tool_Used__c}' instead of the '{!Inspection__c.Recommended_Tool__c}' recommended by the LEAD system for a visit to {!Inspection__c.Provider_No__c} for the following reason: {!Inspection__c.Use_Non_Recommended_Tool_Justification__c}.
+
+You can review the visit by following this link: {!Inspection__c.Link}
+
+
+LEAD System

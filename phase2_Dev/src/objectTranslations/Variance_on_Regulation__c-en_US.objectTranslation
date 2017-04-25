@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Variance on Regulation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Variance on Regulations</value>
+    </caseValues>
+    <fields>
+        <label><!-- Associated Regulation --></label>
+        <name>Associated_Regulation__c</name>
+        <relationshipLabel><!-- Variance on Regulations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Brief explanation for license --></label>
+        <name>Brief_explanation_for_license__c</name>
+    </fields>
+    <fields>
+        <label><!-- Current --></label>
+        <name>Current__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Granted --></label>
+        <name>Date_Granted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date today --></label>
+        <name>Date_today__c</name>
+    </fields>
+    <fields>
+        <label><!-- Decision Date --></label>
+        <name>Decision_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Decision Rationale --></label>
+        <name>Decision_Rationale__c</name>
+    </fields>
+    <fields>
+        <label><!-- Decision --></label>
+        <name>Decision__c</name>
+        <picklistValues>
+            <masterLabel>Denied</masterLabel>
+            <translation><!-- Denied --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Granted</masterLabel>
+            <translation><!-- Granted --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Expiration Date --></label>
+        <name>Expiration_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Licensor Recommendation --></label>
+        <name>Licensor_Recommendation__c</name>
+        <picklistValues>
+            <masterLabel>Denied</masterLabel>
+            <translation><!-- Denied --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Granted</masterLabel>
+            <translation><!-- Granted --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- ProviderType --></label>
+        <name>ProviderType__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider Alternative Method to Comply --></label>
+        <name>Provider_Alternative_Method_to_Comply__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider Understanding of Regulation --></label>
+        <name>Provider_Understanding_of_Regulation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provider --></label>
+        <name>Provider__c</name>
+        <relationshipLabel><!-- Variance on Regulations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Recommendation Rationale --></label>
+        <name>Recommendation_Rationale__c</name>
+    </fields>
+    <fields>
+        <label><!-- Source Transaction --></label>
+        <name>Source_Transaction__c</name>
+        <relationshipLabel><!-- Variance on Regulations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- isCopied --></label>
+        <name>isCopied__c</name>
+    </fields>
+    <layouts>
+        <layout>Variance on Regulation Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- EEC Review --></label>
+            <section>EEC Review</section>
+        </sections>
+        <sections>
+            <label><!-- Provider Submission --></label>
+            <section>Provider Submission</section>
+        </sections>
+        <sections>
+            <label><!-- System information --></label>
+            <section>System information</section>
+        </sections>
+        <sections>
+            <label><!-- Variance Information --></label>
+            <section>Variance Information</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- If the variance is granted, then the brief explanation is mandatory. Fill the field before saving. --></errorMessage>
+        <name>Brief_explanation_for_license_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If the decision is taken, then the decision date is mandatory. Fill the field before saving. --></errorMessage>
+        <name>Decision_Date_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If the decision is taken, then the rationale is mandatory. Fill the field before saving. --></errorMessage>
+        <name>Decision_Rationale_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- provider associated should be the same as the provider associated with the transaction --></errorMessage>
+        <name>Provider_should_be_same</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Rationale is mandatory if  the Recommendation is filled --></errorMessage>
+        <name>Recommendation_Rationale_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Associated regulations are not applicable to the Provider type associated to the variance. --></errorMessage>
+        <name>Regulations_applicable_to_provider</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Document Type</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Document Types</value>
+    </caseValues>
+    <fields>
+        <label><!-- Allow Use of Umbrella Level Document --></label>
+        <name>Allow_use_of_Umbrella_Level_Document__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Document Type Name --></label>
+        <name>Document_Type_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Individual Document --></label>
+        <name>Individual_Document__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related to Provider Type --></label>
+        <name>LEAD_Configuration__c</name>
+        <relationshipLabel><!-- Document Types --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- If check, this document type will appear in the library of all providers this document type is defined on - per type of provider --></help>
+        <label><!-- Library Level --></label>
+        <name>Library_Level__c</name>
+    </fields>
+    <fields>
+        <label><!-- Need Update Each New Transaction --></label>
+        <name>Need_to_be_Updated_at_each_new_Transacti__c</name>
+    </fields>
+    <fields>
+        <label><!-- Optional for Transaction Type --></label>
+        <name>Optional_for_Transactio_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Role --></label>
+        <name>Related_Role__c</name>
+        <picklistValues>
+            <masterLabel>Administrative Designee</masterLabel>
+            <translation><!-- Administrative Designee --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Board Chair</masterLabel>
+            <translation><!-- Board Chair --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Director</masterLabel>
+            <translation><!-- Executive Director --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Funding Source</masterLabel>
+            <translation><!-- Funding Source --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Infant / Toddler Responsible</masterLabel>
+            <translation><!-- Infant / Toddler Responsible --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Main Contact</masterLabel>
+            <translation><!-- Main Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other Contact</masterLabel>
+            <translation><!-- Other Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Owner</masterLabel>
+            <translation><!-- Owner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Partner</masterLabel>
+            <translation><!-- Partner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Program Director / Administrative Head</masterLabel>
+            <translation><!-- Program Director / Administrative Head --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Required for Transaction Type --></label>
+        <name>Required_for_Transaction_Type__c</name>
+    </fields>
+    <fields>
+        <help><!-- If checked, a transaction that requires this document will not be able to be submitted before this document has a valid attachment --></help>
+        <label><!-- Submit Transaction Only If Uploaded --></label>
+        <name>Submit_Transaction_Only_If_Uploaded__c</name>
+    </fields>
+    <layouts>
+        <layout>Document Type Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Transaction Types --></label>
+            <section>Transaction Types</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- There is already a document type with this name. Please enter a new one. --></errorMessage>
+        <name>Unique_Type_Name</name>
+    </validationRules>
+</CustomObjectTranslation>
